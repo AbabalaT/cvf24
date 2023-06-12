@@ -70,8 +70,6 @@
 /*---------- -----------*/
 #define USBD_MAX_STR_DESC_SIZ     512U
 /*---------- -----------*/
-#define USBD_SUPPORT_USER_STRING     0U
-/*---------- -----------*/
 #define USBD_DEBUG_LEVEL     0U
 /*---------- -----------*/
 #define USBD_LPM_ENABLED     0U
@@ -91,14 +89,13 @@
   * @brief Aliases.
   * @{
   */
-
-/* Memory management macros */
-
+/* Memory management macros make sure to use static memory allocation */
 /** Alias for memory allocation. */
-#define USBD_malloc         malloc
+
+#define USBD_malloc         (void *)USBD_static_malloc
 
 /** Alias for memory release. */
-#define USBD_free           free
+#define USBD_free           USBD_static_free
 
 /** Alias for memory set. */
 #define USBD_memset         memset
@@ -116,24 +113,24 @@
                             printf("\n");
 #else
 #define USBD_UsrLog(...)
-#endif
+#endif /* (USBD_DEBUG_LEVEL > 0U) */
 
 #if (USBD_DEBUG_LEVEL > 1)
 
-#define USBD_ErrLog(...)    printf("ERROR: ") ;\
+#define USBD_ErrLog(...)    printf("ERROR: ");\
                             printf(__VA_ARGS__);\
                             printf("\n");
 #else
 #define USBD_ErrLog(...)
-#endif
+#endif /* (USBD_DEBUG_LEVEL > 1U) */
 
 #if (USBD_DEBUG_LEVEL > 2)
-#define USBD_DbgLog(...)    printf("DEBUG : ") ;\
+#define USBD_DbgLog(...)    printf("DEBUG : ");\
                             printf(__VA_ARGS__);\
                             printf("\n");
 #else
 #define USBD_DbgLog(...)
-#endif
+#endif /* (USBD_DEBUG_LEVEL > 2U) */
 
 /**
   * @}
@@ -154,6 +151,8 @@
   */
 
 /* Exported functions -------------------------------------------------------*/
+void *USBD_static_malloc(uint32_t size);
+void USBD_static_free(void *p);
 
 /**
   * @}
@@ -173,4 +172,3 @@
 
 #endif /* __USBD_CONF__H__ */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
