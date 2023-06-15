@@ -24,7 +24,7 @@
 
 #define SBUS_RX_BUF_NUM 36u
 
-#define RC_FRAME_LENGTH 18u
+#define RC_FRAME_LENGTH 0x19u
 
 #define RC_CH_VALUE_MIN         ((uint16_t)364)
 #define RC_CH_VALUE_OFFSET      ((uint16_t)1024)
@@ -77,6 +77,11 @@ typedef __packed struct
 
 } RC_ctrl_t;
 
+typedef __packed struct{
+	int16_t ch[16];
+	uint8_t state;
+} Sbus_ctrl_t;
+
 /* ----------------------- Internal Data ----------------------------------- */
 
 extern void remote_control_init(void);
@@ -85,4 +90,8 @@ extern uint8_t RC_data_is_error(void);
 extern void slove_RC_lost(void);
 extern void slove_data_error(void);
 extern void sbus_to_usart1(uint8_t *sbus);
+static void sbus_data_resolve(volatile const uint8_t *buf, Sbus_ctrl_t *rc_ctrl);
+
+RC_ctrl_t rc_ctrl;
+Sbus_ctrl_t Sbus_ctrl;
 #endif

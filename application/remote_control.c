@@ -35,6 +35,8 @@
 extern UART_HandleTypeDef huart3;
 extern DMA_HandleTypeDef hdma_usart3_rx;
 
+uint8_t sbus_rx_len;
+
 
 //取正函数
 static int16_t RC_abs(int16_t value);
@@ -54,7 +56,7 @@ static void sbus_to_rc(volatile const uint8_t *sbus_buf, RC_ctrl_t *rc_ctrl);
 
 //remote control data 
 //遥控器控制变量
-RC_ctrl_t rc_ctrl;
+
 //接收原始数据，为18个字节，给了36个字节长度，防止DMA传输越界
 static uint8_t sbus_rx_buf[2][SBUS_RX_BUF_NUM];
 
@@ -183,7 +185,8 @@ void USART3_IRQHandler(void)
 
             if(this_time_rx_len == RC_FRAME_LENGTH)
             {
-                sbus_to_rc(sbus_rx_buf[0], &rc_ctrl);
+//                sbus_to_rc(sbus_rx_buf[1], &rc_ctrl);
+								sbus_data_resolve(sbus_rx_buf[0], &Sbus_ctrl);
                 //记录数据接收时间
                 detect_hook(DBUS_TOE);
                 //sbus_to_usart1(sbus_rx_buf[0]);
@@ -209,11 +212,11 @@ void USART3_IRQHandler(void)
             //enable DMA
             //使能DMA
             __HAL_DMA_ENABLE(&hdma_usart3_rx);
-
             if(this_time_rx_len == RC_FRAME_LENGTH)
             {
                 //处理遥控器数据
-                sbus_to_rc(sbus_rx_buf[1], &rc_ctrl);
+//                sbus_to_rc(sbus_rx_buf[1], &rc_ctrl);
+									sbus_data_resolve(sbus_rx_buf[1], &Sbus_ctrl);
                 //记录数据接收时间
                 detect_hook(DBUS_TOE);
                 //sbus_to_usart1(sbus_rx_buf[1]);
@@ -274,6 +277,33 @@ static void sbus_to_rc(volatile const uint8_t *sbus_buf, RC_ctrl_t *rc_ctrl)
     rc_ctrl->rc.ch[2] -= RC_CH_VALUE_OFFSET;
     rc_ctrl->rc.ch[3] -= RC_CH_VALUE_OFFSET;
     rc_ctrl->rc.ch[4] -= RC_CH_VALUE_OFFSET;
+}
+
+static void sbus_data_resolve(volatile const uint8_t *buf, Sbus_ctrl_t *rc_ctrl){
+		int i;
+    if (buf[23] == 0){
+        rc_ctrl->state = 1;
+        rc_ctrl->ch[0] = ((int16_t)buf[ 1] >> 0 | ((int16_t)buf[ 2] << 8 )) & 0x07FF;
+        rc_ctrl->ch[1] = ((int16_t)buf[ 2] >> 3 | ((int16_t)buf[ 3] << 5 )) & 0x07FF;
+        rc_ctrl->ch[2] = ((int16_t)buf[ 3] >> 6 | ((int16_t)buf[ 4] << 2 ) | (int16_t)buf[ 5] << 10 ) & 0x07FF;
+        rc_ctrl->ch[3] = ((int16_t)buf[ 5] >> 1 | ((int16_t)buf[ 6] << 7 )) & 0x07FF;
+        rc_ctrl->ch[4] = ((int16_t)buf[ 6] >> 4 | ((int16_t)buf[ 7] << 4 )) & 0x07FF;
+        rc_ctrl->ch[5] = ((int16_t)buf[ 7] >> 7 | ((int16_t)buf[ 8] << 1 ) | (int16_t)buf[9] << 9 ) & 0x07FF;
+        rc_ctrl->ch[6] = ((int16_t)buf[ 9] >> 2 | ((int16_t)buf[10] << 6 )) & 0x07FF;
+        rc_ctrl->ch[7] = ((int16_t)buf[10] >> 5 | ((int16_t)buf[11] << 3 )) & 0x07FF;
+        rc_ctrl->ch[8] = ((int16_t)buf[12] << 0 | ((int16_t)buf[13] << 8 )) & 0x07FF;
+        rc_ctrl->ch[9] = ((int16_t)buf[13] >> 3 | ((int16_t)buf[14] << 5 )) & 0x07FF;
+        rc_ctrl->ch[10] = ((int16_t)buf[14] >> 6 | ((int16_t)buf[15] << 2 ) | (int16_t)buf[16] << 10 ) & 0x07FF;
+        rc_ctrl->ch[11] = ((int16_t)buf[16] >> 1 | ((int16_t)buf[17] << 7 )) & 0x07FF;
+        rc_ctrl->ch[12] = ((int16_t)buf[17] >> 4 | ((int16_t)buf[18] << 4 )) & 0x07FF;
+        rc_ctrl->ch[13] = ((int16_t)buf[18] >> 7 | ((int16_t)buf[19] << 1 ) | (int16_t)buf[20] << 9 ) & 0x07FF;
+        rc_ctrl->ch[14] = ((int16_t)buf[20] >> 2 | ((int16_t)buf[21] << 6 )) & 0x07FF;
+        rc_ctrl->ch[15] = ((int16_t)buf[21] >> 5 | ((int16_t)buf[22] << 3 )) & 0x07FF;
+    }
+    else 
+    {
+        rc_ctrl->state = 0;
+    }
 }
 
 /**

@@ -19,13 +19,14 @@ standard_tpye_c\servo_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.
 standard_tpye_c\servo_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h
 standard_tpye_c\servo_task.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 standard_tpye_c\servo_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc_ex.h
-standard_tpye_c\servo_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_exti.h
 standard_tpye_c\servo_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio.h
 standard_tpye_c\servo_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio_ex.h
+standard_tpye_c\servo_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_exti.h
 standard_tpye_c\servo_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.h
 standard_tpye_c\servo_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma_ex.h
 standard_tpye_c\servo_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_cortex.h
 standard_tpye_c\servo_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_adc.h
+standard_tpye_c\servo_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_adc.h
 standard_tpye_c\servo_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_adc_ex.h
 standard_tpye_c\servo_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_can.h
 standard_tpye_c\servo_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_crc.h
@@ -60,6 +61,6 @@ standard_tpye_c\servo_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/include
 standard_tpye_c\servo_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h
 standard_tpye_c\servo_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h
 standard_tpye_c\servo_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h
-standard_tpye_c\servo_task.o: ..\bsp\boards\bsp_servo_pwm.h
+standard_tpye_c\servo_task.o: ../bsp/boards/bsp_servo_pwm.h
 standard_tpye_c\servo_task.o: ..\application\remote_control.h
-standard_tpye_c\servo_task.o: ..\bsp\boards\bsp_rc.h
+standard_tpye_c\servo_task.o: ../bsp/boards/bsp_rc.h

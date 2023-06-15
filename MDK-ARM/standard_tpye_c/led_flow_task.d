@@ -1,7 +1,7 @@
 standard_tpye_c\led_flow_task.o: ..\application\led_flow_task.c
 standard_tpye_c\led_flow_task.o: ..\application\led_flow_task.h
 standard_tpye_c\led_flow_task.o: ..\application\struct_typedef.h
-standard_tpye_c\led_flow_task.o: ..\bsp\boards\bsp_led.h
+standard_tpye_c\led_flow_task.o: ../bsp/boards/bsp_led.h
 standard_tpye_c\led_flow_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
 standard_tpye_c\led_flow_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
 standard_tpye_c\led_flow_task.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
@@ -34,13 +34,14 @@ standard_tpye_c\led_flow_task.o: ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/sy
 standard_tpye_c\led_flow_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h
 standard_tpye_c\led_flow_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h
 standard_tpye_c\led_flow_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc_ex.h
-standard_tpye_c\led_flow_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_exti.h
 standard_tpye_c\led_flow_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio.h
 standard_tpye_c\led_flow_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio_ex.h
+standard_tpye_c\led_flow_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_exti.h
 standard_tpye_c\led_flow_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.h
 standard_tpye_c\led_flow_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma_ex.h
 standard_tpye_c\led_flow_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_cortex.h
 standard_tpye_c\led_flow_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_adc.h
+standard_tpye_c\led_flow_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_adc.h
 standard_tpye_c\led_flow_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_adc_ex.h
 standard_tpye_c\led_flow_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_can.h
 standard_tpye_c\led_flow_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_crc.h

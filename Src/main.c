@@ -120,9 +120,6 @@ int main(void)
   MX_DMA_Init();
   MX_ADC1_Init();
   MX_ADC3_Init();
-  MX_CAN1_Init();
-  MX_CAN2_Init();
-  MX_I2C1_Init();
   MX_SPI1_Init();
   MX_TIM4_Init();
   MX_TIM5_Init();
@@ -138,6 +135,10 @@ int main(void)
   MX_TIM10_Init();
   MX_USART1_UART_Init();
   MX_USART6_UART_Init();
+  MX_CAN1_Init();
+  MX_CAN2_Init();
+  MX_I2C1_Init();
+  MX_SPI2_Init();
   /* USER CODE BEGIN 2 */
     can_filter_init();
     delay_init();

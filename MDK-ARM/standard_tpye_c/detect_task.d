@@ -2,7 +2,7 @@ standard_tpye_c\detect_task.o: ..\application\detect_task.c
 standard_tpye_c\detect_task.o: ..\application\detect_task.h
 standard_tpye_c\detect_task.o: ..\application\struct_typedef.h
 standard_tpye_c\detect_task.o: ..\application\remote_control.h
-standard_tpye_c\detect_task.o: ..\bsp\boards\bsp_rc.h
+standard_tpye_c\detect_task.o: ../bsp/boards/bsp_rc.h
 standard_tpye_c\detect_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
 standard_tpye_c\detect_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
 standard_tpye_c\detect_task.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h

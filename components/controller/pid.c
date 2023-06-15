@@ -142,19 +142,19 @@ void PID_clear(pid_type_def *pid)
 }
 
 
-void ESO_1order(float y, float u, ESO_1order_pm_st *eso_pm)
-{
-    float e, fe1, fe2;
-    if (eso_pm->start_flag == 0)
-    {
-        eso_pm->z1_hat = y;
-        eso_pm->z2_hat = 0;  //目标角速度 - 
-    }
-    e = y - eso_pm->z1_hat;
- 
-    fe1 = fal(e, eso_pm->alpha_1, eso_pm->delta_1);
-    fe2 = fal(e, eso_pm->alpha_2, eso_pm->delta_1);
- 
-    eso_pm->z1_hat += eso_pm->dt * (eso_pm->z2_hat + eso_pm->beta_1 * fe1 + eso_pm->b * u);
-    eso_pm->z2_hat += eso_pm->dt * (eso_pm->beta_2 * fe2);
-}
+//void ESO_1order(float y, float u, ESO_1order_pm_st *eso_pm)
+//{
+//    float e, fe1, fe2;
+//    if (eso_pm->start_flag == 0)
+//    {
+//        eso_pm->z1_hat = y;
+//        eso_pm->z2_hat = 0;  //目标角速度 -  
+//    }
+//    e = y - eso_pm->z1_hat;
+// 
+//    fe1 = fal(e, eso_pm->alpha_1, eso_pm->delta_1);
+//    fe2 = fal(e, eso_pm->alpha_2, eso_pm->delta_1);
+// 
+//    eso_pm->z1_hat += eso_pm->dt * (eso_pm->z2_hat + eso_pm->beta_1 * fe1 + eso_pm->b * u);
+//    eso_pm->z2_hat += eso_pm->dt * (eso_pm->beta_2 * fe2);
+//}

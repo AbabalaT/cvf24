@@ -1,7 +1,7 @@
 standard_tpye_c\ahrs_middleware.o: ..\components\algorithm\AHRS_middleware.c
 standard_tpye_c\ahrs_middleware.o: ..\components\algorithm\AHRS_MiddleWare.h
 standard_tpye_c\ahrs_middleware.o: ..\components\algorithm\AHRS.h
-standard_tpye_c\ahrs_middleware.o: ..\components\algorithm\Include\arm_math.h
+standard_tpye_c\ahrs_middleware.o: ../components/algorithm/Include/arm_math.h
 standard_tpye_c\ahrs_middleware.o: ../Drivers/CMSIS/Include/core_cm4.h
 standard_tpye_c\ahrs_middleware.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 standard_tpye_c\ahrs_middleware.o: ../Drivers/CMSIS/Include/cmsis_version.h
@@ -23,13 +23,14 @@ standard_tpye_c\ahrs_middleware.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx
 standard_tpye_c\ahrs_middleware.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h
 standard_tpye_c\ahrs_middleware.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 standard_tpye_c\ahrs_middleware.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc_ex.h
-standard_tpye_c\ahrs_middleware.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_exti.h
 standard_tpye_c\ahrs_middleware.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio.h
 standard_tpye_c\ahrs_middleware.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio_ex.h
+standard_tpye_c\ahrs_middleware.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_exti.h
 standard_tpye_c\ahrs_middleware.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.h
 standard_tpye_c\ahrs_middleware.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma_ex.h
 standard_tpye_c\ahrs_middleware.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_cortex.h
 standard_tpye_c\ahrs_middleware.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_adc.h
+standard_tpye_c\ahrs_middleware.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_adc.h
 standard_tpye_c\ahrs_middleware.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_adc_ex.h
 standard_tpye_c\ahrs_middleware.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_can.h
 standard_tpye_c\ahrs_middleware.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_crc.h

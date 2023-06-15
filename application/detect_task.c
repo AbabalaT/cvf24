@@ -88,10 +88,12 @@ uint32_t detect_task_stack;
   * @param[in]      pvParameters: NULL
   * @retval         none
   */
+	
 uint16_t running_psc = 2000, running_pwm = 0;
 uint16_t running_psc_factor = 1, running_pwm_factor = 1;
 uint16_t buzzer_factor1 = 178, buzzer_factor2 = 1;
-extern RC_ctrl_t rc_ctrl;
+
+extern Sbus_ctrl_t Sbus_ctrl;
 void detect_task(void const *pvParameters)
 {
     static uint32_t system_time;
@@ -103,9 +105,9 @@ void detect_task(void const *pvParameters)
 		
     while (1)
     {
-				if(rc_ctrl.rc.ch[0]>= 0 && rc_ctrl.rc.ch[1]>= 0){
-					buzzer_on(buzzer_factor1/(rc_ctrl.rc.ch[0]/22 + buzzer_factor2), rc_ctrl.rc.ch[1] * running_pwm_factor);
-				}
+//				if(Sbus_ctrl.ch[0]>= 0 && Sbus_ctrl.ch[1]>= 0){
+//					buzzer_on(buzzer_factor1/(Sbus_ctrl.ch[0]/22 + buzzer_factor2), Sbus_ctrl.ch[1] * running_pwm_factor);
+//				}
 				
         static uint8_t error_num_display = 0;
         system_time = xTaskGetTickCount();
