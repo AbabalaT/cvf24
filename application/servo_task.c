@@ -46,6 +46,14 @@ uint16_t servo_pwm[6] = {SERVO_MIN_PWM, SERVO_MIN_PWM, SERVO_MIN_PWM, SERVO_MIN_
   * @param[in]      pvParameters: NULL
   * @retval         none
   */
+
+void set_pwm(uint16_t s1, uint16_t s2, uint16_t s3, uint16_t s4){
+	servo_pwm[0] = s1;
+	servo_pwm[1] = s2;
+	servo_pwm[2] = s3;
+	servo_pwm[3] = s4;
+}
+
 extern fp32 throttle_out, roll_out, pitch_out, yaw_out;
 void servo_task(void const * argument)
 {

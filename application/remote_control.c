@@ -36,7 +36,8 @@ extern UART_HandleTypeDef huart3;
 extern DMA_HandleTypeDef hdma_usart3_rx;
 
 uint8_t sbus_rx_len;
-
+RC_ctrl_t rc_ctrl;
+Sbus_ctrl_t Sbus_ctrl;
 
 //È¡Õýº¯Êý
 static int16_t RC_abs(int16_t value);
@@ -280,7 +281,6 @@ static void sbus_to_rc(volatile const uint8_t *sbus_buf, RC_ctrl_t *rc_ctrl)
 }
 
 static void sbus_data_resolve(volatile const uint8_t *buf, Sbus_ctrl_t *rc_ctrl){
-		int i;
     if (buf[23] == 0){
         rc_ctrl->state = 1;
         rc_ctrl->ch[0] = ((int16_t)buf[ 1] >> 0 | ((int16_t)buf[ 2] << 8 )) & 0x07FF;

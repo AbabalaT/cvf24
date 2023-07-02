@@ -29,6 +29,7 @@ float abs(float x)
 	return y;
 }
 
+/*
 float sign(float x)
 {
 	float y;
@@ -44,6 +45,7 @@ float sign(float x)
 	
 	return y;	
 }
+*/
 
 float fsg0 (float x, float d)
 {
@@ -142,40 +144,39 @@ u16 limit_i (u16 min,u16 max,u16 x )
 /* 自抗扰控制中关键的fhan函数 */
 float fhan ( float x1, float x2 ,float r, float h1)
 {
-//	float d;
-//	float d0;
-//	float y;
-//	float a0;
-//	float a;
-//	float fh;
-//	
-//	d = r*h;
-//	d0 = h*d;
-//	y = x1 + h*x2;
-//	a0 = vt_sqrt(d*d + 8*r*abs(y));
-//	
-//	if( abs(y) > d0 )
-//	{
-//		a = x2 + 0.5f*(a0-d)*sign(y);
-//	}
-//	else
-//	{
-//		a = x2 + y/h;
-//	}
-//	
-//	
-//	
-//	if(abs(a) > d)
-//	{
-//		fh = -r*sign(a);
-//	}
-//	else
-//	{
-//		fh = -r*a/d;
-//	}
-//	
-//	return fh;
+	// float d;
+	// float d0;
+	// float y;
+	// float a0;
+	// float a;
+	// float fh;
 	
+	// d = r*h;
+	// d0 = h*d;
+	// y = x1 + h*x2;
+	// a0 = vt_sqrt(d*d + 8*r*abs(y));
+	
+	// if( abs(y) > d0 )
+	// {
+	// 	a = x2 + 0.5f*(a0-d)*sign(y);
+	// }
+	// else
+	// {
+	// 	a = x2 + y/h;
+	// }
+	
+	
+	
+	// if(abs(a) > d)
+	// {
+	// 	fh = -r*sign(a);
+	// }
+	// else
+	// {
+	// 	fh = -r*a/d;
+	// }
+	
+	// return fh;
 /***********************/
 	float d;
 	float a0;

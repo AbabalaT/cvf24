@@ -27,87 +27,16 @@ Project File Date:  06/13/2023
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 4 (build 422)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'standard_robot'
+compiling servo_task.c...
+..\application\servo_task.c(37): warning:  #177-D: variable "servo_key"  was declared but never referenced
+  const static uint16_t servo_key[4] = {SERVO1_ADD_PWM_KEY, SERVO2_ADD_PWM_KEY, SERVO3_ADD_PWM_KEY, SERVO4_ADD_PWM_KEY};
+..\application\servo_task.c: 1 warning, 0 errors
 compiling control.c...
-..\components\controller\control.c(255): error:  #20: identifier "pitch_input_trim_load" is undefined
-  	pitch_input_trim = pitch_input_trim_load;
-..\components\controller\control.c(256): error:  #20: identifier "roll_input_trim_load" is undefined
-  	roll_input_trim = roll_input_trim_load;
-..\components\controller\control.c(257): error:  #20: identifier "cruise_angle_load" is undefined
-  	cruise_angle = cruise_angle_load;
-..\components\controller\control.c(267): error:  #20: identifier "is_load" is undefined
-  	if(is_load)
-..\components\controller\control.c(309): error:  #20: identifier "calibrate_mode_on" is undefined
-  	if(calibrate_mode_on && calibrate_servo_esc)
-..\components\controller\control.c(309): error:  #20: identifier "calibrate_servo_esc" is undefined
-  	if(calibrate_mode_on && calibrate_servo_esc)
-..\components\controller\control.c(321): error:  #20: identifier "calibrate_mode_off" is undefined
-  	if(calibrate_mode_off)
-..\components\controller\control.c(323): error:  #20: identifier "calibrate_status_high" is undefined
-  		if(calibrate_status_high)//手动模式，磁力计控制关
-..\components\controller\control.c(326): error:  #20: identifier "mag_enable" is undefined
-  			mag_enable=0;
-..\components\controller\control.c(329): error:  #20: identifier "calibrate_status_mid" is undefined
-  		if(calibrate_status_mid)//自稳模式，磁力计控制关
-..\components\controller\control.c(332): error:  #20: identifier "mag_enable" is undefined
-  			mag_enable=0;
-..\components\controller\control.c(335): error:  #20: identifier "calibrate_status_low" is undefined
-  		if(calibrate_status_low)//自稳模式，磁力计控制开
-..\components\controller\control.c(338): error:  #20: identifier "mag_enable" is undefined
-  			mag_enable=1;
-..\components\controller\control.c(345): error:  #20: identifier "mag_enable" is undefined
-  		mag_enable=0;
-..\components\controller\control.c(376): error:  #20: identifier "throttle_lock" is undefined
-  	if(throttle_lock)sum=0.0f;
-..\components\controller\control.c(398): error:  #20: identifier "throttle_lock" is undefined
-  	if(throttle_lock)sum=0.0f;
-..\components\controller\control.c(419): error:  #20: identifier "throttle_lock" is undefined
-  	if(throttle_lock)sum=0.0f;
-..\components\controller\control.c(679): warning:  #223-D: function "delta_ch" declared implicitly
-  	target_pitch =(cruise_angle-pitch_input_trim)*(-0.001915605277f*(float)delta_ch(2))/(-1.566965116586f)+pitch_input_trim;
-..\components\controller\control.c(760): error:  #20: identifier "current_yaw" is undefined
-  		Qy[0] = 
-t_cos(0.5f*current_yaw);
-..\components\controller\control.c(766): error:  #20: identifier "Qr" is undefined
-  		quaternion_multiply(Qy, Qr, Q0);
-..\components\controller\control.c(783): error:  #20: identifier "Gyro_V" is undefined
-  		d_delta_dt = vector_dot_product(tv_v,Gyro_V);
-..\components\controller\control.c(795): error:  #20: identifier "mag_enable" is undefined
-  		mag_enable=0;
-..\components\controller\control.c(806): warning:  #223-D: function "ch" declared implicitly
-  				if(ch(3)<=190)
-..\components\controller\control.c(814): warning:  #223-D: function "delta_ch" declared implicitly
-  					stick_yaw = 0.0035f*(float)delta_ch(4)*0.003f;
-..\components\controller\control.c(847): warning:  #223-D: function "delta_ch" declared implicitly
-  			yaw_rate = -0.0035f*(float)delta_ch(4)*1.0f;
-..\components\controller\control.c(855): warning:  #223-D: function "V_to_B" declared implicitly
-  		V_to_B(tv_v,tv_b);
-..\components\controller\control.c(874): warning:  #223-D: function "delta_ch" declared implicitly
-  		target_velocity[0] = (float)delta_ch(2)*0.0035f;
-..\components\controller\control.c(927): error:  #20: identifier "Gyro" is undefined
-  	Up = ADRC_P(target_velocity[0],-Gyro[0],Up_real,dp_avr,h_w);
-..\components\controller\control.c(927): error:  #20: identifier "dp_avr" is undefined
-  	Up = ADRC_P(target_velocity[0],-Gyro[0],Up_real,dp_avr,h_w);
-..\components\controller\control.c(933): warning:  #223-D: function "ch" declared implicitly
-  	throttle = ((float)(ch(3)-172))/((float)(1810-172))*21000.0f+throttle_pwm_min;
-..\components\controller\control.c(933): error:  #20: identifier "throttle_pwm_min" is undefined
-  	throttle = ((float)(ch(3)-172))/((float)(1810-172))*21000.0f+throttle_pwm_min;
-..\components\controller\control.c(940): error:  #20: identifier "servo1_center" is undefined
-  		servo_L = (float)servo1_center + ((float)delta_ch(1))/((float)(1810-172))*21000.0f;
-..\components\controller\control.c(940): warning:  #223-D: function "delta_ch" declared implicitly
-  		servo_L = (float)servo1_center + ((float)delta_ch(1))/((float)(1810-172))*21000.0f;
-..\components\controller\control.c(941): error:  #20: identifier "servo2_center" is undefined
-  		servo_R = (float)servo2_center + ((float)delta_ch(2))/((float)(1810-172))*21000.0f;
-..\components\controller\control.c(943): error:  #20: identifier "servoD_center" is undefined
-  		servoD_center = (u16)(31500.0f + ((float)delta_ch(7))/((float)(1810-172))*21000.0f);
-..\components\controller\control.c(961): error:  #20: identifier "servo1_center" is undefined
-  			servo_L = (float)servo1_center;
-..\components\controller\control.c(962): error:  #20: identifier "servo2_center" is undefined
-  			servo_R = (float)servo2_center;
-..\components\controller\control.c(969): error:  #20: identifier "servo1_center" is undefined
-  			servo_L = (float)servo1_center - Up + Ur;
-..\components\controller\control.c: 8 warnings, 30 errors
-compiling referee_usart_task.c...
-"standard_tpye_c\standard_tpye_c.axf" - 30 Error(s), 8 Warning(s).
+compiling freertos.c...
+linking...
+Program Size: Code=82824 RO-data=12568 RW-data=1072 ZI-data=58752  
+FromELF: creating hex file...
+"standard_tpye_c\standard_tpye_c.axf" - 0 Error(s), 1 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -125,8 +54,7 @@ Package Vendor: ARM
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.6.0
-Target not created.
-Build Time Elapsed:  00:00:04
+Build Time Elapsed:  00:00:05
 </pre>
 </body>
 </html>

@@ -136,6 +136,7 @@ chassis_move_t chassis_move;
   * @param[in]      pvParameters: Пе
   * @retval         none
   */
+	
 fp32 PID_Data_roll[3] = {0.5, 0.0, 0.0};
 fp32 PID_Data_pitch[3] = {0.5, 0.0, 0.0};
 fp32 PID_Data_yaw[3] = {0.5, 0.0, 0.0};
@@ -144,9 +145,13 @@ fp32 PID_Angle_pitch[3] = {0.5, 0.0, 0.0};
 fp32 PID_Angle_yaw[3] = {0.5, 0.0, 0.0};
 fp32 throttle_out =0.0f, roll_out = 0.0f, pitch_out = 0.0f, yaw_out = 0.0f;
 fp32 throttle_idle = 60.0f;
+
 extern RC_ctrl_t rc_ctrl;
+extern Sbus_ctrl_t Sbus_ctrl;
+
 fp32 gyro_data[3], angle_data[3];
 uint8_t rc_state_pre = 2;
+
 void chassis_task(void const *pvParameters)
 {
     vTaskDelay(CHASSIS_TASK_INIT_TIME);

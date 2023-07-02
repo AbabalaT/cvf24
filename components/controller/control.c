@@ -1,7 +1,24 @@
 #include "control.h"
 #include "vt_math.h"
 #include "config.h"
+#include "remote_control.h"
+#include "bsp_usart.h"
 
+#define calibrate_mode_on Sbus_ctrl.ch[5] > 100
+#define calibrate_mode_off Sbus_ctrl.ch[5] > 100
+#define calibrate_status_high Sbus_ctrl.ch[5] > 100
+#define calibrate_servo_esc Sbus_ctrl.ch[5] > 100
+#define calibrate_status_mid Sbus_ctrl.ch[5] > 100
+#define calibrate_status_low Sbus_ctrl.ch[5] > 100
+#define throttle_lock Sbus_ctrl.ch[5] > 100
+
+u8 door_swith_low = 0;
+
+extern float height_rate;
+extern float dp2;
+extern uint16_t servo_pwm[6];
+
+extern void set_pwm(uint16_t s1, uint16_t s2, uint16_t s3, uint16_t s4);
 
 /*  俯仰运动方程:
 
@@ -98,14 +115,12 @@ Y_y = W1_y;
 //
 
 
-
 #define h_w  0.001f  //内环采样周期
 
 /*扩张状态观测器参数*/
 #define w0_p 825.0f
 #define w0_r 825.0f
 #define w0_y 825.0f
-
 
 
 
@@ -163,9 +178,6 @@ Y_y = W1_y;
 #define aT1_y  0.7f
 
 
-
-
-
 //#define dTheta_deg 1.0f
 //#define KP2        4.7f
 
@@ -173,11 +185,9 @@ Y_y = W1_y;
 #define Kn1  1.75f
 
 
-
 float b1_p;
 float b1_r;
 float b1_y;
-
 
 float kb1_p;
 float kb1_r;
@@ -203,25 +213,47 @@ float aT_p;
 float aT_r;
 float aT_y;
 
-u8 esc_servo_calibrate=0;
+extern Sbus_ctrl_t Sbus_ctrl;
+extern fp32 gyro_data[3], angle_data[3];
+extern float dp_avr;
 
-//u8 ctrl_mode=0;
+u8 esc_servo_calibrate = 0;
+u8 ctrl_mode;
+u8 is_load;
+u8 experiment;
+u8 mag_enable = 0;
 
+float throttle_pwm_min = 21000;
+float throttle_pwm_max = 31000;
 
+float ch(uint16_t ch_in){
+	return Sbus_ctrl.ch[ch_in - 1];
+}
+
+float delta_ch(uint16_t ch_in){
+	return Sbus_ctrl.ch[ch_in - 1] - 1024;
+}
 
 //float dTheta;
 //float Kn;
-
-
-
-
 float KnA;
 
-
+/*
+void V_to_B(float *vector_v, float *vector_b)
+{
+	vector_b[0] = inv_Ca11*vector_v[0] + inv_Ca12*vector_v[1] + inv_Ca13*vector_v[2];
+	vector_b[1] = inv_Ca21*vector_v[0] + inv_Ca22*vector_v[1] + inv_Ca23*vector_v[2];
+	vector_b[2] = inv_Ca31*vector_v[0] + inv_Ca32*vector_v[1] + inv_Ca33*vector_v[2];
+}
+*/
 
 float pitch_input_trim;
 float roll_input_trim;
 float cruise_angle;
+
+float pitch_input_trim_load = 0.0f;
+float roll_input_trim_load = 0.0f;
+float cruise_angle_load = 0.0f;
 
 void ctrl_init(void)
 {
@@ -259,8 +291,10 @@ void ctrl_init(void)
 	
 }
 //
-u8 ctrl_mode;
-u8 experiment;
+
+void rc_pre_process(void){
+	Sbus_ctrl.ch[5] = 1000;
+}
 
 void model_data_pretreatment(void)
 {
@@ -315,9 +349,6 @@ void model_data_pretreatment(void)
 		esc_servo_calibrate = 0;
 	}
 
-	
-
-
 	if(calibrate_mode_off)
 	{
 		if(calibrate_status_high)//手动模式，磁力计控制关
@@ -371,9 +402,12 @@ float pid_P_rate(float target,float rate,float dt)
 	
 	if(abs(e_rate)<0.6f)sum += e_rate*dt;
 
-	if(sum>10.0f)sum=10.0f;
-	if(sum<-10.0f)sum=-10.0f;
-	if(throttle_lock)sum=0.0f;
+	if(sum>10.0f)
+		sum=10.0f;
+	if(sum<-10.0f)
+		sum=-10.0f;
+	if(throttle_lock)
+		sum=0.0f;
 	
 	pid_out = kp_p*e_rate + ki_p*sum;
 	
@@ -429,8 +463,9 @@ float Z3_p;
 
 float V1_p;
 float V2_p;
+
 /*机体俯仰轴ADRC控制器*/
-float ADRC_P(float V_p , float W_p, float u_p, float dp, float h)   //输入参数：参考角速度，测量角速度，动压，采样周期
+float ADRC_P(float V_p , float W_p, float u_p, float dp, float h)   //输入参数：参考角速度，测量角速度，舵机状态，动压，采样周期
 {
 //	static float V1_p;
 //	static float V2_p;
@@ -506,6 +541,8 @@ float Z3_r;
 
 float V1_r;
 float V2_r;
+
+float Qr[4] = {0.0, 0.0, 0.0, 0.0};
 
 /*机体横滚轴ADRC控制器*/
 float ADRC_R(float V_r , float W_r, float u_r, float dp, float h)   //输入参数：参考角速度，测量角速度，动压，采样周期
@@ -664,6 +701,7 @@ mag_enable = 0    关闭磁力计控制
 */
 
 float Qt[4];
+float Gyro_V[3];
 float target_pitch;
 float target_roll;
 
@@ -672,10 +710,9 @@ void get_target_quaternion(void)    //摇杆指令转化为目标四元数
 
 	float target_yaw0;
 //	float dt=0.008f;
-	
 
 //	target_pitch =-0.001915605277f*(float)delta_ch(2);
-
+	
 	target_pitch =(cruise_angle-pitch_input_trim)*(-0.001915605277f*(float)delta_ch(2))/(-1.566965116586f)+pitch_input_trim;
 	
 //	target_roll  = 0.001915605277f*(float)delta_ch(1)*0.722f ;//限幅65度
@@ -694,7 +731,6 @@ void get_target_quaternion(void)    //摇杆指令转化为目标四元数
 	pry_to_q(Qt,target_pr);
 	
 }
-
 
 //计算误差四元数dQ
 //dQ*Qr=Qt  Qr为当前机体四元数，Qt为目标四元数
@@ -715,9 +751,11 @@ float target_rate;
 float yaw_rate;
 
 float yaw_rate_real;
+float current_yaw = 0.0f;
+
 void get_target_angular_velocity(void)  //姿态外环，获取目标角速度向量
 {
-	
+	current_yaw = angle_data[2];
 //	float yaw_add[3];
 //	float yaw_target_rate[3];
 	static u16 cnt_yaw = 0;
@@ -729,6 +767,7 @@ void get_target_angular_velocity(void)  //姿态外环，获取目标角速度向量
 	
 	if(ctrl_mode)
 	{
+		
 		float Q0[4];
 		float dQ[4];
 
@@ -757,29 +796,32 @@ void get_target_angular_velocity(void)  //姿态外环，获取目标角速度向量
 //		
 //		pry_to_q(Q0,pry0);
 
-		Qy[0] = vt_cos(0.5f*current_yaw);
+		Qy[0] = vt_cos(0.5f * current_yaw);
 		Qy[1] = 0.0f;
 		Qy[2] = 0.0f;
-		Qy[3] =-vt_sin(0.5f*current_yaw);
+		Qy[3] =-vt_sin(0.5f * current_yaw);
 		_Q_check(Qy);
 		
 		quaternion_multiply(Qy, Qr, Q0);
 		get_dQ(dQ,Qt,Q0);
-	
-
+		
 		delta = 2.0f*acos(limit_f(-1.0f,1.0f,dQ[0]));//弧度
 		
 //		target_rate = Kp*delta;
 		
 //		target_rate = Kn*fal(delta, 0, dTheta); 
-	
+		
 		Vnorm = vt_sqrt(dQ[1]*dQ[1] + dQ[2]*dQ[2] + dQ[3]*dQ[3]); 
 		tv_e[0] = dQ[1]/Vnorm;
 		tv_e[1] = dQ[2]/Vnorm;
 		tv_e[2] = dQ[3]/Vnorm;
 		
 		E_to_V(tv_e,tv_v,Q0);
-	
+		
+		Gyro_V[0] = gyro_data[0];
+		Gyro_V[1] = gyro_data[1];
+		Gyro_V[2] = gyro_data[2];
+		
 		d_delta_dt = vector_dot_product(tv_v,Gyro_V);
 		
 //		target_rate = KnA*fal_0_75(delta,0.8f*pi/180.0f);
@@ -790,9 +832,6 @@ void get_target_angular_velocity(void)  //姿态外环，获取目标角速度向量
 		
 //		my_print("%.4f,%.4f\n",delta*180/pi,yaw);
 		
-
-		
-		mag_enable=0;
 		if(mag_enable)
 		{
 			if(cnt_yaw<20) //上电等待数据稳定，并对将目标偏航角对准初始偏航角，此阶段不使用磁力计
@@ -841,20 +880,18 @@ void get_target_angular_velocity(void)  //姿态外环，获取目标角速度向量
 				
 //				my_print("%.4f,%.4f,%.4f\n",delta_yaw*180/pi,current_yaw*180/pi,yaw_input*180/pi);
 			}
-		}
-		else
-		{
+		}else{
 			yaw_rate = -0.0035f*(float)delta_ch(4)*1.0f;
 		}
-		
+
 		turn_vector_e[0] = 0.0f;
 		turn_vector_e[1] = 0.0f;
 		turn_vector_e[2] = yaw_rate;		
 		E_to_V(turn_vector_e,turn_vector_v,Q0);
-		
+		/*
 		V_to_B(tv_v,tv_b);
 		V_to_B(turn_vector_v,turn_vector_b);
-		
+		*/
 		target_velocity[0] = - target_rate*tv_b[0] - turn_vector_b[0];//舵面俯仰
 		target_velocity[1] =   target_rate*tv_b[2] + turn_vector_b[2];//舵面差动
 		target_velocity[2] =   target_rate*tv_b[1] + turn_vector_b[1];//电机差速
@@ -867,7 +904,6 @@ void get_target_angular_velocity(void)  //姿态外环，获取目标角速度向量
 		
 		yaw_rate_real = vector_dot_product(RT,Gyro_V);
 		
-
 	}
 	else
 	{
@@ -888,6 +924,10 @@ float Up_real;
 float Ur_real;
 float Uy_real;
 
+float servo1_center = 1500.0f;
+float servo2_center = 1500.0f;
+float servoD_center = 1500.0f;
+
 void angular_rate_ctrl(void)  //角速度内环，调用ADRC算法
 {
 	float Up=0.0f;
@@ -903,37 +943,27 @@ void angular_rate_ctrl(void)  //角速度内环，调用ADRC算法
 //	float Uur;
 //	float Uuy;
 	
-
-	
-	
 	model_data_pretreatment();
-	
 	
 //	target_velocity[0] = (float)delta_ch(2)*0.0035f;
 //	target_velocity[1] = (float)delta_ch(1)*0.0035f;
 //	target_velocity[2] = (float)delta_ch(4)*0.0035f;
-	
+
 //	Up = pid_P_rate(target_velocity[0],-Gyro[0],h_w);
 //	Ur = pid_R_rate(target_velocity[1], Gyro[1],h_w);
 //	Uy = pid_Y_rate(target_velocity[2],-Gyro[2],h_w);
-	
 
-	
 //	Up = kp_p*target_velocity[0]*0.08f;
 //	Ur = kp_r*target_velocity[1]*1.0f;
 //	Uy = kp_y*target_velocity[2]*0.8f;
-	
-	
-	Up = ADRC_P(target_velocity[0],-Gyro[0],Up_real,dp_avr,h_w);
-	Ur = ADRC_R(target_velocity[1], Gyro[1],Ur_real,dp_avr,h_w);
-	Uy = ADRC_Y(target_velocity[2],-Gyro[2],Uy_real,h_w);
-	
-	
 
+	Up = ADRC_P(target_velocity[0],-gyro_data[0],Up_real,dp_avr,h_w);
+	Ur = ADRC_R(target_velocity[1], gyro_data[1],Ur_real,dp_avr,h_w);
+	Uy = ADRC_Y(target_velocity[2],-gyro_data[2],Uy_real,h_w);
+	
 	throttle = ((float)(ch(3)-172))/((float)(1810-172))*21000.0f+throttle_pwm_min;
-	if(esc_servo_calibrate)
-
-	{
+	
+	if(esc_servo_calibrate){
 		motor_L = throttle;
 		motor_R = throttle;
 		
@@ -941,12 +971,8 @@ void angular_rate_ctrl(void)  //角速度内环，调用ADRC算法
 		servo_R = (float)servo2_center + ((float)delta_ch(2))/((float)(1810-172))*21000.0f;
 		
 		servoD_center = (u16)(31500.0f + ((float)delta_ch(7))/((float)(1810-172))*21000.0f);
-	}
-	else
-	{
-		
-		if(ch(3)<=190)
-		{
+	}else{
+		if(ch(3)<=190){
 			Up_real = 0.0f;
 			Ur_real = 0.0f;
 			Uy_real = 0.0f;
@@ -960,31 +986,26 @@ void angular_rate_ctrl(void)  //角速度内环，调用ADRC算法
 			
 			servo_L = (float)servo1_center;
 			servo_R = (float)servo2_center;
-		}
-		else
-		{
+		}else{
 			motor_L = throttle - Uy;
 			motor_R = throttle + Uy;
 			
 			servo_L = (float)servo1_center - Up + Ur;
 			servo_R = (float)servo2_center + Up + Ur;
 		}
-		
 	}
 	
 	
 	
 	if(is_load)
 	{
-		close_door;
+		servo_pwm[4] = 1000;
 	}
 	else
 	{		
-		open_door;
+		servo_pwm[4] = 2000;
 	}
 	
-	
-
 	motor_L = limit_f((float)throttle_pwm_min,(float)throttle_pwm_max,motor_L);
 	motor_R = limit_f((float)throttle_pwm_min,(float)throttle_pwm_max,motor_R);
 	servo_L = limit_f(20748.0f,42252.0f,servo_L);
@@ -1007,7 +1028,6 @@ float pid_height_rate(float target,float rate,float dt)
 	float e_rate;
 	static float sum;
 	float pid_out;
-	
 	
 	e_rate = target - rate;
 	
@@ -1064,30 +1084,21 @@ void height_rate_ctrl(float dt)
 	
 	sin_dG = 57.3f*vt_sqrt( dG[0]*dG[0] + dG[1]*dG[1] + dG[2]*dG[2] );
 	
-	
 	if(abs(sin_dG)<6.0f)
 	{
-	
 		target_rate = 1.3f*((float)(ch(3)-992));	
 		Uh = pid_height_rate(target_rate,height_rate,dt);
-
 		throttle = (hover_throttle + Uh)/Ch33;
-	}
-	else
-	{
+	}else{
 		throttle = (float)((ch(3)-172)/(1810-172)*21000 + throttle_pwm_min);
 	}
 }
 
-
-
-
-
-
-
+float fdata[15];
 
 void upload_data(void)
 {
+	fdata[14] = INFINITY;
 	if(experiment==1)//eso实验
 	{
 		
@@ -1103,17 +1114,15 @@ void upload_data(void)
 //		fdata[9]=19.12f;
 //		fdata[10]=21.12f;
 //		fdata[11]=23.12f;
-
-
-		fdata[0]=-Gyro[0];
+		fdata[0]=-gyro_data[0];
 		fdata[1]=Z1_p;
 		fdata[2]=Z2_p;
 		fdata[3]=Z3_p;
-		fdata[4]=Gyro[1];
+		fdata[4]=gyro_data[1];
 		fdata[5]=Z1_r;
 		fdata[6]=Z2_r;
 		fdata[7]=Z3_r;
-		fdata[8]=-Gyro[2];
+		fdata[8]=-gyro_data[2];
 		fdata[9]=Z1_y;
 		fdata[10]=Z2_y;
 		fdata[11]=Z3_y;		
@@ -1123,17 +1132,17 @@ void upload_data(void)
 	if(experiment==2)//角速度环实验
 	{
 		fdata[0]=target_velocity[0];
-		fdata[1]=-Gyro[0];
+		fdata[1]=-gyro_data[0];
 		fdata[2]=Up_real;
 		fdata[3]=target_velocity[1];
-		fdata[4]=Gyro[1];
+		fdata[4]=gyro_data[1];
 		fdata[5]=Ur_real;
 		fdata[6]=target_velocity[2];
-		fdata[7]=-Gyro[2];
+		fdata[7]=-gyro_data[2];
 		fdata[8]=Uy_real;
 		fdata[9]=dp_avr;
 		fdata[10]=dp2;
-		fdata[11]=current_pitch;
+		fdata[11]=angle_data[2];
 		
 		if(door_swith_low)
 		{
@@ -1146,9 +1155,9 @@ void upload_data(void)
 	if(experiment==3)//姿态环实验
 	{
 		fdata[0]=target_pitch;
-		fdata[1]=current_pitch;
+		fdata[1]=angle_data[0];
 		fdata[2]=target_roll;
-		fdata[3]=current_roll;
+		fdata[3]=angle_data[1];
 		fdata[4]=yaw_rate;
 		fdata[5]=yaw_rate_real;
 		fdata[6]=Up_real;
@@ -1157,7 +1166,12 @@ void upload_data(void)
 		fdata[9]=dp_avr;
 		fdata[10]=dp2;
 		fdata[11]=throttle-throttle_pwm_min;
-
+		if(door_swith_low)
+		{
+			fdata[9]=Z3_p;
+			fdata[10]=Z3_r;
+			fdata[11]=Z3_y;
+		}
 //		fdata[0]=target_velocity[0];
 //		fdata[1]=-Gyro[0];
 //		fdata[2]=Up_real;
@@ -1169,18 +1183,8 @@ void upload_data(void)
 //		fdata[8]=Uy_real;
 //		fdata[9]=dp_avr;
 //		fdata[10]=dp2;
-//		fdata[11]=current_pitch;		
-
-
-		if(door_swith_low)
-		{
-			fdata[9]=Z3_p;
-			fdata[10]=Z3_r;
-			fdata[11]=Z3_y;
-		}
+//		fdata[11]=current_pitch;
 	}
-	
-//printf("check\n");
-	vtol_upload((u8*)(&fdata));
+	usart1_tx_dma_enable((u8*)&fdata, sizeof(fdata));
 }
 

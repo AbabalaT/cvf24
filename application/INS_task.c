@@ -62,6 +62,7 @@
   * @param[in]      ist8310: mag data
   * @retval         none
   */
+		
 /**
   * @brief          旋转陀螺仪,加速度计和磁力计,并计算零漂,因为设备有不同安装方式
   * @param[out]     gyro: 加上零漂和旋转

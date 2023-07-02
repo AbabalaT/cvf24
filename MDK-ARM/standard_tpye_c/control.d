@@ -51,3 +51,7 @@ standard_tpye_c\control.o: ../components/algorithm/arm_math.h
 standard_tpye_c\control.o: ../Drivers/CMSIS/Include/core_cm4.h
 standard_tpye_c\control.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 standard_tpye_c\control.o: ..\components\controller\config.h
+standard_tpye_c\control.o: ../application/remote_control.h
+standard_tpye_c\control.o: ../application/struct_typedef.h
+standard_tpye_c\control.o: ../bsp/boards/bsp_rc.h
+standard_tpye_c\control.o: ../bsp/boards/bsp_usart.h

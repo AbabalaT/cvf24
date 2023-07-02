@@ -92,6 +92,4 @@ extern void slove_data_error(void);
 extern void sbus_to_usart1(uint8_t *sbus);
 static void sbus_data_resolve(volatile const uint8_t *buf, Sbus_ctrl_t *rc_ctrl);
 
-RC_ctrl_t rc_ctrl;
-Sbus_ctrl_t Sbus_ctrl;
 #endif

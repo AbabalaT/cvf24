@@ -357,6 +357,7 @@ void get_flash_latitude(float *latitude)
   */
 static void RC_cmd_to_calibrate(void)
 {
+		return;
     static const uint8_t BEGIN_FLAG   = 1;
     static const uint8_t GIMBAL_FLAG  = 2;
     static const uint8_t GYRO_FLAG    = 3;
