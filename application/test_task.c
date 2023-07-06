@@ -20,6 +20,8 @@
 #include "cmsis_os.h"
 #include "bsp_buzzer.h"
 #include "detect_task.h"
+#include "i2c.h"
+#include "../MDK-ARM/bmp280.h"
 
 static void buzzer_warn_error(uint8_t num);
 
@@ -99,24 +101,87 @@ void MS45x5DOInitialization(
   * @retval         none
   */
 	
-float dp_avr = 0.0f;
+float dp_avr = 4.25f;
 float height_rate = 0.0f;
 float dp2 = 0.0f;
+uint8_t dp_iic_buff[2][4];
+
+uint16_t loop = 0;
+uint8_t ms4525_left_addr = 0x50;
+uint8_t ms4525_right_addr = 0x6C;
+uint16_t iic_read_num = 4;
+uint16_t i2c_delay_time = 100;
+
+uint16_t changed = 0;
+
+HAL_StatusTypeDef i2c_status;
+
+uint8_t ctr_reg = 0;
+uint8_t status_reg = 0;
+int32_t bmp_temperature = 0;
+uint32_t bmp_pressure = 0;
+
+unsigned int pressure_left = 8192;
+unsigned int pressure_right = 8192;
+unsigned int temperature_left = 0;
+unsigned int temperature_right = 0;
+
+struct bmp280* bmp280_obejct = NULL;
+uint8_t bmp280_id = 0;
 
 void test_task(void const * argument)
 {
     static uint8_t error, last_error;
     static uint8_t error_num;
+		uint8_t temp_buff[1] = {0x00};
+		uint16_t tempEEPROMdata = 0x0000;
+		memset(dp_iic_buff, 0, sizeof(dp_iic_buff));
     error_list_test_local = get_error_list_point();
-
-    while(1)
-    {
-        error = 0;
-				
-        osDelay(10);
+		vTaskDelay(300);//delay at startup!
+		
+//		bmp280_obejct = bmp280_init(hi2c2);
+//		bmp280_id = bmp280_obejct -> object_id;    
+//    if(bmp280_id == 0x58) {
+//        bmp280_reset(bmp280_obejct);
+//        HAL_I2C_Mem_Read(&hi2c2, BMP280_ADDRESS, 0xF4, I2C_MEMADD_SIZE_8BIT, temp_buff, 1, 50);
+//				ctr_reg = temp_buff[0];
+//				temp_buff[0] = 0xff;
+//				HAL_I2C_Mem_Write(&hi2c2, BMP280_ADDRESS, 0xF4, I2C_MEMADD_SIZE_8BIT, temp_buff, 1, 50);
+//				temp_buff[0] = 0x14;
+//				HAL_I2C_Mem_Write(&hi2c2, BMP280_ADDRESS, 0xF5, I2C_MEMADD_SIZE_8BIT, temp_buff, 1, 50);
+//		}
+		
+    while(1){
+			error = 0;
+			loop = loop + 1;
+			i2c_status = HAL_I2C_Master_Receive_IT(&hi2c2, ms4525_left_addr, dp_iic_buff[0], iic_read_num);
+			vTaskDelay(i2c_delay_time);
+			if(i2c_status == HAL_OK){
+				dp_iic_buff[0][0] = dp_iic_buff[0][0] & 0x3F;
+				pressure_left = (((unsigned int)dp_iic_buff[0][0]) << 8) | dp_iic_buff[0][1];
+				dp_iic_buff[0][3] = dp_iic_buff[0][3] >> 5;
+				temperature_left = (((unsigned int)dp_iic_buff[0][2]) << 3) | dp_iic_buff[0][3];
+			}
+			i2c_status = HAL_I2C_Master_Receive_IT(&hi2c2, ms4525_right_addr, dp_iic_buff[1], iic_read_num);
+			if(i2c_status == HAL_OK){
+				dp_iic_buff[1][0] = dp_iic_buff[1][0] & 0x3F;
+				pressure_right = (((unsigned int)dp_iic_buff[1][0]) << 8) | dp_iic_buff[1][1];
+				dp_iic_buff[1][3] = dp_iic_buff[1][3] >> 5;
+				temperature_right = (((unsigned int)dp_iic_buff[1][2]) << 3) | dp_iic_buff[1][3];
+			}
+			vTaskDelay(i2c_delay_time);
+			
+			
+			
+//			HAL_I2C_Mem_Read(&hi2c2, BMP280_ADDRESS, 0xF4, I2C_MEMADD_SIZE_8BIT, temp_buff, 1, 50);
+//			ctr_reg = temp_buff[0];
+//			HAL_I2C_Mem_Read(&hi2c2, BMP280_ADDRESS, 0xF3, I2C_MEMADD_SIZE_8BIT, temp_buff, 1, 50);
+//			status_reg = temp_buff[0];
+//			
+//			bmp_temperature = bmp280_get_temperature(bmp280_obejct);
+//			bmp_pressure = bmp280_get_pressure(bmp280_obejct);
     }
 }
-
 
 /**
   * @brief          make the buzzer sound

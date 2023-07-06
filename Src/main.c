@@ -138,7 +138,6 @@ int main(void)
   MX_CAN1_Init();
   MX_CAN2_Init();
   MX_I2C1_Init();
-  MX_SPI2_Init();
   /* USER CODE BEGIN 2 */
     can_filter_init();
     delay_init();

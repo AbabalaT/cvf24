@@ -42,10 +42,8 @@ void led_RGB_flow_task(void const * argument)
     fp32 delta_alpha, delta_red, delta_green, delta_blue;
     fp32 alpha,red,green,blue;
     uint32_t aRGB;
-
     while(1)
     {
-
         for(i = 0; i < RGB_FLOW_COLOR_LENGHT; i++)
         {
             alpha = (RGB_flow_color[i] & 0xFF000000) >> 24;
@@ -71,7 +69,7 @@ void led_RGB_flow_task(void const * argument)
 
                 aRGB = ((uint32_t)(alpha)) << 24 | ((uint32_t)(red)) << 16 | ((uint32_t)(green)) << 8 | ((uint32_t)(blue)) << 0;
                 aRGB_led_show(aRGB);
-                osDelay(1);
+                osDelay(2);
             }
         }
     }

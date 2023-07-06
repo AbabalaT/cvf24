@@ -25,7 +25,7 @@
 #include "fifo.h"
 #include "protocol.h"
 #include "referee.h"
-
+#include "control.h"
 #include "INS_task.h"
 
 
@@ -74,14 +74,7 @@ void referee_usart_task(void const * argument)
 
     while(1)
     {
-			memcpy(&usart1_TX_buffer[0], get_gyro_data_point(), 12);
-			memcpy(&usart1_TX_buffer[12], get_INS_angle_point(), 12);
-			*(fp32*)(&usart1_TX_buffer[24]) = throttle_out;
-			*(fp32*)(&usart1_TX_buffer[28]) = roll_out;
-			*(fp32*)(&usart1_TX_buffer[32]) = pitch_out;
-			*(fp32*)(&usart1_TX_buffer[36]) = yaw_out;
-			*(fp32*)(&usart1_TX_buffer[40]) = fp_inf;
-			usart1_tx_dma_enable(usart1_TX_buffer, 44);
+			upload_data();
 			osDelay(20);
     }
 }

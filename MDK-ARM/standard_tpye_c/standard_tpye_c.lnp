@@ -60,6 +60,7 @@
 "standard_tpye_c\bmi088middleware.o"
 "standard_tpye_c\ist8310driver.o"
 "standard_tpye_c\ist8310driver_middleware.o"
+"standard_tpye_c\bmp280.o"
 "..\components\algorithm\AHRS.lib"
 "standard_tpye_c\ahrs_middleware.o"
 "..\components\algorithm\arm_cortexM4lf_math.lib"

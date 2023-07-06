@@ -63,3 +63,5 @@ standard_tpye_c\test_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/
 standard_tpye_c\test_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h
 standard_tpye_c\test_task.o: ../bsp/boards/bsp_buzzer.h
 standard_tpye_c\test_task.o: ..\application\detect_task.h
+standard_tpye_c\test_task.o: ../Inc/i2c.h
+standard_tpye_c\test_task.o: ..\application\../MDK-ARM/bmp280.h

@@ -33,6 +33,7 @@ standard_tpye_c\chassis_task.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 standard_tpye_c\chassis_task.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 standard_tpye_c\chassis_task.o: ..\application\detect_task.h
 standard_tpye_c\chassis_task.o: ..\application\INS_task.h
+standard_tpye_c\chassis_task.o: ..\application\servo_task.h
 standard_tpye_c\chassis_task.o: ..\application\chassis_power_control.h
 standard_tpye_c\chassis_task.o: ../Inc/main.h
 standard_tpye_c\chassis_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h
@@ -75,3 +76,4 @@ standard_tpye_c\chassis_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ha
 standard_tpye_c\chassis_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pcd.h
 standard_tpye_c\chassis_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usb.h
 standard_tpye_c\chassis_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pcd_ex.h
+standard_tpye_c\chassis_task.o: ../components/controller/control.h
