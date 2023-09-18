@@ -95,8 +95,6 @@ float fal_0_75(float x,float d)
 	return y;
 }
 
-
-
 float limit_f (float min,float max,float x )
 {
 	float y;
@@ -114,6 +112,7 @@ float limit_f (float min,float max,float x )
 	}
 	return y;
 }
+
 u16 limit_i (u16 min,u16 max,u16 x )
 {
 	u16 y;
@@ -132,52 +131,9 @@ u16 limit_i (u16 min,u16 max,u16 x )
 	return y;
 }
 
-
-//float vt_arcsin(float x)
-//{
-//	
-//}
-
-
-
-
 /* 自抗扰控制中关键的fhan函数 */
 float fhan ( float x1, float x2 ,float r, float h1)
 {
-	// float d;
-	// float d0;
-	// float y;
-	// float a0;
-	// float a;
-	// float fh;
-	
-	// d = r*h;
-	// d0 = h*d;
-	// y = x1 + h*x2;
-	// a0 = vt_sqrt(d*d + 8*r*abs(y));
-	
-	// if( abs(y) > d0 )
-	// {
-	// 	a = x2 + 0.5f*(a0-d)*sign(y);
-	// }
-	// else
-	// {
-	// 	a = x2 + y/h;
-	// }
-	
-	
-	
-	// if(abs(a) > d)
-	// {
-	// 	fh = -r*sign(a);
-	// }
-	// else
-	// {
-	// 	fh = -r*a/d;
-	// }
-	
-	// return fh;
-/***********************/
 	float d;
 	float a0;
 	float y;
@@ -197,7 +153,6 @@ float fhan ( float x1, float x2 ,float r, float h1)
 	a=(a0+y-a2)*sy+a2;
 	sa=(sign(a+d)-sign(a-d))/2.0f;
 	fh=-r*(a/d-sign(a))*sa-r*sign(a);
-	
 	return fh;
 }
 

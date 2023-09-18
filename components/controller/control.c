@@ -8,7 +8,7 @@ u8 door_swith_low = 0;
 u8 esc_servo_calibrate = 0;
 
 u8 is_load = 0;
-u8 experiment;
+u8 experiment = 0;
 u8 mag_enable = 0;
 
 float throttle_pwm_min = 21000;
@@ -276,11 +276,6 @@ void ctrl_init(void)
 	roll_input_trim = roll_input_trim_load;
 	cruise_angle = cruise_angle_load;
 }
-//
-
-void rc_pre_process(void){
-	Sbus_ctrl.ch[5] = 1000;
-}
 
 void model_data_pretreatment(void)
 {
@@ -346,18 +341,16 @@ void model_data_pretreatment(void)
 #define kp_y 3000.0f
 #define ki_y 0.0f
 
-
 float pid_P_rate(float target,float rate,float dt)
 {
 	float e_rate;
 	static float sum;
 	float pid_out;
 	
-	
 	e_rate = target - rate;
 	
 	if(abs(e_rate)<0.6f)
-			sum += e_rate * dt;
+		sum += e_rate * dt;
 
 	if(sum>10.0f)
 		sum=10.0f;
@@ -365,9 +358,9 @@ float pid_P_rate(float target,float rate,float dt)
 		sum=-10.0f;
 	if(arm_mode == 0)
 		sum=0.0f;
-	
+
 	pid_out = kp_p * e_rate + ki_p * sum;
-	
+
 	return pid_out;
 }
 
@@ -399,7 +392,6 @@ float pid_Y_rate(float target,float rate,float dt)
 	float e_rate;
 	static float sum;
 	float pid_out;
-	
 	
 	e_rate = target - rate;
 	
@@ -454,7 +446,8 @@ float ADRC_P(float V_p , float W_p, float u_p, float dp, float h)   //输入参数：
 	
 	float u0 =0.0f;
 	
-	if(dp<=10.0f) dp=10.0f;
+	if(dp<=10.0f)
+		dp=10.0f;
 	b_p = adj_p*b1_p*dp;
 
 	/*计算观测器误差*/
@@ -503,36 +496,24 @@ float Qr[4] = {0.0, 0.0, 0.0, 0.0};
 
 /*机体横滚轴ADRC控制器*/
 float ADRC_R(float V_r , float W_r, float u_r, float dp, float h)   //输入参数：参考角速度，测量角速度，动压，采样周期
-{
-//	static float V1_r;
-//	static float V2_r;
-	
-//	static float Z1_r;
-//	static float Z2_r;
-//	static float Z3_r;
-	
+{	
 	float uo_r;
-	
 	float V1_r_next;
 	float V2_r_next;
-	
 	float Z1_r_next;
 	float Z2_r_next;
 	float Z3_r_next;
-	
 	float fh =0.0f;
 	float e  =0.0f;
 	float e1 =0.0f;
 	float e2 =0.0f;
-	
 	float fe =0.0f;
 	float fe1=0.0f;
-	
 	float b_r;
-	
 	float u0 =0.0f;
 	
-	if(dp<=10.0f) dp=10.0f;
+	if(dp<=10.0f)
+		dp=10.0f;
 	b_r = adj_r*b1_r*dp; 
 
 	/*计算观测器误差*/
@@ -541,9 +522,9 @@ float ADRC_R(float V_r , float W_r, float u_r, float dp, float h)   //输入参数：
 	fe1 = fal(e, 1, delta_r);
 	
 	/*非线性扩张状态观测器*/
-	Z1_r_next = Z1_r + h*(Z2_r - beta01_r*e);
-	Z2_r_next = Z2_r + h*(Z3_r - beta02_r*fe + b_r*u_r - aT_r*Z2_r/T_servo);
-	Z3_r_next = Z3_r + h*(     - beta03_r*fe1);
+	Z1_r_next = Z1_r + h*(Z2_r - beta01_r * e);
+	Z2_r_next = Z2_r + h*(Z3_r - beta02_r * fe + b_r*u_r - aT_r*Z2_r/T_servo);
+	Z3_r_next = Z3_r + h*(     - beta03_r * fe1);
 	
 	Z1_r = Z1_r_next;
 	Z2_r = Z2_r_next;
@@ -555,19 +536,13 @@ float ADRC_R(float V_r , float W_r, float u_r, float dp, float h)   //输入参数：
 	V2_r_next = V2_r + h*fh;
 	
 	V1_r = V1_r_next;
-	V2_r = V2_r_next;	
-	
-	
-	
-
+	V2_r = V2_r_next;
 	/*状态误差的非线性反馈*/
 	e1 = V1_r - Z1_r;
 	e2 = V2_r - Z2_r;
-	u0 = - fhan(e1, c_r*e2, r_r, h1_r);
-	
+	u0 = -fhan(e1, c_r*e2, r_r, h1_r);
 	/*扰动补偿*/
 	uo_r = (u0 - (Z3_r - aT_r*Z2_r/T_servo))/b_r;	
-
 	return uo_r;
 }
 
@@ -779,9 +754,6 @@ void get_target_angular_velocity(void)  //姿态外环，获取目标角速度向量
 //		target_rate = KnA*fal_0_75(delta,0.8f*pi/180.0f);
 
 		target_rate = 0.6f*KnA*fal_0_75(delta,0.8f*pi/180.0f) - 0.12f*d_delta_dt;
-		
-		
-		
 //		my_print("%.4f,%.4f\n",delta*180/pi,yaw);
 		
 		if(mag_enable)

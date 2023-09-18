@@ -140,9 +140,11 @@ chassis_move_t chassis_move;
 fp32 PID_Data_roll[3] = {0.5, 0.0, 0.0};
 fp32 PID_Data_pitch[3] = {0.5, 0.0, 0.0};
 fp32 PID_Data_yaw[3] = {0.5, 0.0, 0.0};
+
 fp32 PID_Angle_roll[3] = {0.5, 0.0, 0.0};
 fp32 PID_Angle_pitch[3] = {0.5, 0.0, 0.0};
 fp32 PID_Angle_yaw[3] = {0.5, 0.0, 0.0};
+
 fp32 throttle_out =0.0f, roll_out = 0.0f, pitch_out = 0.0f, yaw_out = 0.0f;
 fp32 throttle_idle = 60.0f;
 
@@ -169,7 +171,7 @@ float d_ch(uint8_t ch_required){
 
 extern float target_velocity[3];
 
-float mat_allocate[4][4] = {{1.0f,1.0f,0.0f,0.0f}, {1.0f,-1.0f,0.0f,0.0f}, {0.0f,0.0f,1.0f,1.0f}, {0.0f,0.0f,1.0f,-1.0f}};
+float mat_allocate[4][4] = {{1.0f,1.0f,0.0f,0.0f}, {1.0f,-1.0f,0.0f,0.0f}, {0.0f,0.0f,1.0f,-1.0f}, {0.0f,0.0f,1.0f,1.0f}};
 	
 float k_pwm[4] = {0.0476, 0.0476, 0.0476, 0.0476};
 float d_pwm[4] = {0.0, 0.0, 0.0, 0.0};
@@ -181,11 +183,109 @@ extern float motor_L;
 extern float motor_R;
 extern float servo_L;
 extern float servo_R;
+
+void limit_out(float* input){
+	if(*input > 1000.0){
+		*input = 1000.0;
+	}
+	if(*input < -1000.0){
+		*input = -1000.0;
+	}
+}
+
+float mat_pid[4][4];	//R-P-Y-throttle
+
+void pid_init(void){
+	mat_pid[0][0] = 0.0;
+	mat_pid[0][1] = 0.0;
+	mat_pid[0][2] = 0.0;
+	mat_pid[0][3] = 0.0;
+	
+	mat_pid[1][0] = 0.0;
+	mat_pid[1][1] = 5.0;
+	mat_pid[1][2] = 0.0;
+	mat_pid[1][3] = 0.0;
+	
+	mat_pid[2][0] = 0.0;
+	mat_pid[2][1] = 5.0;
+	mat_pid[2][2] = 0.0;
+	mat_pid[2][3] = 0.0;
+}
+
+float pid_roll(float target, float real){
+	static float error;
+	static float sum;
+	static float pre_error;
+	static float result;
+	static float error_rate;
+	error = target - real;
+	sum = sum + error;
+	if(sum > 10000.0){
+		sum = 10000.0;
+	}
+	if(sum < 10000.0){
+		sum = 10000.0;
+	}
+	if(arm_mode == 0){
+		sum = 0;
+	}
+	error_rate = error - pre_error;
+	pre_error = error;
+	result = mat_pid[0][0]*target + mat_pid[0][1]*error + mat_pid[0][2]*sum + mat_pid[0][3]*error_rate;
+	return result;
+}
+
+float pid_pitch(float target, float real){
+	static float error;
+	static float sum;
+	static float pre_error;
+	static float result;
+	static float error_rate;
+	error = target - real;
+	sum = sum + error;
+	if(sum > 10000.0){
+		sum = 10000.0;
+	}
+	if(sum < 10000.0){
+		sum = 10000.0;
+	}
+	if(arm_mode == 0){
+		sum = 0;
+	}
+	error_rate = error - pre_error;
+	pre_error = error;
+	result = mat_pid[1][0]*target + mat_pid[1][1]*error + mat_pid[1][2]*sum + mat_pid[1][3]*error_rate;
+	return result;
+}
+
+float pid_yaw(float target, float real){
+	static float error;
+	static float sum;
+	static float pre_error;
+	static float result;
+	static float error_rate;
+	error = target - real;
+	sum = sum + error;
+	if(sum > 10000.0){
+		sum = 10000.0;
+	}
+	if(sum < 10000.0){
+		sum = 10000.0;
+	}
+	if(arm_mode == 0){
+		sum = 0;
+	}
+	error_rate = error - pre_error;
+	pre_error = error;
+	result = mat_pid[2][0]*target + mat_pid[2][1]*error + mat_pid[2][2]*sum + mat_pid[2][3]*error_rate;
+	return result;
+}
 	
 void chassis_task(void const *pvParameters)
 {
     vTaskDelay(CHASSIS_TASK_INIT_TIME);
 		ctrl_init();
+		pid_init();
     while (1){
 				memcpy(&gyro_data, get_gyro_data_point(), 12);
 				memcpy(&angle_data, get_INS_angle_point(), 12);
@@ -235,17 +335,39 @@ void chassis_task(void const *pvParameters)
 				
 				if(door_open){
 					servo_pwm[2] = 2000;
-				}else{
+				}
+				else{
 					servo_pwm[2] = 1000;
 				}
 				if(system_mode == 0 ){
 					set_pwm(1000, 1000, 1500, 1500);
 				}
+				
 				if(system_mode == 1){
-					float motor_left = mat_allocate[0][0]*throttle_in + mat_allocate[0][1]*yaw_in + mat_allocate[0][2]*roll_in + mat_allocate[0][3]*pitch_in + 500.0f;
-					float motor_right = mat_allocate[1][0]*throttle_in + mat_allocate[1][1]*yaw_in + mat_allocate[1][2]*roll_in + mat_allocate[1][3]*pitch_in + 500.0f;
-					float servo_left = mat_allocate[2][0]*throttle_in + mat_allocate[2][1]*yaw_in + mat_allocate[2][2]*roll_in + mat_allocate[2][3]*pitch_in + servo_left_center;
-					float servo_right = mat_allocate[3][0]*throttle_in + mat_allocate[3][1]*yaw_in + mat_allocate[3][2]*roll_in + mat_allocate[3][3]*pitch_in + servo_right_center;
+					float motor_left;
+					float motor_right;
+					float servo_left;
+					float servo_right;
+					if(ctrl_mode == 0){
+						motor_left = mat_allocate[0][0]*throttle_in + mat_allocate[0][1]*yaw_in + mat_allocate[0][2]*roll_in + mat_allocate[0][3]*pitch_in + 500.0f;
+						motor_right = mat_allocate[1][0]*throttle_in + mat_allocate[1][1]*yaw_in + mat_allocate[1][2]*roll_in + mat_allocate[1][3]*pitch_in + 500.0f;
+						servo_left = mat_allocate[2][0]*throttle_in + mat_allocate[2][1]*yaw_in + mat_allocate[2][2]*roll_in + mat_allocate[2][3]*pitch_in + servo_left_center;
+						servo_right = mat_allocate[3][0]*throttle_in + mat_allocate[3][1]*yaw_in + mat_allocate[3][2]*roll_in + mat_allocate[3][3]*pitch_in + servo_right_center;
+					}
+					if(ctrl_mode == 1){
+						float output_roll = pid_roll(d_ch(1) * 0.002341, -gyro_data[0]);
+						float output_pitch = pid_pitch(d_ch(2) *0.002341, -gyro_data[1]);
+						float output_yaw = pid_yaw(d_ch(3) *0.002341, -gyro_data[2]);
+						
+						limit_out(&output_roll);
+						limit_out(&output_pitch);
+						limit_out(&output_yaw);
+						
+						motor_left = mat_allocate[0][0] * throttle_in + mat_allocate[0][1] * output_yaw + 500.0f;
+						motor_right = mat_allocate[1][0] * throttle_in + mat_allocate[1][1] * output_yaw + 500.0f;
+						servo_left = mat_allocate[2][2]*output_roll + mat_allocate[2][3]*pitch_in + servo_left_center;
+						servo_right = mat_allocate[3][2]*output_roll + mat_allocate[3][3]*output_pitch + servo_right_center;
+					}
 					
 					if(arm_mode == 0){
 						motor_left = 1000;
