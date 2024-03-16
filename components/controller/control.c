@@ -187,6 +187,29 @@ Y_y = W1_y;
 #define Kn0  1.55f
 #define Kn1  1.75f
 
+typedef struct {
+    float32_t w, x, y, z;
+} Quaternion;
+
+// Quaternion multiplication using CMSIS-DSP
+void multiplyQuaternions(Quaternion *q1, Quaternion *q2, Quaternion *result) {
+    // Create matrices for quaternion multiplication
+    float32_t q1_mat[4] = {q1->w, -q1->x, -q1->y, -q1->z};
+    float32_t q2_mat[4] = {q2->w, q2->x, q2->y, q2->z};
+    float32_t result_mat[4];
+
+    // Perform matrix multiplication using CMSIS-DSP
+    arm_matrix_instance_f32 q1_matrix = {4, 1, q1_mat};
+    arm_matrix_instance_f32 q2_matrix = {1, 4, q2_mat};
+    arm_matrix_instance_f32 result_matrix = {4, 4, result_mat};
+    arm_mat_mult_f32(&q1_matrix, &q2_matrix, &result_matrix);
+
+    // Convert the result back to Quaternion
+    result->w = result_mat[0];
+    result->x = result_mat[1];
+    result->y = result_mat[2];
+    result->z = result_mat[3];
+}
 
 float b1_p;
 float b1_r;

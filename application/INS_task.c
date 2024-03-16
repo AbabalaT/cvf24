@@ -47,8 +47,8 @@
 
 
 #define IST8310_BOARD_INSTALL_SPIN_MATRIX   \
-    {1.0f, 0.0f, 0.0f},                     \
     {0.0f, 1.0f, 0.0f},                     \
+    {1.0f, 0.0f, 0.0f},                     \
     {0.0f, 0.0f, 1.0f}                      \
 
 
@@ -189,6 +189,7 @@ void INS_task(void const *pvParameters)
 
     BMI088_read(bmi088_real_data.gyro, bmi088_real_data.accel, &bmi088_real_data.temp);
     //rotate and zero drift 
+		ist8310_read_mag(ist8310_real_data.mag);
     imu_cali_slove(INS_gyro, INS_accel, INS_mag, &bmi088_real_data, &ist8310_real_data);
 
     PID_init(&imu_temp_pid, PID_POSITION, imu_temp_PID, TEMPERATURE_PID_MAX_OUT, TEMPERATURE_PID_MAX_IOUT);

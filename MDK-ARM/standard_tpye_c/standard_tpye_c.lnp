@@ -1,4 +1,4 @@
---cpu=Cortex-M4.fp
+--cpu=Cortex-M4.fp.sp
 "standard_tpye_c\startup_stm32f407xx.o"
 "standard_tpye_c\main.o"
 "standard_tpye_c\gpio.o"
@@ -117,6 +117,6 @@
 "standard_tpye_c\usbd_ioreq.o"
 "standard_tpye_c\usbd_cdc.o"
 --strict --scatter "standard_tpye_c\standard_tpye_c.sct"
---summary_stderr --info summarysizes --map --xref --callgraph --symbols
+--summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
 --list "standard_tpye_c.map" -o standard_tpye_c\standard_tpye_c.axf

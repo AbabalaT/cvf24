@@ -52,7 +52,7 @@ uint16_t servo_pwm[6] = {SERVO_MIN_PWM, SERVO_MIN_PWM, SERVO_MIN_PWM, SERVO_MIN_
 void set_pwm(uint16_t s1, uint16_t s2, uint16_t s3, uint16_t s4){
 	servo_pwm[0] = (uint16_t)s1;
 	servo_pwm[1] = (uint16_t)s2;
-	servo_pwm[4] = (uint16_t)s3;
+	servo_pwm[2] = (uint16_t)s3;
 	servo_pwm[3] = (uint16_t)s4;
 }
 
