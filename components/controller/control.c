@@ -1011,7 +1011,7 @@ float fdata[16];
 void upload_data(void)
 {
 	fdata[15] = INFINITY;
-	if(experiment==1)//eso实验
+	if(0)//eso实验
 	{
 		fdata[0]=-gyro_data[0];
 		fdata[1]=Z1_p;
@@ -1027,7 +1027,7 @@ void upload_data(void)
 		fdata[11]=Z3_y;
 	}
 	
-	if(experiment==2)//角速度环实验
+	if(0)//角速度环实验
 	{
 		fdata[0]=target_velocity[0];
 		fdata[1]=-gyro_data[0];
@@ -1046,7 +1046,7 @@ void upload_data(void)
 		fdata[14]=Z3_y;
 	}
 
-	if(experiment==3)//姿态环实验
+	if(0)//姿态环实验
 	{
 		fdata[0]=target_pitch;
 		fdata[1]=angle_data[0];

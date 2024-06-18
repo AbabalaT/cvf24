@@ -173,7 +173,7 @@ float d_ch(uint8_t ch_required){
 extern float target_velocity[3];
 
 float mat_allocate[4][4] = {{1.0f,1.0f,0.0f,0.0f}, {1.0f,-1.0f,0.0f,0.0f}, {0.0f,0.0f,1.0f,-1.0f}, {0.0f,0.0f,1.0f,1.0f}};
-	
+
 float k_pwm[4] = {0.0476, 0.0476, 0.0476, 0.0476};
 float d_pwm[4] = {0.0, 0.0, 0.0, 0.0};
 	
@@ -198,17 +198,17 @@ float mat_pid[4][4];	//R-P-Y-throttle
 
 void pid_init(void){
 	mat_pid[0][0] = 0.0;
-	mat_pid[0][1] = 120.0;
+	mat_pid[0][1] = 60.0;
 	mat_pid[0][2] = 0.0;
 	mat_pid[0][3] = 0.25;
 	
 	mat_pid[1][0] = 0.0;
-	mat_pid[1][1] = 60.0;
+	mat_pid[1][1] = 50.0;
 	mat_pid[1][2] = 0.0;
 	mat_pid[1][3] = 0.0;
 	
 	mat_pid[2][0] = 0.0;
-	mat_pid[2][1] = 125.0;
+	mat_pid[2][1] = 15.0;
 	mat_pid[2][2] = 0.0;
 	mat_pid[2][3] = 0.0;
 }
@@ -230,8 +230,8 @@ float pid_roll(float target, float real){
 	if(arm_mode == 0){
 		sum = 0;
 	}
-	error_rate = error - pre_error;
-	pre_error = error;
+	error_rate = -1.0f * real - pre_error;
+	pre_error = -1.0f * real;//微分先行
 	result = mat_pid[0][0]*target + mat_pid[0][1]*error + mat_pid[0][2]*sum + mat_pid[0][3]*error_rate;
 	return result;
 }
@@ -253,8 +253,8 @@ float pid_pitch(float target, float real){
 	if(arm_mode == 0){
 		sum = 0;
 	}
-	error_rate = error - pre_error;
-	pre_error = error;
+	error_rate = -1.0f * real - pre_error;
+	pre_error = -1.0f * real;
 	result = mat_pid[1][0]*target + mat_pid[1][1]*error + mat_pid[1][2]*sum + mat_pid[1][3]*error_rate;
 	return result;
 }
@@ -276,8 +276,8 @@ float pid_yaw(float target, float real){
 	if(arm_mode == 0){
 		sum = 0;
 	}
-	error_rate = error - pre_error;
-	pre_error = error;
+	error_rate = -1.0f * real - pre_error;
+	pre_error = -1.0f * real;
 	result = mat_pid[2][0]*target + mat_pid[2][1]*error + mat_pid[2][2]*sum + mat_pid[2][3]*error_rate;
 	return result;
 }
@@ -356,16 +356,28 @@ void chassis_task(void const *pvParameters)
 						double output_roll = pid_roll(d_ch(0) * 0.002341f, -gyro_data[1]);
 						double output_pitch = pid_pitch(d_ch(1) * -0.002341f, gyro_data[0]);
 						double output_yaw = pid_yaw(d_ch(3) * -0.002341f, gyro_data[2]);
+						fdata[0] = d_ch(0) * 0.002341f;
+						fdata[1] = -gyro_data[1];
+						fdata[2] = d_ch(1) * -0.002341f;
+						fdata[3] = gyro_data[0];
+						fdata[4] = d_ch(3) * -0.002341f;
+						fdata[5] = gyro_data[2];
 						double f1 = sqrtf((output_yaw-output_roll)*(output_yaw-output_roll)+(throttle_in+output_pitch)*(throttle_in+output_pitch));
-						double f2 = sqrtf((output_yaw+output_roll)*(output_yaw+output_roll)+(throttle_in-output_pitch)*(throttle_in-output_pitch));
+						double f2 = sqrtf((output_yaw+output_roll)*(output_yaw+output_roll)+(throttle_in-output_pitch)*(throttle_in-output_pitch));//对输出推力进行倾转补偿
 						double sin_1 = throttle_in+output_pitch;
 						double sin_2 = throttle_in-output_pitch;
-						sin_1 = sin_1 > 0.0f ? sin_1 : 0.0f;
+						sin_1 = sin_1 > 0.0f ? sin_1 : 0.0f;//计算矢量方向这个，推力不小于0
 						sin_2 = sin_2 > 0.0f ? sin_2 : 0.0f;
 						double a1 = atan2f(output_yaw-output_roll, sin_1);
 						double a2 = atan2f(output_yaw+output_roll, sin_2);
 						a1 = a1 * 636.9f;
 						a2 = a2 * 636.9f;
+						
+						f1 = sin_1;
+						f2 = sin_2;
+						a1 = output_yaw-output_roll;
+						a2 = output_yaw+output_roll;
+						
 						limit_out(&a1);
 						limit_out(&a2);
 						if(f1 > 1000.0f){
@@ -407,14 +419,14 @@ void chassis_task(void const *pvParameters)
 				}
 				if(system_mode == 2){
 					get_target_angular_velocity();
-					angular_rate_ctrl();						
+					angular_rate_ctrl();
 					float motor_left = k_pwm[0] * motor_L + d_pwm[0];
 					float motor_right = k_pwm[1] * motor_R + d_pwm[1];
 					float servo_left = k_pwm[2] * servo_L + d_pwm[2];
 					float servo_right = k_pwm[3] * servo_R + d_pwm[3];
 					set_pwm(motor_left, motor_right,servo_left, servo_right);
 				}
-				vTaskDelay(4);
+				vTaskDelay(10);//内环100HZ,同舵机输出频率
 		}
 				
 }
