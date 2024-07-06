@@ -27,7 +27,7 @@
 
 //in the beginning of task ,wait a time
 //任务开始空闲一段时间
-#define CHASSIS_TASK_INIT_TIME 5000
+#define CHASSIS_TASK_INIT_TIME 1500
 
 //the channel num of controlling vertial speed 
 //前后的遥控器通道号码

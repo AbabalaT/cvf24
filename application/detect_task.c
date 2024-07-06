@@ -93,6 +93,31 @@ uint16_t running_psc = 2000, running_pwm = 0;
 uint16_t running_psc_factor = 1, running_pwm_factor = 1;
 uint16_t buzzer_factor1 = 178, buzzer_factor2 = 1;
 
+extern uint8_t door_open;
+extern uint8_t arm_mode;
+
+const uint16_t music[3][8]={    //低中高音对应频率所需的预分频数
+    {0,381,340,303,286,255,227,202},
+    {0,191,170,151,143,127,113,101},
+    {0,95,85,75,71,63,56,50}
+};
+
+void play(uint8_t i,uint8_t j,uint16_t time, uint16_t idle){
+	uint16_t current_pwm = 150;
+	while(time > 10){
+		current_pwm = current_pwm - 1;
+		if(current_pwm < 10){
+			current_pwm = 10;
+		}
+		//buzzer_on(music[i][j], current_pwm);
+		buzzer_on(music[i][j], current_pwm);
+		time = time - 5;
+		vTaskDelay(5);
+	}
+	buzzer_off();
+	vTaskDelay(idle);
+}
+
 extern Sbus_ctrl_t Sbus_ctrl;
 void detect_task(void const *pvParameters)
 {
@@ -102,13 +127,64 @@ void detect_task(void const *pvParameters)
     detect_init(system_time);
     //wait a time.空闲一段时间
     vTaskDelay(DETECT_TASK_INIT_TIME);
-		
+	play(1,1,250, 30);
+	play(1,1,250, 30);
+	play(1,5,250, 30);
+	play(1,5,250, 30);
+	play(1,6,250, 30);
+	play(1,6,250, 30);
+	play(1,5,250, 30);
+	play(1,5,250, 30);
+//	play(1,4,250, 30);
+//	play(1,4,250, 30);
+//	play(1,3,250, 30);
+//	play(1,3,250, 30);
+//	play(1,2,150, 30);
+//	play(1,3,60, 30);
+//	play(1,2,60, 30);
+//	play(1,3,200, 30);
+//	play(1,1,375, 30);
+	
     while (1)
     {
-//				if(Sbus_ctrl.ch[0]>= 0 && Sbus_ctrl.ch[1]>= 0){
-//					buzzer_on(buzzer_factor1/(Sbus_ctrl.ch[0]/22 + buzzer_factor2), Sbus_ctrl.ch[1] * running_pwm_factor);
-//				}
-				
+			if(door_open){
+				if(arm_mode == 0){
+					for(uint16_t warn_psc=191; warn_psc > 101; warn_psc = warn_psc - 5){
+						buzzer_on(warn_psc, 150);
+						vTaskDelay(20);
+						if(door_open == 0){
+							break;
+						}
+						if(arm_mode){
+							break;
+						}
+					}
+					buzzer_off();
+					vTaskDelay(50);
+					for(uint16_t warn_psc=191; warn_psc > 101; warn_psc = warn_psc - 5){
+						buzzer_on(warn_psc, 150);
+						vTaskDelay(20);
+						if(door_open == 0){
+							break;
+						}
+						if(arm_mode){
+							break;
+						}
+					}
+					buzzer_off();
+					for(uint8_t i =0; i< 10; i=i+1){
+						if(door_open == 0){
+							break;
+						}
+						if(arm_mode){
+							break;
+						}
+						vTaskDelay(100);
+					}
+				}
+			}else{
+				buzzer_off();
+			}
         static uint8_t error_num_display = 0;
         system_time = xTaskGetTickCount();
 				

@@ -75,7 +75,7 @@ void servo_task(void const * argument)
             }
 						servo_pwm_set(servo_pwm[i], i);
         }
-        osDelay(10);
+        osDelay(5);
     }
 }
 

@@ -21,26 +21,22 @@ Target DLL:      CMSIS_AGDI.dll V1.32.13.0
 Dialog DLL:      TCM.DLL V1.48.0.0
  
 <h2>Project:</h2>
-D:\Flight_Control 1.0\MDK-ARM\standard_robot.uvprojx
-Project File Date:  02/28/2024
+D:\cvf24\MDK-ARM\standard_robot.uvprojx
+Project File Date:  07/06/2024
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 7 (build 960)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'standard_robot'
 compiling chassis_task.c...
-..\application\chassis_task.c(224): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  	if(sum > 10000.0){
-..\application\chassis_task.c(227): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  	if(sum < 10000.0){
-..\application\chassis_task.c(247): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  	if(sum > 10000.0){
-..\application\chassis_task.c(250): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  	if(sum < 10000.0){
-..\application\chassis_task.c(270): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  	if(sum > 10000.0){
-..\application\chassis_task.c(273): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  	if(sum < 10000.0){
-..\application\chassis_task.c(432): warning:  #1-D: last line of file ends without a newline
+..\application\chassis_task.c(191): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	if(*input > 500.0){
+..\application\chassis_task.c(262): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	if(sum > 2000.0){
+..\application\chassis_task.c(296): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	if(sum > 2000.0){
+..\application\chassis_task.c(330): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	if(sum > 2000.0){
+..\application\chassis_task.c(583): warning:  #1-D: last line of file ends without a newline
   }
 ..\application\chassis_task.c(58): warning:  #177-D: function "chassis_init"  was declared but never referenced
   static void chassis_init(chassis_move_t *chassis_move_init);
@@ -52,11 +48,11 @@ compiling chassis_task.c...
   static void chassis_set_contorl(chassis_move_t *chassis_move_control);
 ..\application\chassis_task.c(118): warning:  #177-D: function "chassis_control_loop"  was declared but never referenced
   static void chassis_control_loop(chassis_move_t *chassis_move_control_loop);
-..\application\chassis_task.c: 12 warnings, 0 errors
+..\application\chassis_task.c: 10 warnings, 0 errors
 linking...
-Program Size: Code=105924 RO-data=12976 RW-data=1556 ZI-data=58964  
+Program Size: Code=99452 RO-data=12940 RW-data=1640 ZI-data=58624  
 FromELF: creating hex file...
-"standard_tpye_c\standard_tpye_c.axf" - 0 Error(s), 12 Warning(s).
+"standard_tpye_c\standard_tpye_c.axf" - 0 Error(s), 10 Warning(s).
 
 <h2>Software Packages used:</h2>
 

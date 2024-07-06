@@ -74,7 +74,7 @@ void referee_usart_task(void const * argument)
 
     while(1)
     {
-			upload_data();
+			//upload_data();
 			osDelay(20);
     }
 }
