@@ -95,6 +95,7 @@ uint16_t buzzer_factor1 = 178, buzzer_factor2 = 1;
 
 extern uint8_t door_open;
 extern uint8_t arm_mode;
+extern fp32 battery_voltage;
 
 const uint16_t music[3][8]={    //低中高音对应频率所需的预分频数
     {0,381,340,303,286,255,227,202},
@@ -184,6 +185,11 @@ void detect_task(void const *pvParameters)
 				}
 			}else{
 				buzzer_off();
+			}
+			if(battery_voltage < 11.5f){
+				play(0, 1, 600, 200);
+				play(0, 1, 600, 200);
+				play(0, 1, 600, 200);
 			}
         static uint8_t error_num_display = 0;
         system_time = xTaskGetTickCount();

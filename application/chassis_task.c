@@ -2,7 +2,7 @@
   ****************************(C) COPYRIGHT 2019 DJI****************************
   * @file       chassis.c/h
   * @brief      chassis control task,
-  *             µ×ÅÌ¿ØÖÆÈÎÎñ
+  *             ï¿½ï¿½ï¿½Ì¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
   * @note       
   * @history
   *  Version    Date            Author          Modification
@@ -29,6 +29,9 @@
 #include "chassis_power_control.h"
 #include "control.h"
 
+#define stick_heli 0x00
+#define stick_3d 0xff
+
 #define rc_deadband_limit(input, output, dealine)        \
     {                                                    \
         if ((input) > (dealine) || (input) < -(dealine)) \
@@ -51,8 +54,8 @@
   * @retval         none
   */
 /**
-  * @brief          ³õÊ¼»¯"chassis_move"±äÁ¿£¬°üÀ¨pid³õÊ¼»¯£¬ Ò£¿ØÆ÷Ö¸Õë³õÊ¼»¯£¬3508µ×ÅÌµç»úÖ¸Õë³õÊ¼»¯£¬ÔÆÌ¨µç»ú³õÊ¼»¯£¬ÍÓÂÝÒÇ½Ç¶ÈÖ¸Õë³õÊ¼»¯
-  * @param[out]     chassis_move_init:"chassis_move"±äÁ¿Ö¸Õë.
+  * @brief          ï¿½ï¿½Ê¼ï¿½ï¿½"chassis_move"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½pidï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ Ò£ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½3508ï¿½ï¿½ï¿½Ìµï¿½ï¿½Ö¸ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¨ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç½Ç¶ï¿½Ö¸ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½
+  * @param[out]     chassis_move_init:"chassis_move"ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½.
   * @retval         none
   */
 static void chassis_init(chassis_move_t *chassis_move_init);
@@ -64,8 +67,8 @@ static void chassis_init(chassis_move_t *chassis_move_init);
   * @retval         none
   */
 /**
-  * @brief          ÉèÖÃµ×ÅÌ¿ØÖÆÄ£Ê½£¬Ö÷ÒªÔÚ'chassis_behaviour_mode_set'º¯ÊýÖÐ¸Ä±ä
-  * @param[out]     chassis_move_mode:"chassis_move"±äÁ¿Ö¸Õë.
+  * @brief          ï¿½ï¿½ï¿½Ãµï¿½ï¿½Ì¿ï¿½ï¿½ï¿½Ä£Ê½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½'chassis_behaviour_mode_set'ï¿½ï¿½ï¿½ï¿½ï¿½Ð¸Ä±ï¿½
+  * @param[out]     chassis_move_mode:"chassis_move"ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½.
   * @retval         none
   */
 static void chassis_set_mode(chassis_move_t *chassis_move_mode);
@@ -76,19 +79,19 @@ static void chassis_set_mode(chassis_move_t *chassis_move_mode);
   * @retval         none
   */
 /**
-  * @brief          µ×ÅÌÄ£Ê½¸Ä±ä£¬ÓÐÐ©²ÎÊýÐèÒª¸Ä±ä£¬ÀýÈçµ×ÅÌ¿ØÖÆyaw½Ç¶ÈÉè¶¨ÖµÓ¦¸Ã±ä³Éµ±Ç°µ×ÅÌyaw½Ç¶È
-  * @param[out]     chassis_move_transit:"chassis_move"±äÁ¿Ö¸Õë.
+  * @brief          ï¿½ï¿½ï¿½ï¿½Ä£Ê½ï¿½Ä±ä£¬ï¿½ï¿½Ð©ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½Ä±ä£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¿ï¿½ï¿½ï¿½yawï¿½Ç¶ï¿½ï¿½è¶¨ÖµÓ¦ï¿½Ã±ï¿½Éµï¿½Ç°ï¿½ï¿½ï¿½ï¿½yawï¿½Ç¶ï¿½
+  * @param[out]     chassis_move_transit:"chassis_move"ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½.
   * @retval         none
   */
 void chassis_mode_change_control_transit(chassis_move_t *chassis_move_transit);
 /**
-  * @brief          chassis some measure data updata, such as motor speed, euler angle£¬ robot speed
+  * @brief          chassis some measure data updata, such as motor speed, euler angleï¿½ï¿½ robot speed
   * @param[out]     chassis_move_update: "chassis_move" valiable point
   * @retval         none
   */
 /**
-  * @brief          µ×ÅÌ²âÁ¿Êý¾Ý¸üÐÂ£¬°üÀ¨µç»úËÙ¶È£¬Å·À­½Ç¶È£¬»úÆ÷ÈËËÙ¶È
-  * @param[out]     chassis_move_update:"chassis_move"±äÁ¿Ö¸Õë.
+  * @brief          ï¿½ï¿½ï¿½Ì²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¸ï¿½ï¿½Â£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶È£ï¿½Å·ï¿½ï¿½ï¿½Ç¶È£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶ï¿½
+  * @param[out]     chassis_move_update:"chassis_move"ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½.
   * @retval         none
   */
 static void chassis_feedback_update(chassis_move_t *chassis_move_update);
@@ -100,7 +103,7 @@ static void chassis_feedback_update(chassis_move_t *chassis_move_update);
   */
 /**
   * @brief          
-  * @param[out]     chassis_move_update:"chassis_move"±äÁ¿Ö¸Õë.
+  * @param[out]     chassis_move_update:"chassis_move"ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½.
   * @retval         none
   */
 static void chassis_set_contorl(chassis_move_t *chassis_move_control);
@@ -111,8 +114,8 @@ static void chassis_set_contorl(chassis_move_t *chassis_move_control);
   * @retval         none
   */
 /**
-  * @brief          ¿ØÖÆÑ­»·£¬¸ù¾Ý¿ØÖÆÉè¶¨Öµ£¬¼ÆËãµç»úµçÁ÷Öµ£¬½øÐÐ¿ØÖÆ
-  * @param[out]     chassis_move_control_loop:"chassis_move"±äÁ¿Ö¸Õë.
+  * @brief          ï¿½ï¿½ï¿½ï¿½Ñ­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¿ï¿½ï¿½ï¿½ï¿½è¶¨Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½Ð¿ï¿½ï¿½ï¿½
+  * @param[out]     chassis_move_control_loop:"chassis_move"ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½.
   * @retval         none
   */
 static void chassis_control_loop(chassis_move_t *chassis_move_control_loop);
@@ -123,7 +126,7 @@ uint32_t chassis_high_water;
 
 
 
-//µ×ÅÌÔË¶¯Êý¾Ý
+//ï¿½ï¿½ï¿½ï¿½ï¿½Ë¶ï¿½ï¿½ï¿½ï¿½ï¿½
 chassis_move_t chassis_move;
 
 /**
@@ -132,8 +135,8 @@ chassis_move_t chassis_move;
   * @retval         none
   */
 /**
-  * @brief          µ×ÅÌÈÎÎñ£¬¼ä¸ô CHASSIS_CONTROL_TIME_MS 2ms
-  * @param[in]      pvParameters: ¿Õ
+  * @brief          ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ñ£¬¼ï¿½ï¿½ CHASSIS_CONTROL_TIME_MS 2ms
+  * @param[in]      pvParameters: ï¿½ï¿½
   * @retval         none
   */
 	
@@ -155,17 +158,18 @@ extern uint16_t servo_pwm[6];
 fp32 gyro_data[3], angle_data[3];
 uint8_t rc_state_pre = 2;
 
-uint8_t ctrl_mode = 0; //·É¿ØÄ£Ê½ 0£ºÔöÎÈ 1£º×ÔÎÈ 2£º¶¨¸ß
-extern uint8_t is_load; //Í¶·Å¿ØÖÆ 0£º²ÕÃÅ´ò¿ª 1£º²ÕÃÅ¹Ø±Õ
+uint8_t ctrl_mode = 0; //ï¿½É¿ï¿½Ä£Ê½ 0ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+extern uint8_t is_load; //Í¶ï¿½Å¿ï¿½ï¿½ï¿½ 0ï¿½ï¿½ï¿½ï¿½ï¿½Å´ï¿½ 1ï¿½ï¿½ï¿½ï¿½ï¿½Å¹Ø±ï¿½
 extern uint8_t mag_enable;
 extern float fdata[16];
 
 uint16_t motor_idle_speed = 1050;
 extern UART_HandleTypeDef huart1;
 
-uint8_t arm_mode = 0; //0£ºËø¶¨ 1£º½âËø
-uint8_t system_mode = 0; //SE¿ª¹Ø ·É¿Ø×Ü¿ª¹Ø µÍ£º·ÉÐÐ¿ØÖÆ²»ÔËÐÐ ÖÐ£ºÊÖ¶¯»ì¿ØÄ£Ê½ ¸ß£º·É¿ØÄ£Ê½
+uint8_t arm_mode = 0; //0ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+uint8_t system_mode = 0; //SEï¿½ï¿½ï¿½ï¿½ ï¿½É¿ï¿½ï¿½Ü¿ï¿½ï¿½ï¿½ ï¿½Í£ï¿½ï¿½ï¿½ï¿½Ð¿ï¿½ï¿½Æ²ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð£ï¿½ï¿½Ö¶ï¿½ï¿½ï¿½ï¿½Ä£Ê½ ï¿½ß£ï¿½ï¿½É¿ï¿½Ä£Ê½
 uint8_t door_open = 0;
+uint8_t stick_mode = 0x00;
 float throttle_set = 0.0f;
 
 float d_ch(uint8_t ch_required){
@@ -237,18 +241,18 @@ float kalman_yaw(float measure){
 void pid_init(void){
 	mat_pid[0][0] = 0.0;
 	mat_pid[0][1] = 1250.0f;//232.55f;
-	mat_pid[0][2] = 0.0;
+	mat_pid[0][2] = 8.0;
 	mat_pid[0][3] = 30.0;
 	
 	mat_pid[1][0] = 0.0;
 	mat_pid[1][1] = 1250.0f;//697.6f;
-	mat_pid[1][2] = 0.0;
+	mat_pid[1][2] = 8.0;
 	mat_pid[1][3] = 30.0;
 	
 	mat_pid[2][0] = 0.0;
-	mat_pid[2][1] = 139.0f;//139.53f;
-	mat_pid[2][2] = 0.0;
-	mat_pid[2][3] = 3.0;
+	mat_pid[2][1] = 140.0f;//139.53f;
+	mat_pid[2][2] = 4.0;
+	mat_pid[2][3] = 5.0;
 }
 
 float pid_roll(float target, float real){
@@ -271,14 +275,14 @@ float pid_roll(float target, float real){
 	if(error < -3.14f){
 		sum = 0.0f;
 	}
-	if(throttle_set < 1020){
+	if(throttle_set < 1100){
 		sum = 0.0f;
 	}
 	if(arm_mode == 0){
 		sum = 0.0f;
 	}
 //	error_rate = -1.0f * real - pre_error;
-//	pre_error = -1.0f * real;//Î¢·ÖÏÈÐÐ
+//	pre_error = -1.0f * real;//Î¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	error_rate = error - pre_error;
 	pre_error = error;
 	result = mat_pid[0][0]*target + mat_pid[0][1]*error + mat_pid[0][2]*sum + mat_pid[0][3]*error_rate;
@@ -305,7 +309,7 @@ float pid_pitch(float target, float real){
 	if(error < -3.14f){
 		sum = 0.0f;
 	}
-	if(throttle_set < 1020){
+	if(throttle_set < 1100){
 		sum = 0.0f;
 	}
 	if(arm_mode == 0){
@@ -339,7 +343,7 @@ float pid_yaw(float target, float real){
 	if(error < -3.14f){
 		sum = 0.0f;
 	}
-	if(throttle_set < 1020){
+	if(throttle_set < 1100){
 		sum = 0.0f;
 	}
 	if(arm_mode == 0){
@@ -388,6 +392,13 @@ void chassis_task(void const *pvParameters)
 					arm_mode = 0x00;
 				}
 				
+				if(Sbus_ctrl.ch[8] > 1500){
+					stick_mode = stick_3d;
+				}else{
+					stick_mode = stick_heli;
+				}
+				
+				
 				if(Sbus_ctrl.ch[7] > 1000){
 					is_load = 0x00;
 					if(Sbus_ctrl.ch[7] > 1500){
@@ -433,9 +444,15 @@ void chassis_task(void const *pvParameters)
 //						servo_right = mat_allocate[3][0]*throttle_in + mat_allocate[3][1]*yaw_in + mat_allocate[3][2]*roll_in + mat_allocate[3][3]*pitch_in + servo_right_center;
 //					}
 					if(ctrl_mode == 1){
-						target_velocity_roll = d_ch(0) * 0.002341f;
-						target_velocity_pitch = d_ch(1) * -0.002341f;
-						target_velocity_yaw = d_ch(3) * -0.002341f;
+						if(stick_mode == stick_heli){
+							target_velocity_roll = d_ch(0) * 0.002341f;
+							target_velocity_pitch = d_ch(1) * -0.002341f;
+							target_velocity_yaw = d_ch(3) * -0.002341f;
+						}else{
+							target_velocity_roll = d_ch(3) * 0.002341f;
+							target_velocity_pitch = d_ch(1) * -0.002341f;
+							target_velocity_yaw = d_ch(0) * -0.002341f;
+						}
 						output_roll = pid_roll(target_velocity_roll, -gyro_data[1]);
 						output_pitch = pid_pitch(target_velocity_pitch, gyro_data[0]);
 						output_yaw = pid_yaw(target_velocity_yaw, gyro_data[2]);
@@ -447,10 +464,10 @@ void chassis_task(void const *pvParameters)
 						fdata[5] = gyro_data[2];
 						HAL_UART_Transmit_DMA(&huart1, (uint8_t*)&fdata, 3*4);
 						double f1 = sqrtf((output_yaw-output_roll)*(output_yaw-output_roll)+(throttle_in+output_pitch)*(throttle_in+output_pitch));
-						double f2 = sqrtf((output_yaw+output_roll)*(output_yaw+output_roll)+(throttle_in-output_pitch)*(throttle_in-output_pitch));//¶ÔÊä³öÍÆÁ¦½øÐÐÇã×ª²¹³¥
+						double f2 = sqrtf((output_yaw+output_roll)*(output_yaw+output_roll)+(throttle_in-output_pitch)*(throttle_in-output_pitch));//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½
 						double sin_1 = throttle_in+output_pitch;
 						double sin_2 = throttle_in-output_pitch;
-						sin_1 = sin_1 > 0.0f ? sin_1 : 0.0f;//¼ÆËãÊ¸Á¿·½ÏòÕâ¸ö£¬ÍÆÁ¦²»Ð¡ÓÚ0
+						sin_1 = sin_1 > 0.0f ? sin_1 : 0.0f;//ï¿½ï¿½ï¿½ï¿½Ê¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡ï¿½ï¿½0
 						sin_2 = sin_2 > 0.0f ? sin_2 : 0.0f;
 						float a1 = atan2f(output_yaw-output_roll, sin_1);
 						float a2 = atan2f(output_yaw+output_roll, sin_2);
@@ -514,9 +531,15 @@ void chassis_task(void const *pvParameters)
 //						servo_right = mat_allocate[3][0]*throttle_in + mat_allocate[3][1]*yaw_in + mat_allocate[3][2]*roll_in + mat_allocate[3][3]*pitch_in + servo_right_center;
 //					}
 					if(ctrl_mode == 1){
-						target_velocity_roll = d_ch(3) * -0.00314f;
-						target_velocity_pitch = d_ch(1) * -0.00314f;
-						target_velocity_yaw = d_ch(0) * -0.00314f;
+						if(stick_mode == stick_3d){
+							target_velocity_roll = d_ch(0) * 0.002341f;
+							target_velocity_pitch = d_ch(1) * -0.002341f;
+							target_velocity_yaw = d_ch(3) * -0.002341f;
+						}else{
+							target_velocity_roll = d_ch(3) * -0.002341f;
+							target_velocity_pitch = d_ch(1) * -0.002341f;
+							target_velocity_yaw = d_ch(0) * -0.002341f;
+						}
 						imu_roll = -gyro_data[1];
 						imu_pitch = -gyro_data[0];
 						imu_yaw = gyro_data[2];
@@ -577,7 +600,7 @@ void chassis_task(void const *pvParameters)
 					}
 					set_pwm(servo_right, servo_left, motor_right, motor_left);
 				}
-				vTaskDelay(1);//ÄÚ»·1000HZ,Í¬imuÊä³öÆµÂÊ
+				vTaskDelay(1);//ï¿½Ú»ï¿½1000HZ,Í¬imuï¿½ï¿½ï¿½Æµï¿½ï¿½
 		}
 				
 }
