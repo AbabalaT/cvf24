@@ -22,63 +22,51 @@ Dialog DLL:      TCM.DLL V1.48.0.0
  
 <h2>Project:</h2>
 D:\cvf24\MDK-ARM\standard_robot.uvprojx
-Project File Date:  07/06/2024
+Project File Date:  07/11/2024
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 7 (build 960)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'standard_robot'
-compiling user_lib.c...
-compiling gimbal_behaviour.c...
-compiling chassis_behaviour.c...
-compiling AHRS_middleware.c...
-compiling vt_math.c...
-compiling control.c...
-compiling chassis_power_control.c...
 compiling chassis_task.c...
-..\application\chassis_task.c(195): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+..\application\chassis_task.c(206): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   	if(*input > 500.0){
-..\application\chassis_task.c(266): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+..\application\chassis_task.c(301): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   	if(sum > 2000.0){
-..\application\chassis_task.c(300): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+..\application\chassis_task.c(335): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   	if(sum > 2000.0){
-..\application\chassis_task.c(334): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+..\application\chassis_task.c(371): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   	if(sum > 2000.0){
-..\application\chassis_task.c(606): warning:  #1-D: last line of file ends without a newline
+..\application\chassis_task.c(412): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	if(sum > 25000.0){
+..\application\chassis_task.c(445): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	if(sum > 25000.0){
+..\application\chassis_task.c(478): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	if(sum > 25000.0){
+..\application\chassis_task.c(514): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	if(sum > 2000.0){
+..\application\chassis_task.c(548): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	if(sum > 2000.0){
+..\application\chassis_task.c(582): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	if(sum > 2000.0){
+..\application\chassis_task.c(618): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	if(sum > 500.0){
+..\application\chassis_task.c(1201): warning:  #1-D: last line of file ends without a newline
   }
 ..\application\chassis_task.c(61): warning:  #177-D: function "chassis_init"  was declared but never referenced
   static void chassis_init(chassis_move_t *chassis_move_init);
-..\application\chassis_task.c(74): warning:  #177-D: function "chassis_set_mode"  was declared but never referenced
+..\application\chassis_task.c(76): warning:  #177-D: function "chassis_set_mode"  was declared but never referenced
   static void chassis_set_mode(chassis_move_t *chassis_move_mode);
-..\application\chassis_task.c(97): warning:  #177-D: function "chassis_feedback_update"  was declared but never referenced
+..\application\chassis_task.c(99): warning:  #177-D: function "chassis_feedback_update"  was declared but never referenced
   static void chassis_feedback_update(chassis_move_t *chassis_move_update);
-..\application\chassis_task.c(109): warning:  #177-D: function "chassis_set_contorl"  was declared but never referenced
+..\application\chassis_task.c(111): warning:  #177-D: function "chassis_set_contorl"  was declared but never referenced
   static void chassis_set_contorl(chassis_move_t *chassis_move_control);
-..\application\chassis_task.c(121): warning:  #177-D: function "chassis_control_loop"  was declared but never referenced
+..\application\chassis_task.c(123): warning:  #177-D: function "chassis_control_loop"  was declared but never referenced
   static void chassis_control_loop(chassis_move_t *chassis_move_control_loop);
-..\application\chassis_task.c: 10 warnings, 0 errors
-compiling shoot.c...
-compiling gimbal_task.c...
-..\application\gimbal_task.c(584): warning:  #177-D: function "gimbal_init"  was declared but never referenced
-  static void gimbal_init(gimbal_control_t *init)
-..\application\gimbal_task.c(636): warning:  #177-D: function "gimbal_set_mode"  was declared but never referenced
-  static void gimbal_set_mode(gimbal_control_t *set_mode)
-..\application\gimbal_task.c(725): warning:  #177-D: function "gimbal_mode_change_control_transit"  was declared but never referenced
-  static void gimbal_mode_change_control_transit(gimbal_control_t *gimbal_mode_change)
-..\application\gimbal_task.c(772): warning:  #177-D: function "gimbal_set_control"  was declared but never referenced
-  static void gimbal_set_control(gimbal_control_t *set_control)
-..\application\gimbal_task.c(900): warning:  #177-D: function "gimbal_control_loop"  was declared but never referenced
-  static void gimbal_control_loop(gimbal_control_t *control_loop)
-..\application\gimbal_task.c(303): warning:  #177-D: variable "yaw_can_set_current"  was declared but never referenced
-  static int16_t yaw_can_set_current = 0, pitch_can_set_current = 0, shoot_can_set_current = 0;
-..\application\gimbal_task.c(303): warning:  #177-D: variable "pitch_can_set_current"  was declared but never referenced
-  static int16_t yaw_can_set_current = 0, pitch_can_set_current = 0, shoot_can_set_current = 0;
-..\application\gimbal_task.c(303): warning:  #177-D: variable "shoot_can_set_current"  was declared but never referenced
-  static int16_t yaw_can_set_current = 0, pitch_can_set_current = 0, shoot_can_set_current = 0;
-..\application\gimbal_task.c: 8 warnings, 0 errors
+..\application\chassis_task.c: 17 warnings, 0 errors
 linking...
-Program Size: Code=99696 RO-data=12940 RW-data=1640 ZI-data=58624  
+Program Size: Code=109272 RO-data=13228 RW-data=1868 ZI-data=58932  
 FromELF: creating hex file...
-"standard_tpye_c\standard_tpye_c.axf" - 0 Error(s), 18 Warning(s).
+"standard_tpye_c\standard_tpye_c.axf" - 0 Error(s), 17 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -101,7 +89,7 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.6.0
-Build Time Elapsed:  00:00:13
+Build Time Elapsed:  00:00:04
 </pre>
 </body>
 </html>

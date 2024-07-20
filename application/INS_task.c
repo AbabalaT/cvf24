@@ -159,7 +159,7 @@ static fp32 INS_mag[3] = {0.0f, 0.0f, 0.0f};
 static fp32 INS_quat[4] = {0.0f, 0.0f, 0.0f, 0.0f};
 fp32 INS_angle[3] = {0.0f, 0.0f, 0.0f};      //euler angle, unit rad.Å·À­½Ç µ¥Î» rad
 
-
+extern fp32 ahrs_quaternion[4];
 
 
 
@@ -189,7 +189,7 @@ void INS_task(void const *pvParameters)
 
     BMI088_read(bmi088_real_data.gyro, bmi088_real_data.accel, &bmi088_real_data.temp);
     //rotate and zero drift 
-		ist8310_read_mag(ist8310_real_data.mag);
+		//ist8310_read_mag(ist8310_real_data.mag);
     imu_cali_slove(INS_gyro, INS_accel, INS_mag, &bmi088_real_data, &ist8310_real_data);
 
     PID_init(&imu_temp_pid, PID_POSITION, imu_temp_PID, TEMPERATURE_PID_MAX_OUT, TEMPERATURE_PID_MAX_IOUT);
@@ -214,7 +214,9 @@ void INS_task(void const *pvParameters)
     SPI1_DMA_init((uint32_t)gyro_dma_tx_buf, (uint32_t)gyro_dma_rx_buf, SPI_DMA_GYRO_LENGHT);
 
     imu_start_dma_flag = 1;
-    
+		gyro_offset[0] = gyro_offset[0] - 0.000108576787;
+		gyro_offset[1] = gyro_offset[1] + 0.000357805984;
+    gyro_offset[2] = gyro_offset[2] + 0.000176628033;
     while (1)
     {
         //wait spi DMA tansmit done
@@ -268,14 +270,14 @@ void INS_task(void const *pvParameters)
 
         AHRS_update(INS_quat, timing_time, INS_gyro, accel_fliter_3, INS_mag);
         get_angle(INS_quat, INS_angle + INS_YAW_ADDRESS_OFFSET, INS_angle + INS_PITCH_ADDRESS_OFFSET, INS_angle + INS_ROLL_ADDRESS_OFFSET);
-
+				memcpy(&ahrs_quaternion, &INS_quat, 16);
 
         //because no use ist8310 and save time, no use
         if(mag_update_flag &= 1 << IMU_DR_SHFITS)
         {
             mag_update_flag &= ~(1<< IMU_DR_SHFITS);
             mag_update_flag |= (1 << IMU_SPI_SHFITS);
-//            ist8310_read_mag(ist8310_real_data.mag);
+            //ist8310_read_mag(ist8310_real_data.mag);
         }
 				
 				
