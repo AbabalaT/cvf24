@@ -29,7 +29,9 @@ Project File Date:  07/11/2024
 Build target 'standard_robot'
 compiling chassis_task.c...
 ..\application\chassis_task.c(206): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  	if(*input > 500.0){
+  	if(*input > 2000.0){
+..\application\chassis_task.c(209): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	if(*input < 1000.0){
 ..\application\chassis_task.c(301): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   	if(sum > 2000.0){
 ..\application\chassis_task.c(335): warning:  #1035-D: single-precision operand implicitly converted to double-precision
@@ -50,7 +52,7 @@ compiling chassis_task.c...
   	if(sum > 2000.0){
 ..\application\chassis_task.c(618): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   	if(sum > 500.0){
-..\application\chassis_task.c(1201): warning:  #1-D: last line of file ends without a newline
+..\application\chassis_task.c(1265): warning:  #1-D: last line of file ends without a newline
   }
 ..\application\chassis_task.c(61): warning:  #177-D: function "chassis_init"  was declared but never referenced
   static void chassis_init(chassis_move_t *chassis_move_init);
@@ -62,11 +64,11 @@ compiling chassis_task.c...
   static void chassis_set_contorl(chassis_move_t *chassis_move_control);
 ..\application\chassis_task.c(123): warning:  #177-D: function "chassis_control_loop"  was declared but never referenced
   static void chassis_control_loop(chassis_move_t *chassis_move_control_loop);
-..\application\chassis_task.c: 17 warnings, 0 errors
+..\application\chassis_task.c: 18 warnings, 0 errors
 linking...
-Program Size: Code=109272 RO-data=13228 RW-data=1868 ZI-data=58932  
+Program Size: Code=110744 RO-data=13228 RW-data=1868 ZI-data=58948  
 FromELF: creating hex file...
-"standard_tpye_c\standard_tpye_c.axf" - 0 Error(s), 17 Warning(s).
+"standard_tpye_c\standard_tpye_c.axf" - 0 Error(s), 18 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -89,7 +91,7 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.6.0
-Build Time Elapsed:  00:00:04
+Build Time Elapsed:  00:00:05
 </pre>
 </body>
 </html>

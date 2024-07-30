@@ -2,7 +2,7 @@
   ****************************(C) COPYRIGHT 2019 DJI****************************
   * @file       chassis.c/h
   * @brief      chassis control task,
-  *             ���̿�������
+  *             锟斤拷锟教匡拷锟斤拷锟斤拷锟斤拷
   * @note       
   * @history
   *  Version    Date            Author          Modification
@@ -54,8 +54,8 @@
   * @retval         none
   */
 /**
-  * @brief          ��ʼ��"chassis_move"����������pid��ʼ���� ң����ָ���ʼ����3508���̵��ָ���ʼ������̨�����ʼ���������ǽǶ�ָ���ʼ��
-  * @param[out]     chassis_move_init:"chassis_move"����ָ��.
+  * @brief          锟斤拷始锟斤拷"chassis_move"锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷pid锟斤拷始锟斤拷锟斤拷 遥锟斤拷锟斤拷指锟斤拷锟绞硷拷锟斤拷锟�3508锟斤拷锟教碉拷锟街革拷锟斤拷始锟斤拷锟斤拷锟斤拷台锟斤拷锟斤拷锟绞硷拷锟斤拷锟斤拷锟斤拷锟斤拷墙嵌锟街革拷锟斤拷始锟斤拷
+  * @param[out]     chassis_move_init:"chassis_move"锟斤拷锟斤拷指锟斤拷.
   * @retval         none
   */
 static void chassis_init(chassis_move_t *chassis_move_init);
@@ -69,8 +69,8 @@ typedef struct {
   * @retval         none
   */
 /**
-  * @brief          ���õ��̿���ģʽ����Ҫ��'chassis_behaviour_mode_set'�����иı�
-  * @param[out]     chassis_move_mode:"chassis_move"����ָ��.
+  * @brief          锟斤拷锟矫碉拷锟教匡拷锟斤拷模式锟斤拷锟斤拷要锟斤拷'chassis_behaviour_mode_set'锟斤拷锟斤拷锟叫改憋拷
+  * @param[out]     chassis_move_mode:"chassis_move"锟斤拷锟斤拷指锟斤拷.
   * @retval         none
   */
 static void chassis_set_mode(chassis_move_t *chassis_move_mode);
@@ -81,19 +81,19 @@ static void chassis_set_mode(chassis_move_t *chassis_move_mode);
   * @retval         none
   */
 /**
-  * @brief          ����ģʽ�ı䣬��Щ������Ҫ�ı䣬������̿���yaw�Ƕ��趨ֵӦ�ñ�ɵ�ǰ����yaw�Ƕ�
-  * @param[out]     chassis_move_transit:"chassis_move"����ָ��.
+  * @brief          锟斤拷锟斤拷模式锟侥变，锟斤拷些锟斤拷锟斤拷锟斤拷要锟侥变，锟斤拷锟斤拷锟斤拷炭锟斤拷锟統aw锟角讹拷锟借定值应锟矫憋拷傻锟角帮拷锟斤拷锟統aw锟角讹拷
+  * @param[out]     chassis_move_transit:"chassis_move"锟斤拷锟斤拷指锟斤拷.
   * @retval         none
   */
 void chassis_mode_change_control_transit(chassis_move_t *chassis_move_transit);
 /**
-  * @brief          chassis some measure data updata, such as motor speed, euler angle�� robot speed
+  * @brief          chassis some measure data updata, such as motor speed, euler angle锟斤拷 robot speed
   * @param[out]     chassis_move_update: "chassis_move" valiable point
   * @retval         none
   */
 /**
-  * @brief          ���̲������ݸ��£���������ٶȣ�ŷ���Ƕȣ��������ٶ�
-  * @param[out]     chassis_move_update:"chassis_move"����ָ��.
+  * @brief          锟斤拷锟教诧拷锟斤拷锟斤拷锟捷革拷锟铰ｏ拷锟斤拷锟斤拷锟斤拷锟斤拷俣龋锟脚凤拷锟斤拷嵌龋锟斤拷锟斤拷锟斤拷锟斤拷俣锟�
+  * @param[out]     chassis_move_update:"chassis_move"锟斤拷锟斤拷指锟斤拷.
   * @retval         none
   */
 static void chassis_feedback_update(chassis_move_t *chassis_move_update);
@@ -105,7 +105,7 @@ static void chassis_feedback_update(chassis_move_t *chassis_move_update);
   */
 /**
   * @brief          
-  * @param[out]     chassis_move_update:"chassis_move"����ָ��.
+  * @param[out]     chassis_move_update:"chassis_move"锟斤拷锟斤拷指锟斤拷.
   * @retval         none
   */
 static void chassis_set_contorl(chassis_move_t *chassis_move_control);
@@ -116,8 +116,8 @@ static void chassis_set_contorl(chassis_move_t *chassis_move_control);
   * @retval         none
   */
 /**
-  * @brief          ����ѭ�������ݿ����趨ֵ������������ֵ�����п���
-  * @param[out]     chassis_move_control_loop:"chassis_move"����ָ��.
+  * @brief          锟斤拷锟斤拷循锟斤拷锟斤拷锟斤拷锟捷匡拷锟斤拷锟借定值锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷值锟斤拷锟斤拷锟叫匡拷锟斤拷
+  * @param[out]     chassis_move_control_loop:"chassis_move"锟斤拷锟斤拷指锟斤拷.
   * @retval         none
   */
 static void chassis_control_loop(chassis_move_t *chassis_move_control_loop);
@@ -128,7 +128,7 @@ uint32_t chassis_high_water;
 
 
 
-//�����˶�����
+//锟斤拷锟斤拷锟剿讹拷锟斤拷锟斤拷
 chassis_move_t chassis_move;
 
 /**
@@ -137,8 +137,8 @@ chassis_move_t chassis_move;
   * @retval         none
   */
 /**
-  * @brief          �������񣬼�� CHASSIS_CONTROL_TIME_MS 2ms
-  * @param[in]      pvParameters: ��
+  * @brief          锟斤拷锟斤拷锟斤拷锟今，硷拷锟� CHASSIS_CONTROL_TIME_MS 2ms
+  * @param[in]      pvParameters: 锟斤拷
   * @retval         none
   */
 	
@@ -165,8 +165,8 @@ extern uint16_t servo_pwm[6];
 fp32 gyro_data[3], angle_data[3];
 uint8_t rc_state_pre = 2;
 
-uint8_t ctrl_mode = 0; //�ɿ�ģʽ 0������ 1������ 2������
-extern uint8_t is_load; //Ͷ�ſ��� 0�����Ŵ� 1�����Źر�
+uint8_t ctrl_mode = 0; //锟缴匡拷模式 0锟斤拷锟斤拷锟斤拷 1锟斤拷锟斤拷锟斤拷 2锟斤拷锟斤拷锟斤拷
+extern uint8_t is_load; //投锟脚匡拷锟斤拷 0锟斤拷锟斤拷锟脚达拷 1锟斤拷锟斤拷锟脚关憋拷
 extern uint8_t mag_enable;
 extern float fdata[16];
 
@@ -174,8 +174,8 @@ uint16_t motor_idle_speed = 1050;
 extern UART_HandleTypeDef huart1;
 extern UART_HandleTypeDef huart6;
 
-uint8_t arm_mode = 0; //0������ 1������
-uint8_t system_mode = 0; //SE���� �ɿ��ܿ��� �ͣ����п��Ʋ����� �У��ֶ����ģʽ �ߣ��ɿ�ģʽ
+uint8_t arm_mode = 0; //0锟斤拷锟斤拷锟斤拷 1锟斤拷锟斤拷锟斤拷
+uint8_t system_mode = 0; //SE锟斤拷锟斤拷 锟缴匡拷锟杰匡拷锟斤拷 锟酵ｏ拷锟斤拷锟叫匡拷锟狡诧拷锟斤拷锟斤拷 锟叫ｏ拷锟街讹拷锟斤拷锟侥Ｊ� 锟竭ｏ拷锟缴匡拷模式
 uint8_t door_open = 0;
 uint8_t stick_mode = 0x00;
 float throttle_set = 0.0f;
@@ -203,11 +203,11 @@ extern float filtered_dp;
 float using_dp = 0.0f;
 
 void limit_out(float* input){
-	if(*input > 500.0){
-		*input = 500.0;
+	if(*input > 2000.0){
+		*input = 2000.0;
 	}
-	if(*input < -500.0){
-		*input = -500.0;
+	if(*input < 1000.0){
+		*input = 1000.0;
 	}
 }
 
@@ -271,17 +271,17 @@ void pid_init(void){
 	mat_pid[2][2] = 0.08f;
 	mat_pid[2][3] = 122.5;
 	
-	angle_pid_mat[0][0] = 5.5;
-	angle_pid_mat[0][1] = 0.00006;//232.55f;
-	angle_pid_mat[0][2] = 17.5;
+	angle_pid_mat[0][0] = 2.5;
+	angle_pid_mat[0][1] = 0.0f;//0.00006;//232.55f;
+	angle_pid_mat[0][2] = 0.01f;
 	
-	angle_pid_mat[1][0] = 1.0;
-	angle_pid_mat[1][1] = 0.00002f;//697.6f;
-	angle_pid_mat[1][2] = 0.01;
+	angle_pid_mat[1][0] = 2.0;
+	angle_pid_mat[1][1] = 0.0f;//0.00002f;//697.6f;
+	angle_pid_mat[1][2] = 0.01f;
 	
-	angle_pid_mat[2][0] = 1.35;
-	angle_pid_mat[2][1] = 0.000045f;//139.53f;
-	angle_pid_mat[2][2] = 0.02f;
+	angle_pid_mat[2][0] = 2.35;
+	angle_pid_mat[2][1] = 0.0f;//0.000045f;//139.53f;
+	angle_pid_mat[2][2] = 0.01f;
 	
 	pid_safe_dp[0] = 12.5f;
 	pid_safe_dp[1] = 0.25f;
@@ -317,7 +317,7 @@ float pid_roll(float target, float real){
 		sum = 0.0f;
 	}
 //	error_rate = -1.0f * real - pre_error;
-//	pre_error = -1.0f * real;//΢������
+//	pre_error = -1.0f * real;//微锟斤拷锟斤拷锟斤拷
 	error_rate = error - pre_error;
 	pre_error = error;
 	result = mat_pid[0][0]*target + mat_pid[0][1]*error + mat_pid[0][2]*sum + mat_pid[0][3]*error_rate;
@@ -530,7 +530,7 @@ float pid_roll_heli(float target, float real){
 		sum = 0.0f;
 	}
 //	error_rate = -1.0f * real - pre_error;
-//	pre_error = -1.0f * real;//΢������
+//	pre_error = -1.0f * real;//微锟斤拷锟斤拷锟斤拷
 	error_rate = error - pre_error;
 	pre_error = error;
 	result = mat_pid_heli_old[0][0]*target + mat_pid_heli_old[0][1]*error + mat_pid_heli_old[0][2]*sum + mat_pid_heli_old[0][3]*error_rate;
@@ -824,26 +824,77 @@ Quaternion quaternion_conjugate(Quaternion q) {
 
 Quaternion quaternion_diff(Quaternion q1, Quaternion q2) {
 		q1 = quaternion_conjugate(q1);
-    Quaternion result = {
-        q1.w*q2.w - q1.x*q2.x - q1.y*q2.y - q1.z*q2.z,
-        q1.w*q2.x + q1.x*q2.w + q1.y*q2.z - q1.z*q2.y,
-        q1.w*q2.y - q1.x*q2.z + q1.y*q2.w + q1.z*q2.x,
-        q1.w*q2.z + q1.x*q2.y - q1.y*q2.x + q1.z*q2.w
-    };
+    Quaternion result = multiply_quaternion(&q2, &q1);
+		if(result.w < 0.0f){
+			result.w = -result.w;
+			result.x = -result.x;
+			result.y = -result.y;
+			result.z = -result.z;
+		}
     return result;
 }
 
-void quaternionToEulerAngles(Quaternion q, float *roll, float *pitch, float *yaw) {
-    *roll = atan2f(2*(q.w*q.x + q.y*q.z), 1 - 2*(q.x*q.x + q.y*q.y));
-    *pitch = asinf(2*(q.w*q.y - q.z*q.x));
-    *yaw = atan2f(2*(q.w*q.z + q.x*q.y), 1 - 2*(q.y*q.y + q.z*q.z));
+void quaternionToAngles(Quaternion q, float *roll, float *pitch, float *yaw) {
+//    *roll = atan2f(2*(q.w*q.x + q.y*q.z), 1 - 2*(q.x*q.x + q.y*q.y));
+//    *pitch = asinf(2*(q.w*q.y - q.z*q.x));
+//    *yaw = atan2f(2*(q.w*q.z + q.x*q.y), 1 - 2*(q.y*q.y + q.z*q.z));
+	float we = q.w;
+	if(we > 0.999999f){
+		we = 0.999999f;
+	}	
+	if(we < -0.999999f){
+		we = -0.999999f;
+	}
+	float theta = 2.0f * acosf(we);
+	float ne = sqrtf(1.0f - we * we);
+	float nx = q.x / ne;
+	float ny = q.y / ne;
+	float nz = q.z / ne;
+	*pitch = ny * theta;
+	*roll = nx * theta;
+	*yaw = nz * theta;
 }
 
 float euler_angle[3];
 float error_angle[3];
+float error_body[3];
 Quaternion target_quaternion;
 Quaternion measure_quaternion;
 float target_yaw = 0.0f;
+
+void World_to_Body(float *vector_e, float *vector_v,Quaternion Qin)
+{
+	float C11,C12,C13;
+	float C21,C22,C23;
+	float C31,C32,C33;
+	
+	float Q[4];
+	
+	Q[0] =  Qin.w;
+	Q[1] = -Qin.x;
+	Q[2] = -Qin.y;
+	Q[3] = -Qin.z;
+	
+	
+	C11 = Q[0]*Q[0] + Q[1]*Q[1] - Q[2]*Q[2] - Q[3]*Q[3];
+	C12 = 2.0f*(Q[1]*Q[2] - Q[0]*Q[3]);
+	C13 = 2.0f*(Q[1]*Q[3] + Q[0]*Q[2]);
+	
+	C21 = 2.0f*(Q[1]*Q[2] + Q[0]*Q[3]);
+	C22 = Q[0]*Q[0] - Q[1]*Q[1] + Q[2]*Q[2] - Q[3]*Q[3];
+	C23 = 2.0f*(Q[2]*Q[3] - Q[0]*Q[1]);
+	
+	C31 = 2.0f*(Q[1]*Q[3] - Q[0]*Q[2]);
+	C32 = 2.0f*(Q[2]*Q[3] + Q[0]*Q[1]);
+	C33 = Q[0]*Q[0] - Q[1]*Q[1] - Q[2]*Q[2] + Q[3]*Q[3];
+	
+	vector_v[0] = C11*vector_e[0] + C12*vector_e[1] + C13*vector_e[2];
+	vector_v[1] = C21*vector_e[0] + C22*vector_e[1] + C23*vector_e[2];
+	vector_v[2] = C31*vector_e[0] + C32*vector_e[1] + C33*vector_e[2];
+	
+}
+
+
 void chassis_task(void const *pvParameters)
 {
     vTaskDelay(CHASSIS_TASK_INIT_TIME);
@@ -961,10 +1012,10 @@ void chassis_task(void const *pvParameters)
 //						fdata[5] = gyro_data[2];
 						//HAL_UART_Transmit_DMA(&huart1, (uint8_t*)&fdata, 3*4);
 						double f1 = sqrtf((output_yaw-output_roll)*(output_yaw-output_roll)+(throttle_in+output_pitch)*(throttle_in+output_pitch));
-						double f2 = sqrtf((output_yaw+output_roll)*(output_yaw+output_roll)+(throttle_in-output_pitch)*(throttle_in-output_pitch));//���������������ת����
+						double f2 = sqrtf((output_yaw+output_roll)*(output_yaw+output_roll)+(throttle_in-output_pitch)*(throttle_in-output_pitch));//锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟阶拷锟斤拷锟�
 						double sin_1 = throttle_in-output_pitch;
 						double sin_2 = throttle_in+output_pitch;
-						sin_1 = sin_1 > 0.0f ? sin_1 : 0.0f;//����ʸ�����������������С��0
+						sin_1 = sin_1 > 0.0f ? sin_1 : 0.0f;//锟斤拷锟斤拷矢锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟叫★拷锟�0
 						sin_2 = sin_2 > 0.0f ? sin_2 : 0.0f;
 						float a1 = atan2f(output_yaw-output_roll, sin_1);
 						float a2 = atan2f(output_yaw+output_roll, sin_2);
@@ -1022,7 +1073,7 @@ void chassis_task(void const *pvParameters)
 					float servo_left;
 					float servo_right;
 					memcpy(&measure_quaternion, &ahrs_quaternion, 16);
-					memcpy(&tx6_buff[0], &measure_quaternion, 16);
+					//memcpy(&tx6_buff[0], &measure_quaternion, 16);
 					
 					target_quaternion.w = 1.0f;
 					target_quaternion.x = 0.0f;
@@ -1030,9 +1081,9 @@ void chassis_task(void const *pvParameters)
 					target_quaternion.z = 0.0f;
 					
 					Quaternion temp_quaternion;
-					temp_quaternion = pitch_to_quaternion(-1.5707963f + d_ch(1) * 0.0015708f);
+					temp_quaternion = pitch_to_quaternion(-1.5707963f + d_ch(1) * 0.0020708f);
 					target_quaternion = multiply_quaternion(&temp_quaternion, &target_quaternion);
-					temp_quaternion = roll_to_quaternion(d_ch(0) * -7.85398e-4);
+					temp_quaternion = roll_to_quaternion(d_ch(0) * -9.85398e-4);
 					target_quaternion = multiply_quaternion(&temp_quaternion, &target_quaternion);
 					target_yaw = target_yaw - d_ch(3) * 0.0000095664f;
 					if(target_yaw > 3.14159265359f){
@@ -1050,17 +1101,26 @@ void chassis_task(void const *pvParameters)
 					temp_quaternion = yaw_to_quaternion(target_yaw);
 					target_quaternion = multiply_quaternion(&temp_quaternion, &target_quaternion);
 					temp_quaternion = quaternion_diff(measure_quaternion, target_quaternion);
-					quaternionToEulerAngles(temp_quaternion, &error_angle[0], &error_angle[1], &error_angle[2]);
-//					euler_angle[0] = error_angle[0] * 57.3f;
-//					euler_angle[1] = error_angle[1] * 57.3f;
-//					euler_angle[2] = error_angle[2] * 57.3f;
-					//memcpy(&tx6_buff[16], &euler_angle, 12);
+					quaternionToAngles(temp_quaternion, &error_angle[0], &error_angle[1], &error_angle[2]);
+					if(isnan(error_angle[0])){
+						error_angle[0] = 0.0f;
+					}
+					if(isnan(error_angle[1])){
+						error_angle[1] = 0.0f;
+					}
+					if(isnan(error_angle[2])){
+						error_angle[2] = 0.0f;
+					}
+					World_to_Body(error_angle, error_body, measure_quaternion);
+					euler_angle[0] = error_body[0] * 57.3f;
+					euler_angle[1] = error_body[1] * 57.3f;
+					euler_angle[2] = error_body[2] * 57.3f;
+//					memcpy(&tx6_buff[16], &euler_angle, 12);
 					//HAL_UART_Transmit(&huart6, tx6_buff, 36, 1000);
 					if(ctrl_mode == 2){
-						target_velocity_pitch = pid_angle_pitch(-error_angle[0]);
-						target_velocity_roll = pid_angle_pitch(-error_angle[1]);
-						target_velocity_yaw = pid_angle_pitch(error_angle[2]);
-						
+						target_velocity_pitch = pid_angle_pitch(-error_body[0]);
+						target_velocity_roll = pid_angle_roll(-error_body[1]);
+						target_velocity_yaw = pid_angle_yaw(error_body[2]);
 						
 						imu_roll = -gyro_data[1];
 						imu_pitch = -gyro_data[0];
@@ -1097,8 +1157,8 @@ void chassis_task(void const *pvParameters)
 							a1 = a1 * 100.0f / filtered_dp;
 							a2 = a2 * 100.0f / filtered_dp;
 						}
-						limit_out(&a1);
-						limit_out(&a2);
+//						limit_out(&a1);
+//						limit_out(&a2);
 						if(f1 > 1000.0f){
 							f1 = 1000.0f;
 						}
@@ -1115,6 +1175,8 @@ void chassis_task(void const *pvParameters)
 						motor_right = f2 + 1000;
 						servo_left = servo_left_center - a1;
 						servo_right = servo_right_center + a2;
+						limit_out(&servo_left);
+						limit_out(&servo_right);
 					}
 					if(ctrl_mode == 1){
 						if(stick_mode == stick_3d){
@@ -1161,8 +1223,8 @@ void chassis_task(void const *pvParameters)
 							a1 = a1 * 100.0f / filtered_dp;
 							a2 = a2 * 100.0f / filtered_dp;
 						}
-						limit_out(&a1);
-						limit_out(&a2);
+//						limit_out(&a1);
+//						limit_out(&a2);
 						if(f1 > 1000.0f){
 							f1 = 1000.0f;
 						}
@@ -1179,6 +1241,8 @@ void chassis_task(void const *pvParameters)
 						motor_right = f2 + 1000;
 						servo_left = servo_left_center - a1;
 						servo_right = servo_right_center + a2;
+						limit_out(&servo_left);
+						limit_out(&servo_right);
 					}
 					if(arm_mode == 0){
 						motor_left = 1000;
@@ -1195,7 +1259,7 @@ void chassis_task(void const *pvParameters)
 					}
 					set_pwm(servo_right, servo_left, motor_right, motor_left);
 				}
-				vTaskDelay(1);//�ڻ�1000HZ,ͬimu���Ƶ��
+				vTaskDelay(1);//锟节伙拷1000HZ,同imu锟斤拷锟狡碉拷锟�
 		}
 				
 }
