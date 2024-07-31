@@ -269,7 +269,7 @@ void pid_init(void){
 	mat_pid[2][0] = 0.0;
 	mat_pid[2][1] = 135.0f;//139.53f;
 	mat_pid[2][2] = 0.08f;
-	mat_pid[2][3] = 122.5;
+	mat_pid[2][3] = 1600.5;
 	
 	angle_pid_mat[0][0] = 2.5;
 	angle_pid_mat[0][1] = 0.0f;//0.00006;//232.55f;
@@ -279,9 +279,9 @@ void pid_init(void){
 	angle_pid_mat[1][1] = 0.0f;//0.00002f;//697.6f;
 	angle_pid_mat[1][2] = 0.01f;
 	
-	angle_pid_mat[2][0] = 2.35;
+	angle_pid_mat[2][0] = 1.8;
 	angle_pid_mat[2][1] = 0.0f;//0.000045f;//139.53f;
-	angle_pid_mat[2][2] = 0.01f;
+	angle_pid_mat[2][2] = 0.06f;
 	
 	pid_safe_dp[0] = 12.5f;
 	pid_safe_dp[1] = 0.25f;
