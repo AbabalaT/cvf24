@@ -191,8 +191,8 @@ float mat_allocate[4][4] = {{1.0f,1.0f,0.0f,0.0f}, {1.0f,-1.0f,0.0f,0.0f}, {0.0f
 float k_pwm[4] = {0.0476, 0.0476, 0.0476, 0.0476};
 float d_pwm[4] = {0.0, 0.0, 0.0, 0.0};
 	
-float servo_left_center = 1575.0f;
-float servo_right_center = 1650.0f;
+float servo_left_center = 1500.0f;
+float servo_right_center = 1500.0f;
 
 extern float motor_L;
 extern float motor_R;
@@ -203,11 +203,11 @@ extern float filtered_dp;
 float using_dp = 0.0f;
 
 void limit_out(float* input){
-	if(*input > 2000.0){
-		*input = 2000.0;
+	if(*input > 2200.0f){
+		*input = 2200.0f;
 	}
-	if(*input < 1000.0){
-		*input = 1000.0;
+	if(*input < 800.0f){
+		*input = 800.0f;
 	}
 }
 
@@ -257,7 +257,7 @@ float kalman_yaw(float measure){
 
 void pid_init(void){
 	mat_pid[0][0] = 0.0;
-	mat_pid[0][1] = 1050.0f;//232.55f;
+	mat_pid[0][1] = 750.0f;//232.55f;
 	mat_pid[0][2] = 0.25;
 	mat_pid[0][3] = 30.0;
 	
@@ -267,13 +267,13 @@ void pid_init(void){
 	mat_pid[1][3] = 45.0;
 	
 	mat_pid[2][0] = 0.0;
-	mat_pid[2][1] = 135.0f;//139.53f;
-	mat_pid[2][2] = 0.08f;
-	mat_pid[2][3] = 1600.5;
+	mat_pid[2][1] = 125.0f;//139.53f;
+	mat_pid[2][2] = 0.06f;
+	mat_pid[2][3] = 1400.0;
 	
-	angle_pid_mat[0][0] = 2.5;
+	angle_pid_mat[0][0] = 2.0;
 	angle_pid_mat[0][1] = 0.0f;//0.00006;//232.55f;
-	angle_pid_mat[0][2] = 0.01f;
+	angle_pid_mat[0][2] = 0.05f;
 	
 	angle_pid_mat[1][0] = 2.0;
 	angle_pid_mat[1][1] = 0.0f;//0.00002f;//697.6f;
@@ -298,11 +298,11 @@ float pid_roll(float target, float real){
 	static float error_rate;
 	error = target - real;
 	sum = sum + error;
-	if(sum > 2000.0){
-		sum = 2000.0;
+	if(sum > 2000.0f){
+		sum = 2000.0f;
 	}
-	if(sum < -2000.0){
-		sum = -2000.0;
+	if(sum < -2000.0f){
+		sum = -2000.0f;
 	}
 	if(error > 3.14f){
 		sum = 0.0f;
@@ -310,7 +310,7 @@ float pid_roll(float target, float real){
 	if(error < -3.14f){
 		sum = 0.0f;
 	}
-	if(throttle_set < 100){
+	if(throttle_set < 100.0f){
 		sum = 0.0f;
 	}
 	if(arm_mode == 0){
@@ -332,11 +332,11 @@ float pid_pitch(float target, float real){
 	static float error_rate;
 	error = target - real;
 	sum = sum + error;
-	if(sum > 2000.0){
-		sum = 2000.0;
+	if(sum > 2000.0f){
+		sum = 2000.0f;
 	}
-	if(sum < -2000.0){
-		sum = -2000.0;
+	if(sum < -2000.0f){
+		sum = -2000.0f;
 	}
 	if(error > 3.14f){
 		sum = 0.0f;
@@ -344,7 +344,7 @@ float pid_pitch(float target, float real){
 	if(error < -3.14f){
 		sum = 0.0f;
 	}
-	if(throttle_set < 100){
+	if(throttle_set < 100.0f){
 		sum = 0.0f;
 	}
 	if(arm_mode == 0){
@@ -368,10 +368,10 @@ float pid_yaw(float target, float real){
 	static float error_rate;
 	error = target - real;
 	sum = sum + error;
-	if(sum > 2000.0){
+	if(sum > 2000.0f){
 		sum = 2000.0;
 	}
-	if(sum < -2000.0){
+	if(sum < -2000.0f){
 		sum = -2000.0;
 	}
 	if(error > 3.14f){
@@ -380,7 +380,7 @@ float pid_yaw(float target, float real){
 	if(error < -3.14f){
 		sum = 0.0f;
 	}
-	if(throttle_set < 100){
+	if(throttle_set < 100.0f){
 		sum = 0.0f;
 	}
 	if(arm_mode == 0){
@@ -409,11 +409,11 @@ float pid_angle_roll(float error){
 	static float result;
 	static float error_rate;
 	sum = sum + error;
-	if(sum > 25000.0){
-		sum = 25000.0;
+	if(sum > 25000.0f){
+		sum = 25000.0f;
 	}
-	if(sum < -25000.0){
-		sum = -25000.0;
+	if(sum < -25000.0f){
+		sum = -25000.0f;
 	}
 	if(error > 45.0f){
 		sum = 0.0f;
@@ -475,11 +475,11 @@ float pid_angle_yaw(float error){
 	static float result;
 	static float error_rate;
 	sum = sum + error;
-	if(sum > 25000.0){
-		sum = 25000.0;
+	if(sum > 25000.0f){
+		sum = 25000.0f;
 	}
-	if(sum < -25000.0){
-		sum = -25000.0;
+	if(sum < -25000.0f){
+		sum = -25000.0f;
 	}
 	if(error > 45.0f){
 		sum = 0.0f;
@@ -1121,7 +1121,25 @@ void chassis_task(void const *pvParameters)
 						target_velocity_pitch = pid_angle_pitch(-error_body[0]);
 						target_velocity_roll = pid_angle_roll(-error_body[1]);
 						target_velocity_yaw = pid_angle_yaw(error_body[2]);
-						
+						if(target_velocity_pitch > 3.0f){
+							target_velocity_pitch = 3.0f;
+						}
+						if(target_velocity_pitch < -3.0f){
+							target_velocity_pitch = -3.0f;
+						}
+						if(target_velocity_roll > 3.0f){
+							target_velocity_roll = 3.0f;
+						}
+						if(target_velocity_roll < -3.0f){
+							target_velocity_roll = -3.0f;
+						}
+						if(target_velocity_yaw > 3.0f){
+							target_velocity_yaw = 3.0f;
+						}
+						if(target_velocity_yaw < -3.0f){
+							target_velocity_yaw = -3.0f;
+						}
+
 						imu_roll = -gyro_data[1];
 						imu_pitch = -gyro_data[0];
 						imu_yaw = gyro_data[2];
