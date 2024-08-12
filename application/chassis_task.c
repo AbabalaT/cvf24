@@ -168,6 +168,7 @@ uint8_t rc_state_pre = 2;
 
 uint8_t ctrl_mode = 0; //锟缴匡拷模式 0锟斤拷锟斤拷锟斤拷 1锟斤拷锟斤拷锟斤拷 2锟斤拷锟斤拷锟斤拷
 extern uint8_t is_load; //投锟脚匡拷锟斤拷 0锟斤拷锟斤拷锟脚达拷 1锟斤拷锟斤拷锟脚关憋拷
+uint8_t pre_is_load = 0x12;
 extern uint8_t mag_enable;
 extern float fdata[16];
 
@@ -186,6 +187,7 @@ float d_ch(uint8_t ch_required){
 }
 
 extern float target_velocity[3];
+extern void usart6_tx_dma_enable(uint8_t *data, uint16_t len);
 
 float mat_allocate[4][4] = {{1.0f,1.0f,0.0f,0.0f}, {1.0f,-1.0f,0.0f,0.0f}, {0.0f,0.0f,1.0f,-1.0f}, {0.0f,0.0f,1.0f,1.0f}};
 
@@ -202,6 +204,7 @@ extern float servo_R;
 extern float filtered_dp;
 
 float using_dp = 0.0f;
+float hover_dp = 45.0f;
 
 void limit_out(float* input){
 	if(*input > 2200.0f){
@@ -294,6 +297,97 @@ void pid_init(void){
 	pid_safe_dp[1] = 0.25f;
 	pid_safe_dp[2] = 20.0f;
 }
+
+void pid_set_empty(void){
+	mat_pid[0][0] = 0.0;
+	mat_pid[0][1] = 750.0f;//232.55f;
+	mat_pid[0][2] = 0.25;
+	mat_pid[0][3] = 30.0;
+	
+	mat_pid[1][0] = 0.0;
+	mat_pid[1][1] = 650.0f;//697.6f;
+	mat_pid[1][2] = 0.25;
+	mat_pid[1][3] = 45.0;
+	
+	mat_pid[2][0] = 0.0;
+	mat_pid[2][1] = 30.0f;//139.53f;
+	mat_pid[2][2] = 0.075f;//0.24f;
+	mat_pid[2][3] = 1200.0;
+	
+	angle_pid_mat[0][0] = 2.0;
+	angle_pid_mat[0][1] = 0.0f;//0.00006;//232.55f;
+	angle_pid_mat[0][2] = 0.05f;
+	
+	angle_pid_mat[1][0] = 1.75;
+	angle_pid_mat[1][1] = 0.0f;//0.00002f;//697.6f;
+	angle_pid_mat[1][2] = 0.3f;
+	
+	angle_pid_mat[2][0] = 1.6;
+	angle_pid_mat[2][1] = 0.0f;//0.000045f;//139.53f;
+	angle_pid_mat[2][2] = 0.3f;
+	
+	hover_dp= 45.0f;
+}
+
+void pid_set_light(void){
+	mat_pid[0][0] = 0.0;
+	mat_pid[0][1] = 750.0f;//232.55f;
+	mat_pid[0][2] = 0.25;
+	mat_pid[0][3] = 30.0;
+	
+	mat_pid[1][0] = 0.0;
+	mat_pid[1][1] = 650.0f;//697.6f;
+	mat_pid[1][2] = 0.25;
+	mat_pid[1][3] = 45.0;
+	
+	mat_pid[2][0] = 0.0;
+	mat_pid[2][1] = 125.0f;//139.53f;
+	mat_pid[2][2] = 0.06f;
+	mat_pid[2][3] = 1400.0;
+	
+	angle_pid_mat[0][0] = 2.0;
+	angle_pid_mat[0][1] = 0.0f;//0.00006;//232.55f;
+	angle_pid_mat[0][2] = 0.05f;
+	
+	angle_pid_mat[1][0] = 2.0;
+	angle_pid_mat[1][1] = 0.0f;//0.00002f;//697.6f;
+	angle_pid_mat[1][2] = 0.01f;
+	
+	angle_pid_mat[2][0] = 1.8;
+	angle_pid_mat[2][1] = 0.0f;//0.000045f;//139.53f;
+	angle_pid_mat[2][2] = 0.06f;
+}
+
+void pid_set_heavy(void){
+	mat_pid[0][0] = 0.0;
+	mat_pid[0][1] = 750.0f;//232.55f;
+	mat_pid[0][2] = 0.25;
+	mat_pid[0][3] = 30.0;
+	
+	mat_pid[1][0] = 0.0;
+	mat_pid[1][1] = 650.0f;//697.6f;
+	mat_pid[1][2] = 0.25;
+	mat_pid[1][3] = 45.0;
+	
+	mat_pid[2][0] = 0.0;
+	mat_pid[2][1] = 125.0f;//139.53f;
+	mat_pid[2][2] = 0.06f;
+	mat_pid[2][3] = 1400.0;
+	
+	angle_pid_mat[0][0] = 2.0;
+	angle_pid_mat[0][1] = 0.0f;//0.00006;//232.55f;
+	angle_pid_mat[0][2] = 0.05f;
+	
+	angle_pid_mat[1][0] = 2.0;
+	angle_pid_mat[1][1] = 0.0f;//0.00002f;//697.6f;
+	angle_pid_mat[1][2] = 0.01f;
+	
+	angle_pid_mat[2][0] = 1.8;
+	angle_pid_mat[2][1] = 0.0f;//0.000045f;//139.53f;
+	angle_pid_mat[2][2] = 0.06f;
+	hover_dp = 100.0f;
+}
+
 
 uint8_t summing = 0;
 
@@ -908,12 +1002,14 @@ void chassis_task(void const *pvParameters)
 		ctrl_init();
 		pid_init();
 	
-		tx6_buff[16] = 0x00;
-		tx6_buff[17] = 0x00;
-		tx6_buff[18] = 0x80;
-		tx6_buff[19] = 0x7F;
+		tx6_buff[4] = 0x00;
+		tx6_buff[5] = 0x00;
+		tx6_buff[6] = 0x80;
+		tx6_buff[7] = 0x7F;
+		cali_cnt = 0;
     while (1){
 				
+//				cali_cnt = cali_cnt + 1;
 				memcpy(&gyro_data, get_gyro_data_point(), 12);
 				memcpy(&angle_data, get_INS_angle_point(), 12);
 //				if(cali_cnt < 100000){
@@ -981,6 +1077,15 @@ void chassis_task(void const *pvParameters)
 					servo_pwm[4] = 1000;
 				}
 				
+				if(is_load != pre_is_load){
+					if(is_load == 0x00){
+						pid_set_empty();
+					}else{
+						pid_set_heavy();
+					}
+					pre_is_load = is_load;
+				}
+				
 				if(system_mode == 1){
 					float motor_left;
 					float motor_right;
@@ -1017,7 +1122,7 @@ void chassis_task(void const *pvParameters)
 //						fdata[3] = gyro_data[0];
 //						fdata[4] = d_ch(3) * -0.002341f;
 //						fdata[5] = gyro_data[2];
-						//HAL_UART_Transmit_DMA(&huart1, (uint8_t*)&fdata, 3*4);
+//						HAL_UART_Transmit_DMA(&huart1, (uint8_t*)&fdata, 3*4);
 						double f1 = sqrtf((output_yaw-output_roll)*(output_yaw-output_roll)+(throttle_in+output_pitch)*(throttle_in+output_pitch));
 						double f2 = sqrtf((output_yaw+output_roll)*(output_yaw+output_roll)+(throttle_in-output_pitch)*(throttle_in-output_pitch));//锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟阶拷锟斤拷锟�
 						double sin_1 = throttle_in-output_pitch;
@@ -1080,7 +1185,6 @@ void chassis_task(void const *pvParameters)
 					float servo_left;
 					float servo_right;
 					memcpy(&measure_quaternion, &ahrs_quaternion, 16);
-					
 					Quaternion de_yaw_quaternion = yaw_to_quaternion(-angle_data[0]);
 					Quaternion de_yaw_ahrs = multiply_quaternion(&de_yaw_quaternion, &measure_quaternion);
 					target_quaternion.w = 1.0f;
@@ -1088,7 +1192,11 @@ void chassis_task(void const *pvParameters)
 					target_quaternion.y = 0.0f;
 					target_quaternion.z = 0.0f;
 					//memcpy(&tx6_buff[0], &measure_quaternion, 16);
-					//HAL_UART_Transmit(&huart6, tx6_buff, 20, 1000);
+					//HAL_UART_Transmit_DMA(&huart6, tx6_buff, 12);
+//					cali_cnt = cali_cnt + 1;
+//					if(cali_cnt > 3){
+//						usart6_tx_dma_enable(tx6_buff, 12);
+//					}
 					Quaternion temp_quaternion;
 					temp_quaternion = pitch_to_quaternion(-1.5707963f + d_ch(1) * 0.0020708f);
 					target_quaternion = multiply_quaternion(&temp_quaternion, &target_quaternion);
@@ -1132,7 +1240,7 @@ void chassis_task(void const *pvParameters)
 //					euler_angle[1] = error_body[1] * 57.3f;
 //					euler_angle[2] = error_body[2] * 57.3f;
 //					memcpy(&tx6_buff[16], &euler_angle, 12);
-					//HAL_UART_Transmit(&huart6, tx6_buff, 36, 1000);
+//					HAL_UART_Transmit_DMA(&huart1, tx6_buff, 36);
 					if(ctrl_mode == 2){
 						target_velocity_pitch = pid_angle_pitch(-error_body[0]);
 						target_velocity_roll = pid_angle_roll(-error_body[1]);
@@ -1165,12 +1273,12 @@ void chassis_task(void const *pvParameters)
 						output_roll = pid_roll(target_velocity_roll, roll_in);
 						output_pitch = pid_pitch(target_velocity_pitch, pitch_in);
 						output_yaw = pid_yaw(target_velocity_yaw, yaw_in);
-						fdata[0] = imu_pitch;
-						fdata[1] = gyro_data[2];
-						fdata[2] = INFINITY;
-						fdata[3] = gyro_data[0];
-						fdata[4] = d_ch(3) * -0.002341f;
-						fdata[5] = gyro_data[2];
+//						fdata[0] = imu_pitch;
+//						fdata[1] = gyro_data[2];
+//						fdata[2] = INFINITY;
+//						fdata[3] = gyro_data[0];
+//						fdata[4] = d_ch(3) * -0.002341f;
+//						fdata[5] = gyro_data[2];
 						//HAL_UART_Transmit(&huart6, (uint8_t*)&fdata, 3*4, 1000);
 //						fdata[0] = d_ch(0) * 0.002341f;
 //						fdata[1] = -gyro_data[1];
@@ -1191,6 +1299,8 @@ void chassis_task(void const *pvParameters)
 							a1 = a1 * 100.0f / filtered_dp;
 							a2 = a2 * 100.0f / filtered_dp;
 						}
+						memcpy(&tx6_buff[0], &filtered_dp, 4);
+						usart6_tx_dma_enable(tx6_buff, 8);
 //						limit_out(&a1);
 //						limit_out(&a2);
 						if(f1 > 1000.0f){
@@ -1227,7 +1337,7 @@ void chassis_task(void const *pvParameters)
 						imu_yaw = gyro_data[2];
 						float roll_in = kalman_roll(imu_roll);
 						float pitch_in = kalman_pitch(imu_pitch);
-						float yaw_in = kalman_yaw(imu_yaw);
+						float yaw_in = kalman_yaw(imu_yaw); 
 						output_roll = pid_roll(target_velocity_roll, roll_in);
 						output_pitch = pid_pitch(target_velocity_pitch, pitch_in);
 						output_yaw = pid_yaw(target_velocity_yaw, yaw_in);
@@ -1253,9 +1363,9 @@ void chassis_task(void const *pvParameters)
 						float a1 = output_pitch - output_roll;
 						float a2 = output_pitch + output_roll;
 						
-						if(filtered_dp > 100.0f){
-							a1 = a1 * 100.0f / filtered_dp;
-							a2 = a2 * 100.0f / filtered_dp;
+						if(filtered_dp > hover_dp){
+							a1 = a1 * hover_dp / filtered_dp;
+							a2 = a2 * hover_dp / filtered_dp;
 						}
 //						limit_out(&a1);
 //						limit_out(&a2);
