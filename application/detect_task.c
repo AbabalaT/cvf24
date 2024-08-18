@@ -103,15 +103,16 @@ const uint16_t music[3][8]={    //低中高音对应频率所需的预分频数
     {0,95,85,75,71,63,56,50}
 };
 
+
+
 void play(uint8_t i,uint8_t j,uint16_t time, uint16_t idle){
-	uint16_t current_pwm = 150;
+	int16_t current_pwm = 485;
 	while(time > 10){
-		current_pwm = current_pwm - 1;
-		if(current_pwm < 10){
-			current_pwm = 10;
+		current_pwm = current_pwm - 4;
+		if(current_pwm < 0){
+			current_pwm = 0;
 		}
-		//buzzer_on(music[i][j], current_pwm);
-		buzzer_on(music[i][j], current_pwm);
+		buzzer_on(music[i][j], current_pwm*current_pwm/485);
 		time = time - 5;
 		vTaskDelay(5);
 	}
@@ -128,6 +129,35 @@ void detect_task(void const *pvParameters)
     detect_init(system_time);
     //wait a time.空闲一段时间
     vTaskDelay(DETECT_TASK_INIT_TIME);
+//	play(0,2,405,10);
+//	play(0,2,193,10);
+//	play(0,7,400,10);
+//	play(0,6,205,10);
+//	play(0,7,405,10);
+//	
+//	
+//	play(0,6,203,10);
+//	play(0,7,395,10);
+//	play(0,6,188,10);
+//	play(0,7,590,10);
+//	play(1,2,600,10);
+//	
+//	play(0,2,583,10);
+//	play(0,5,413,10);
+//	play(0,4,205,10);
+//	play(0,5,395,10);
+//	play(0,5,200,10);
+//	
+//	play(0,4,400,10);
+//	play(0,2,165,10);
+//	play(0,2,608,10);
+
+//		play(1,4,500,1);
+//		play(1,4,500,1);
+//		play(1,4,500,1);
+//		play(1,4,500,1);
+
+
 	play(1,1,250, 30);
 	play(1,1,250, 30);
 	play(1,5,250, 30);
@@ -170,7 +200,7 @@ void detect_task(void const *pvParameters)
 			if(door_open){
 				if(arm_mode == 0){
 					for(uint16_t warn_psc=191; warn_psc > 101; warn_psc = warn_psc - 5){
-						buzzer_on(warn_psc, 150);
+						buzzer_on(warn_psc, 480);
 						vTaskDelay(20);
 						if(door_open == 0){
 							break;
@@ -182,7 +212,7 @@ void detect_task(void const *pvParameters)
 					buzzer_off();
 					vTaskDelay(50);
 					for(uint16_t warn_psc=191; warn_psc > 101; warn_psc = warn_psc - 5){
-						buzzer_on(warn_psc, 150);
+						buzzer_on(warn_psc, 480);
 						vTaskDelay(20);
 						if(door_open == 0){
 							break;

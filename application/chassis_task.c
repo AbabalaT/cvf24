@@ -374,17 +374,17 @@ void pid_set_heavy(void){
 	mat_pid[2][2] = 0.06f;
 	mat_pid[2][3] = 1400.0;
 	
-	angle_pid_mat[0][0] = 2.0;
+	angle_pid_mat[0][0] = 1.7;
 	angle_pid_mat[0][1] = 0.0f;//0.00006;//232.55f;
-	angle_pid_mat[0][2] = 0.05f;
+	angle_pid_mat[0][2] = 0.2f;
 	
-	angle_pid_mat[1][0] = 2.0;
+	angle_pid_mat[1][0] = 1.7;
 	angle_pid_mat[1][1] = 0.0f;//0.00002f;//697.6f;
-	angle_pid_mat[1][2] = 0.01f;
+	angle_pid_mat[1][2] = 0.03f;
 	
-	angle_pid_mat[2][0] = 1.8;
+	angle_pid_mat[2][0] = 1.6;
 	angle_pid_mat[2][1] = 0.0f;//0.000045f;//139.53f;
-	angle_pid_mat[2][2] = 0.06f;
+	angle_pid_mat[2][2] = 0.1f;
 	hover_dp = 100.0f;
 }
 
