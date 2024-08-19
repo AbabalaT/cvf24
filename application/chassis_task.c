@@ -204,7 +204,7 @@ extern float servo_R;
 extern float filtered_dp;
 
 float using_dp = 0.0f;
-float hover_dp = 45.0f;
+float hover_dp = 100.0f;
 
 void limit_out(float* input){
 	if(*input > 2200.0f){
@@ -296,6 +296,7 @@ void pid_init(void){
 	pid_safe_dp[0] = 12.5f;
 	pid_safe_dp[1] = 0.25f;
 	pid_safe_dp[2] = 20.0f;
+	hover_dp = 100.0f;
 }
 
 void pid_set_empty(void){
@@ -310,23 +311,26 @@ void pid_set_empty(void){
 	mat_pid[1][3] = 45.0;
 	
 	mat_pid[2][0] = 0.0;
-	mat_pid[2][1] = 30.0f;//139.53f;
-	mat_pid[2][2] = 0.075f;//0.24f;
-	mat_pid[2][3] = 1200.0;
+	mat_pid[2][1] = 125.0f;//139.53f;
+	mat_pid[2][2] = 0.06f;
+	mat_pid[2][3] = 1400.0;
 	
 	angle_pid_mat[0][0] = 2.0;
 	angle_pid_mat[0][1] = 0.0f;//0.00006;//232.55f;
 	angle_pid_mat[0][2] = 0.05f;
 	
-	angle_pid_mat[1][0] = 1.75;
+	angle_pid_mat[1][0] = 2.0;
 	angle_pid_mat[1][1] = 0.0f;//0.00002f;//697.6f;
-	angle_pid_mat[1][2] = 0.3f;
+	angle_pid_mat[1][2] = 0.01f;
 	
-	angle_pid_mat[2][0] = 1.6;
+	angle_pid_mat[2][0] = 1.8;
 	angle_pid_mat[2][1] = 0.0f;//0.000045f;//139.53f;
-	angle_pid_mat[2][2] = 0.3f;
+	angle_pid_mat[2][2] = 0.06f;
 	
-	hover_dp= 45.0f;
+	pid_safe_dp[0] = 12.5f;
+	pid_safe_dp[1] = 0.25f;
+	pid_safe_dp[2] = 20.0f;
+	hover_dp = 100.0f;
 }
 
 void pid_set_light(void){
@@ -356,6 +360,11 @@ void pid_set_light(void){
 	angle_pid_mat[2][0] = 1.8;
 	angle_pid_mat[2][1] = 0.0f;//0.000045f;//139.53f;
 	angle_pid_mat[2][2] = 0.06f;
+	
+	pid_safe_dp[0] = 12.5f;
+	pid_safe_dp[1] = 0.25f;
+	pid_safe_dp[2] = 20.0f;
+	hover_dp = 100.0f;
 }
 
 void pid_set_heavy(void){
@@ -374,17 +383,21 @@ void pid_set_heavy(void){
 	mat_pid[2][2] = 0.06f;
 	mat_pid[2][3] = 1400.0;
 	
-	angle_pid_mat[0][0] = 1.7;
+	angle_pid_mat[0][0] = 2.0;
 	angle_pid_mat[0][1] = 0.0f;//0.00006;//232.55f;
-	angle_pid_mat[0][2] = 0.2f;
+	angle_pid_mat[0][2] = 0.05f;
 	
-	angle_pid_mat[1][0] = 1.7;
+	angle_pid_mat[1][0] = 2.0;
 	angle_pid_mat[1][1] = 0.0f;//0.00002f;//697.6f;
-	angle_pid_mat[1][2] = 0.03f;
+	angle_pid_mat[1][2] = 0.01f;
 	
-	angle_pid_mat[2][0] = 1.6;
+	angle_pid_mat[2][0] = 1.8;
 	angle_pid_mat[2][1] = 0.0f;//0.000045f;//139.53f;
-	angle_pid_mat[2][2] = 0.1f;
+	angle_pid_mat[2][2] = 0.06f;
+	
+	pid_safe_dp[0] = 12.5f;
+	pid_safe_dp[1] = 0.25f;
+	pid_safe_dp[2] = 20.0f;
 	hover_dp = 100.0f;
 }
 
