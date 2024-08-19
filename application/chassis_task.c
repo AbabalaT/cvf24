@@ -1062,11 +1062,13 @@ void chassis_task(void const *pvParameters)
 				}else{
 					ctrl_mode = 1;
 				}
+				
 				float throttle_in = d_ch(2) / 2.0f + 500.0f;
 				float yaw_in = d_ch(3) / 2.0f;
 				float roll_in = d_ch(0) / 2.0f;
 				float pitch_in = d_ch(1) / -2.0f;
 				throttle_set = throttle_in;
+
 				if(door_open){
 					servo_pwm[4] = 2000;
 				}
@@ -1082,100 +1084,7 @@ void chassis_task(void const *pvParameters)
 					}
 					pre_is_load = is_load;
 				}
-				
-				if(system_mode == 1){
-					float motor_left;
-					float motor_right;
-					float servo_left;
-					float servo_right;
-//					if(ctrl_mode == 0){
-//						motor_left = mat_allocate[0][0]*throttle_in + mat_allocate[0][1]*yaw_in + mat_allocate[0][2]*roll_in + mat_allocate[0][3]*pitch_in + 500.0f;
-//						motor_right = mat_allocate[1][0]*throttle_in + mat_allocate[1][1]*yaw_in + mat_allocate[1][2]*roll_in + mat_allocate[1][3]*pitch_in + 500.0f;
-//						servo_left = mat_allocate[2][0]*throttle_in + mat_allocate[2][1]*yaw_in + mat_allocate[2][2]*roll_in + mat_allocate[2][3]*pitch_in + servo_left_center;
-//						servo_right = mat_allocate[3][0]*throttle_in + mat_allocate[3][1]*yaw_in + mat_allocate[3][2]*roll_in + mat_allocate[3][3]*pitch_in + servo_right_center;
-//					}
-					if(ctrl_mode == 1){
-						if(stick_mode == stick_3d){
-							target_velocity_roll = d_ch(0) * 0.002341f;
-							target_velocity_pitch = d_ch(1) * -0.002341f;
-							target_velocity_yaw = d_ch(3) * -0.002341f;
-						}else{
-							target_velocity_roll = d_ch(3) * -0.002341f;
-							target_velocity_pitch = d_ch(1) * -0.002341f;
-							target_velocity_yaw = d_ch(0) * -0.002341f;
-						}
-						imu_roll = -gyro_data[1];
-						imu_pitch = -gyro_data[0];
-						imu_yaw = gyro_data[2];
-						float roll_in = kalman_roll(imu_roll);
-						float pitch_in = kalman_pitch(imu_pitch);
-						float yaw_in = kalman_yaw(imu_yaw);
-						output_roll = pid_roll_heli(target_velocity_roll, roll_in);
-						output_pitch = pid_pitch_heli(target_velocity_pitch, pitch_in);
-						output_yaw = pid_yaw_heli(target_velocity_yaw, yaw_in);
-//						fdata[0] = target_velocity_yaw;
-//						fdata[1] = gyro_data[2];
-//						fdata[2] = INFINITY;
-//						fdata[3] = gyro_data[0];
-//						fdata[4] = d_ch(3) * -0.002341f;
-//						fdata[5] = gyro_data[2];
-//						HAL_UART_Transmit_DMA(&huart1, (uint8_t*)&fdata, 3*4);
-						double f1 = sqrtf((output_yaw-output_roll)*(output_yaw-output_roll)+(throttle_in+output_pitch)*(throttle_in+output_pitch));
-						double f2 = sqrtf((output_yaw+output_roll)*(output_yaw+output_roll)+(throttle_in-output_pitch)*(throttle_in-output_pitch));//锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟阶拷锟斤拷锟�
-						double sin_1 = throttle_in-output_pitch;
-						double sin_2 = throttle_in+output_pitch;
-						sin_1 = sin_1 > 0.0f ? sin_1 : 0.0f;//锟斤拷锟斤拷矢锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟叫★拷锟�0
-						sin_2 = sin_2 > 0.0f ? sin_2 : 0.0f;
-						float a1 = atan2f(output_yaw-output_roll, sin_1);
-						float a2 = atan2f(output_yaw+output_roll, sin_2);
-						a1 = a1 * 636.9f;
-						a2 = a2 * 636.9f;
-						
-						f1 = sin_1;
-						f2 = sin_2;
-						a1 = output_yaw-output_roll;
-						a2 = output_yaw+output_roll;
-						
-						limit_out(&a1);
-						limit_out(&a2);
-						if(f1 > 1000.0f){
-							f1 = 1000.0f;
-						}
-						if(f1 < 0.0f){
-							f1 = 0.0f;
-						}
-						if(f2 > 1000.0f){
-							f2 = 1000.0f;
-						}
-						
-						if(f2 < 0.0f){
-							f2 = 0.0f;
-						}
-//						motor_left = mat_allocate[0][0] * throttle_in + mat_allocate[0][1] * output_yaw + 500.0f;
-//						motor_right = mat_allocate[1][0] * throttle_in + mat_allocate[1][1] * output_yaw + 500.0f;
-//						servo_left = mat_allocate[2][2]*output_roll + mat_allocate[2][3]*pitch_in + servo_left_center;
-//						servo_right = mat_allocate[3][2]*output_roll + mat_allocate[3][3]*output_pitch + servo_right_center;
-						motor_left = f1 + 1000;
-						motor_right = f2 + 1000;
-						servo_left = servo_left_center + a1;
-						servo_right = servo_right_center - a2;
-					}
-					
-					if(arm_mode == 0){
-						motor_left = 1000;
-						motor_right = 1000;
-						servo_left = servo_left_center;
-						servo_right = servo_right_center;
-					}else{
-						if(motor_left < motor_idle_speed){
-							motor_left = motor_idle_speed;
-						}
-						if(motor_right < motor_idle_speed){
-							motor_right = motor_idle_speed;
-						}
-					}
-					set_pwm(motor_left, motor_right, servo_left, servo_right);
-				}
+
 				if(system_mode == 2){
 					float motor_left;
 					float motor_right;
