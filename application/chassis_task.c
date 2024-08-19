@@ -1025,9 +1025,6 @@ void chassis_task(void const *pvParameters)
 //						system_mode = 2;
 //					}
 //				}
-//				euler_angle[0] = angle_data[0] * 57.3f;
-//				euler_angle[1] = angle_data[1] * 57.3f;
-//				euler_angle[2] = angle_data[2] * 57.3f;
 
 				if(1){
 					system_mode = 2;
@@ -1193,30 +1190,30 @@ void chassis_task(void const *pvParameters)
 					target_quaternion.z = 0.0f;
 					//memcpy(&tx6_buff[0], &measure_quaternion, 16);
 					//HAL_UART_Transmit_DMA(&huart6, tx6_buff, 12);
-//					cali_cnt = cali_cnt + 1;
-//					if(cali_cnt > 3){
-//						usart6_tx_dma_enable(tx6_buff, 12);
-//					}
+					// cali_cnt = cali_cnt + 1;
+					// if(cali_cnt > 3){
+					// 	usart6_tx_dma_enable(tx6_buff, 12);
+					// }
 					Quaternion temp_quaternion;
 					temp_quaternion = pitch_to_quaternion(-1.5707963f + d_ch(1) * 0.0020708f);
 					target_quaternion = multiply_quaternion(&temp_quaternion, &target_quaternion);
 					temp_quaternion = roll_to_quaternion(d_ch(0) * -9.85398e-4);
 					target_quaternion = multiply_quaternion(&temp_quaternion, &target_quaternion);
-//					target_yaw = target_yaw - d_ch(3) * 0.0000095664f;
-//					if(target_yaw > 3.14159265359f){
-//						target_yaw = target_yaw - 6.2831853f;
-//					}
-//					if(target_yaw < -3.14159265359f){
-//						target_yaw = target_yaw + 6.2831853f;
-//					}
-//					if(arm_mode == 0){
-//						target_yaw = angle_data[0];
-//					}
-//					if(ctrl_mode == 1){
-//						target_yaw = angle_data[0];
-//					}
-//					temp_quaternion = yaw_to_quaternion(target_yaw);
-//					target_quaternion = multiply_quaternion(&temp_quaternion, &target_quaternion);
+					// target_yaw = target_yaw - d_ch(3) * 0.0000095664f;
+					// if(target_yaw > 3.14159265359f){
+					// 	target_yaw = target_yaw - 6.2831853f;
+					// }
+					// if(target_yaw < -3.14159265359f){
+					// 	target_yaw = target_yaw + 6.2831853f;
+					// }
+					// if(arm_mode == 0){
+					// 	target_yaw = angle_data[0];
+					// }
+					// if(ctrl_mode == 1){
+					// 	target_yaw = angle_data[0];
+					// }
+					// temp_quaternion = yaw_to_quaternion(target_yaw);
+					// target_quaternion = multiply_quaternion(&temp_quaternion, &target_quaternion);
 					temp_quaternion = quaternion_diff(de_yaw_ahrs, target_quaternion);
 					quaternionToAngles(temp_quaternion, &error_angle[0], &error_angle[1], &error_angle[2]);
 					if(isnan(error_angle[0])){
@@ -1229,22 +1226,23 @@ void chassis_task(void const *pvParameters)
 						error_angle[2] = 0.0f;
 					}
 					World_to_Body(error_angle, error_body, de_yaw_ahrs);
+
 					w_yaw_world[0] = 0.0f;
 					w_yaw_world[1] = 0.0f;
 					w_yaw_world[2] = d_ch(3) * -0.002341f;
 					World_to_Body(w_yaw_world, w_yaw_body, measure_quaternion);
-					error_body[0] = error_body[0] + w_yaw_body[0];
-					error_body[1] = error_body[1] + w_yaw_body[1];
-					error_body[2] = error_body[2] + w_yaw_body[2];
-//					euler_angle[0] = error_body[0] * 57.3f;
-//					euler_angle[1] = error_body[1] * 57.3f;
-//					euler_angle[2] = error_body[2] * 57.3f;
-//					memcpy(&tx6_buff[16], &euler_angle, 12);
-//					HAL_UART_Transmit_DMA(&huart1, tx6_buff, 36);
+					// error_body[0] = error_body[0];
+					// error_body[1] = error_body[1];
+					// error_body[2] = error_body[2];
+					// euler_angle[0] = error_body[0] * 57.3f;
+					// euler_angle[1] = error_body[1] * 57.3f;
+					// euler_angle[2] = error_body[2] * 57.3f;
+					// memcpy(&tx6_buff[16], &euler_angle, 12);
+					// HAL_UART_Transmit_DMA(&huart1, tx6_buff, 36);
 					if(ctrl_mode == 2){
-						target_velocity_pitch = pid_angle_pitch(-error_body[0]);
-						target_velocity_roll = pid_angle_roll(-error_body[1]);
-						target_velocity_yaw = pid_angle_yaw(error_body[2]);
+						target_velocity_pitch = pid_angle_pitch(-error_body[0]) + w_yaw_body[0];
+						target_velocity_roll = pid_angle_roll(-error_body[1]) + w_yaw_body[1];
+						target_velocity_yaw = pid_angle_yaw(error_body[2]) + w_yaw_body[2];
 						if(target_velocity_pitch > 3.0f){
 							target_velocity_pitch = 3.0f;
 						}
