@@ -180,6 +180,9 @@ uint8_t arm_mode = 0; //0锟斤拷锟斤拷锟斤拷 1锟斤拷锟斤拷锟斤�
 uint8_t system_mode = 0; //SE锟斤拷锟斤拷 锟缴匡拷锟杰匡拷锟斤拷 锟酵ｏ拷锟斤拷锟叫匡拷锟狡诧拷锟斤拷锟斤拷 锟叫ｏ拷锟街讹拷锟斤拷锟侥Ｊ� 锟竭ｏ拷锟缴匡拷模式
 uint8_t door_open = 0;
 uint8_t stick_mode = 0x00;
+
+uint8_t pwm_debugging = 0xFF;
+
 float throttle_set = 0.0f;
 
 float d_ch(uint8_t ch_required){
@@ -313,23 +316,26 @@ void pid_set_empty(void){
 	mat_pid[1][3] = 45.0;
 	
 	mat_pid[2][0] = 0.0;
-	mat_pid[2][1] = 30.0f;//139.53f;
-	mat_pid[2][2] = 0.075f;//0.24f;
-	mat_pid[2][3] = 1200.0;
+	mat_pid[2][1] = 125.0f;//139.53f;
+	mat_pid[2][2] = 0.06f;
+	mat_pid[2][3] = 1400.0;
 	
 	angle_pid_mat[0][0] = 2.0;
 	angle_pid_mat[0][1] = 0.0f;//0.00006;//232.55f;
 	angle_pid_mat[0][2] = 0.05f;
 	
-	angle_pid_mat[1][0] = 1.75;
+	angle_pid_mat[1][0] = 2.0;
 	angle_pid_mat[1][1] = 0.0f;//0.00002f;//697.6f;
-	angle_pid_mat[1][2] = 0.3f;
+	angle_pid_mat[1][2] = 0.01f;
 	
-	angle_pid_mat[2][0] = 1.6;
+	angle_pid_mat[2][0] = 1.8;
 	angle_pid_mat[2][1] = 0.0f;//0.000045f;//139.53f;
-	angle_pid_mat[2][2] = 0.3f;
+	angle_pid_mat[2][2] = 0.06f;
 	
-	hover_dp= 45.0f;
+	pid_safe_dp[0] = 12.5f;
+	pid_safe_dp[1] = 0.25f;
+	pid_safe_dp[2] = 20.0f;
+	hover_dp = 100.0f;
 }
 
 void pid_set_light(void){
@@ -377,17 +383,21 @@ void pid_set_heavy(void){
 	mat_pid[2][2] = 0.06f;
 	mat_pid[2][3] = 1400.0;
 	
-	angle_pid_mat[0][0] = 1.7;
+	angle_pid_mat[0][0] = 2.0;
 	angle_pid_mat[0][1] = 0.0f;//0.00006;//232.55f;
-	angle_pid_mat[0][2] = 0.2f;
+	angle_pid_mat[0][2] = 0.05f;
 	
-	angle_pid_mat[1][0] = 1.7;
+	angle_pid_mat[1][0] = 2.0;
 	angle_pid_mat[1][1] = 0.0f;//0.00002f;//697.6f;
-	angle_pid_mat[1][2] = 0.03f;
+	angle_pid_mat[1][2] = 0.01f;
 	
-	angle_pid_mat[2][0] = 1.6;
+	angle_pid_mat[2][0] = 1.8;
 	angle_pid_mat[2][1] = 0.0f;//0.000045f;//139.53f;
-	angle_pid_mat[2][2] = 0.1f;
+	angle_pid_mat[2][2] = 0.06f;
+	
+	pid_safe_dp[0] = 12.5f;
+	pid_safe_dp[1] = 0.25f;
+	pid_safe_dp[2] = 20.0f;
 	hover_dp = 100.0f;
 }
 
@@ -1314,7 +1324,10 @@ void chassis_task(void const *pvParameters)
 					u_real_yaw = motor_left - motor_right;
 					u_real_pitch = servo_left_center - servo_left + servo_right - servo_right_center;
 					u_real_roll = servo_right - servo_right_center - (servo_left_center - servo_left);
-					set_pwm(servo_right, servo_left, motor_right, motor_left);
+					if(pwm_debugging){
+						set_pwm(servo_right, servo_left, motor_right, motor_left);
+					}
+					
 				}
 				vTaskDelay(1);//锟节伙拷1000HZ,同imu锟斤拷锟狡碉拷锟�
 		}
