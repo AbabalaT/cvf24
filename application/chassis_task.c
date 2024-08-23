@@ -197,6 +197,9 @@ float d_pwm[4] = {0.0, 0.0, 0.0, 0.0};
 float servo_left_center = 1500.0f;
 float servo_right_center = 1500.0f;
 
+uint16_t door_open_pwm = 2000;
+uint16_t door_close_pwm = 1250;
+
 extern float motor_L;
 extern float motor_R;
 extern float servo_L;
@@ -1070,10 +1073,10 @@ void chassis_task(void const *pvParameters)
 				throttle_set = throttle_in;
 
 				if(door_open){
-					servo_pwm[4] = 2000;
+					servo_pwm[4] = door_open_pwm;
 				}
 				else{
-					servo_pwm[4] = 1000;
+					servo_pwm[4] = door_close_pwm;
 				}
 				
 				if(is_load != pre_is_load){
@@ -1149,8 +1152,8 @@ void chassis_task(void const *pvParameters)
 					// memcpy(&tx6_buff[16], &euler_angle, 12);
 					// HAL_UART_Transmit_DMA(&huart1, tx6_buff, 36);
 					if(ctrl_mode == 2){
-						target_velocity_pitch = pid_angle_pitch(-error_body[0]) + w_yaw_body[0];
-						target_velocity_roll = pid_angle_roll(-error_body[1]) + w_yaw_body[1];
+						target_velocity_pitch = pid_angle_pitch(-error_body[0]) - w_yaw_body[0];
+						target_velocity_roll = pid_angle_roll(-error_body[1]) - w_yaw_body[1];
 						target_velocity_yaw = pid_angle_yaw(error_body[2]) + w_yaw_body[2];
 						if(target_velocity_pitch > 3.0f){
 							target_velocity_pitch = 3.0f;

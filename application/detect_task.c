@@ -129,6 +129,18 @@ void detect_task(void const *pvParameters)
     detect_init(system_time);
     //wait a time.ø’œ–“ª∂Œ ±º‰
     vTaskDelay(DETECT_TASK_INIT_TIME);
+    play(2, 5, 285, 10);
+    play(2, 3, 163, 10);
+    play(2, 1, 125, 10);
+    play(2, 2, 285, 10);
+    play(1, 5, 293, 10);
+    play(1, 5, 145, 10);
+    play(1, 7, 135, 10);
+    play(2, 2, 175, 10);
+    play(2, 4, 175, 10);
+    play(2, 3, 273, 10);
+    play(2, 1, 563, 10);
+
 //	play(0,2,405,10);
 //	play(0,2,193,10);
 //	play(0,7,400,10);
@@ -158,14 +170,14 @@ void detect_task(void const *pvParameters)
 //		play(1,4,500,1);
 
 
-	play(1,1,250, 30);
-	play(1,1,250, 30);
-	play(1,5,250, 30);
-	play(1,5,250, 30);
-	play(1,6,250, 30);
-	play(1,6,250, 30);
-	play(1,5,250, 30);
-	play(1,5,250, 30);
+	// play(1,1,250, 30);
+	// play(1,1,250, 30);
+	// play(1,5,250, 30);
+	// play(1,5,250, 30);
+	// play(1,6,250, 30);
+	// play(1,6,250, 30);
+	// play(1,5,250, 30);
+	// play(1,5,250, 30);
 //	play(1,5,250, 30);
 //	play(1,5,200, 30);
 //	play(1,5,200, 30);
