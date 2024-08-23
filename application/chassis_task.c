@@ -166,6 +166,8 @@ extern uint16_t servo_pwm[6];
 fp32 gyro_data[3], angle_data[3];
 uint8_t rc_state_pre = 2;
 
+uint8_t useless = 0x00;
+
 uint8_t ctrl_mode = 0; //锟缴匡拷模式 0锟斤拷锟斤拷锟斤拷 1锟斤拷锟斤拷锟斤拷 2锟斤拷锟斤拷锟斤拷
 extern uint8_t is_load; //投锟脚匡拷锟斤拷 0锟斤拷锟斤拷锟脚达拷 1锟斤拷锟斤拷锟脚关憋拷
 uint8_t pre_is_load = 0x12;
