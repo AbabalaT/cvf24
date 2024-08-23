@@ -235,6 +235,8 @@ float u_real_yaw = 0.0f;
 float w_yaw_world[3];
 float w_yaw_body[3];
 
+uint16_t pwm_debugging = 0xFF;
+
 float kalman_roll(float measure){
 	static float x;
 	static float p;
@@ -308,14 +310,14 @@ void pid_set_empty(void){
 	mat_pid[0][3] = 30.0;
 	
 	mat_pid[1][0] = 0.0;
-	mat_pid[1][1] = 650.0f;//697.6f;
-	mat_pid[1][2] = 0.25;
-	mat_pid[1][3] = 45.0;
+	mat_pid[1][1] = 500.0f;//697.6f;
+	mat_pid[1][2] = 0.2;
+	mat_pid[1][3] = 30.0;
 	
 	mat_pid[2][0] = 0.0;
-	mat_pid[2][1] = 30.0f;//139.53f;
-	mat_pid[2][2] = 0.075f;//0.24f;
-	mat_pid[2][3] = 1200.0;
+	mat_pid[2][1] = 67.5f;//139.53f;
+	mat_pid[2][2] = 0.03f;//0.24f;
+	mat_pid[2][3] = 75.0;
 	
 	angle_pid_mat[0][0] = 2.0;
 	angle_pid_mat[0][1] = 0.0f;//0.00006;//232.55f;
@@ -325,9 +327,9 @@ void pid_set_empty(void){
 	angle_pid_mat[1][1] = 0.0f;//0.00002f;//697.6f;
 	angle_pid_mat[1][2] = 0.3f;
 	
-	angle_pid_mat[2][0] = 1.6;
+	angle_pid_mat[2][0] = 1.65;
 	angle_pid_mat[2][1] = 0.0f;//0.000045f;//139.53f;
-	angle_pid_mat[2][2] = 0.3f;
+	angle_pid_mat[2][2] = 0.85f;
 	
 	hover_dp= 45.0f;
 }
@@ -1314,7 +1316,10 @@ void chassis_task(void const *pvParameters)
 					u_real_yaw = motor_left - motor_right;
 					u_real_pitch = servo_left_center - servo_left + servo_right - servo_right_center;
 					u_real_roll = servo_right - servo_right_center - (servo_left_center - servo_left);
-					set_pwm(servo_right, servo_left, motor_right, motor_left);
+					if(pwm_debugging){
+						set_pwm(servo_right, servo_left, motor_right, motor_left);
+					}
+					
 				}
 				vTaskDelay(1);//锟节伙拷1000HZ,同imu锟斤拷锟狡碉拷锟�
 		}
