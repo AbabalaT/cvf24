@@ -365,9 +365,9 @@ void pid_set_light(void){
 
 void pid_set_heavy(void){
 	mat_pid[0][0] = 0.0;
-	mat_pid[0][1] = 750.0f;//232.55f;
+	mat_pid[0][1] = 550.0f;//232.55f;
 	mat_pid[0][2] = 0.25;
-	mat_pid[0][3] = 30.0;
+	mat_pid[0][3] = 18.0;
 	
 	mat_pid[1][0] = 0.0;
 	mat_pid[1][1] = 650.0f;//697.6f;
@@ -1185,6 +1185,11 @@ void chassis_task(void const *pvParameters)
 						output_roll = pid_roll(target_velocity_roll, roll_in);
 						output_pitch = pid_pitch(target_velocity_pitch, pitch_in);
 						output_yaw = pid_yaw(target_velocity_yaw, yaw_in);
+						memcpy(&tx6_buff[0], &output_yaw, 4);
+						usart6_tx_dma_enable(tx6_buff, 8);
+//						memcpy(&tx6_buff[0], &yaw_in, 4);
+//						memcpy(&tx6_buff[0], &yaw_in, 4);
+//						usart6_tx_dma_enable(tx6_buff, 8);
 //						fdata[0] = imu_pitch;
 //						fdata[1] = gyro_data[2];
 //						fdata[2] = INFINITY;
@@ -1211,8 +1216,8 @@ void chassis_task(void const *pvParameters)
 							a1 = a1 * 100.0f / filtered_dp;
 							a2 = a2 * 100.0f / filtered_dp;
 						}
-						memcpy(&tx6_buff[0], &filtered_dp, 4);
-						usart6_tx_dma_enable(tx6_buff, 8);
+//						memcpy(&tx6_buff[0], &filtered_dp, 4);
+//						usart6_tx_dma_enable(tx6_buff, 8);
 //						limit_out(&a1);
 //						limit_out(&a2);
 						if(f1 > 1000.0f){
@@ -1253,6 +1258,8 @@ void chassis_task(void const *pvParameters)
 						output_roll = pid_roll(target_velocity_roll, roll_in);
 						output_pitch = pid_pitch(target_velocity_pitch, pitch_in);
 						output_yaw = pid_yaw(target_velocity_yaw, yaw_in);
+						memcpy(&tx6_buff[0], &target_velocity_yaw, 4);
+						usart6_tx_dma_enable(tx6_buff, 8);
 						fdata[0] = imu_pitch;
 						fdata[1] = gyro_data[2];
 						fdata[2] = INFINITY;
