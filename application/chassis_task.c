@@ -1185,7 +1185,7 @@ void chassis_task(void const *pvParameters)
 						output_roll = pid_roll(target_velocity_roll, roll_in);
 						output_pitch = pid_pitch(target_velocity_pitch, pitch_in);
 						output_yaw = pid_yaw(target_velocity_yaw, yaw_in);
-						memcpy(&tx6_buff[0], &output_yaw, 4);
+						memcpy(&tx6_buff[0], &throttle_in, 4);
 						usart6_tx_dma_enable(tx6_buff, 8);
 //						memcpy(&tx6_buff[0], &yaw_in, 4);
 //						memcpy(&tx6_buff[0], &yaw_in, 4);
@@ -1258,7 +1258,7 @@ void chassis_task(void const *pvParameters)
 						output_roll = pid_roll(target_velocity_roll, roll_in);
 						output_pitch = pid_pitch(target_velocity_pitch, pitch_in);
 						output_yaw = pid_yaw(target_velocity_yaw, yaw_in);
-						memcpy(&tx6_buff[0], &target_velocity_yaw, 4);
+						memcpy(&tx6_buff[0], &throttle_in, 4);
 						usart6_tx_dma_enable(tx6_buff, 8);
 						fdata[0] = imu_pitch;
 						fdata[1] = gyro_data[2];
