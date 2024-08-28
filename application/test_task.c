@@ -1,7 +1,7 @@
 /**
   ****************************(C) COPYRIGHT 2019 DJI****************************
   * @file       test_task.c/h
-  * @brief      buzzer warning task.·äÃùÆ÷±¨¾¯ÈÎÎñ
+  * @brief      buzzer warning task.ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
   * @note       
   * @history
   *  Version    Date            Author          Modification
@@ -29,7 +29,7 @@ const error_t *error_list_test_local;
 
 /*
 typedef struct MS45x5DOObject {
-	uint8_t devAddress; //Éè±¸µØÖ·
+	uint8_t devAddress; //ï¿½è±¸ï¿½ï¿½Ö·
 	union {
 		struct {
 			uint16_t pressure:14;
@@ -38,26 +38,26 @@ typedef struct MS45x5DOObject {
 			uint16_t temperature:11;
 		}pData;
 		uint8_t rData[4];
-	}msData; //¶Á³öµÄÊýÖµ
-	MS45x5DOType type; //MS4525DOµÄÀàÐÍ
-	float pUpperRange; //Ñ¹Á¦Á¿³ÌÉÏÏÞ
-	float pLowerRange; //Ñ¹Á¦Á¿³ÌÏÂÏÞ
-	float fTemperature; //¼ÆËãµÄÎÂ¶ÈÖµ
-	float fPressure; //¼ÆËãµÄÑ¹Á¦Öµ
-	void (*Write)(struct MS45x5DOObject *ms,uint8_t *wData,uint16_t wSize); //ÏòMS45x5DOÐ´Êý¾Ý
-	void (*Read)(struct MS45x5DOObject *ms,uint8_t *rData,uint16_t rSize); //´ÓMS45x5DO¶ÁÊý¾Ý
-	void (*Delayms)(volatile uint32_t nTime); //ºÁÃëÃëÑÓÊ±º¯Êý
+	}msData; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
+	MS45x5DOType type; //MS4525DOï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	float pUpperRange; //Ñ¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	float pLowerRange; //Ñ¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	float fTemperature; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¶ï¿½Öµ
+	float fPressure; //ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¹ï¿½ï¿½Öµ
+	void (*Write)(struct MS45x5DOObject *ms,uint8_t *wData,uint16_t wSize); //ï¿½ï¿½MS45x5DOÐ´ï¿½ï¿½ï¿½ï¿½
+	void (*Read)(struct MS45x5DOObject *ms,uint8_t *rData,uint16_t rSize); //ï¿½ï¿½MS45x5DOï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	void (*Delayms)(volatile uint32_t nTime); //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½
 }MS45x5DOObjectType;
 
 void MS45x5DOInitialization(
-	MS45x5DOObjectType *ms, //MS5837¶ÔÏó
-	uint8_t devAddress, //Éè±¸µØÖ·
-	MS45x5DOType type, //MS4515DOµÄÀàÐÍ
-	float pMax, //Ñ¹Á¦Á¿³ÌÉÏÏÞ
-	float pMin, //Ñ¹Á¦Á¿³ÌÏÂÏÞ
-	MS45x5DOWrite write, //ÏòMS45x5DOÐ´Êý¾Ýº¯ÊýÖ¸Õë
-	MS45x5DORead read, //´ÓMS45x5DO¶ÁÊý¾Ýº¯ÊýÖ¸Õë
-	MS45x5DODelayms delayms //ºÁÃëÑÓÊ±º¯ÊýÖ¸Õë
+	MS45x5DOObjectType *ms, //MS5837ï¿½ï¿½ï¿½ï¿½
+	uint8_t devAddress, //ï¿½è±¸ï¿½ï¿½Ö·
+	MS45x5DOType type, //MS4515DOï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	float pMax, //Ñ¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	float pMin, //Ñ¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	MS45x5DOWrite write, //ï¿½ï¿½MS45x5DOÐ´ï¿½ï¿½ï¿½Ýºï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
+	MS45x5DORead read, //ï¿½ï¿½MS45x5DOï¿½ï¿½ï¿½ï¿½ï¿½Ýºï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
+	MS45x5DODelayms delayms //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
 ){
 	if((ms==NULL)||(write==NULL)||(read==NULL)||(delayms==NULL)){
 		return;
@@ -96,7 +96,7 @@ void MS45x5DOInitialization(
   * @retval         none
   */
 /**
-  * @brief          testÈÎÎñ
+  * @brief          testï¿½ï¿½ï¿½ï¿½
   * @param[in]      pvParameters: NULL
   * @retval         none
   */
@@ -205,16 +205,16 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef * huart, uint16_t Size)
 								dp_right = *(float*)&rx1_buffer[4];
 							}
 						}
-						//HAL_UART_Transmit(&huart1, rx2_buffer, Size, 0xffff);         // ½«½ÓÊÕµ½µÄÊý¾ÝÔÙ·¢³ö
-            memset(rx1_buffer, 0, DP_BUF_SIZE);							   // Çå³ý½ÓÊÕ»º´æ
-            HAL_UARTEx_ReceiveToIdle_DMA(&huart1, rx1_buffer, DP_BUF_SIZE); // ½ÓÊÕÍê±ÏºóÖØÆô
-            __HAL_DMA_DISABLE_IT(&hdma_usart1_rx, DMA_IT_HT);		   // ÊÖ¶¯¹Ø±ÕDMA_IT_HTÖÐ¶Ï
+						//HAL_UART_Transmit(&huart1, rx2_buffer, Size, 0xffff);         // ï¿½ï¿½ï¿½ï¿½ï¿½Õµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ù·ï¿½ï¿½ï¿½
+            memset(rx1_buffer, 0, DP_BUF_SIZE);							   // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ»ï¿½ï¿½ï¿½
+            HAL_UARTEx_ReceiveToIdle_DMA(&huart1, rx1_buffer, DP_BUF_SIZE); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ïºï¿½ï¿½ï¿½ï¿½ï¿½
+            __HAL_DMA_DISABLE_IT(&hdma_usart1_rx, DMA_IT_HT);		   // ï¿½Ö¶ï¿½ï¿½Ø±ï¿½DMA_IT_HTï¿½Ð¶ï¿½
         }
-        else  // ½ÓÊÕÊý¾Ý³¤¶È´óÓÚBUFF_SIZE
+        else  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý³ï¿½ï¿½È´ï¿½ï¿½ï¿½BUFF_SIZE
         {
-            memset(rx1_buffer, 0, DP_BUF_SIZE);							   // Çå³ý½ÓÊÕ»º´æ
-            HAL_UARTEx_ReceiveToIdle_DMA(&huart1, rx1_buffer, DP_BUF_SIZE); // ½ÓÊÕÍê±ÏºóÖØÆô
-            __HAL_DMA_DISABLE_IT(&hdma_usart1_rx, DMA_IT_HT);		   // ÊÖ¶¯¹Ø±ÕDMA_IT_HTÖÐ¶Ï
+            memset(rx1_buffer, 0, DP_BUF_SIZE);							   // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ»ï¿½ï¿½ï¿½
+            HAL_UARTEx_ReceiveToIdle_DMA(&huart1, rx1_buffer, DP_BUF_SIZE); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ïºï¿½ï¿½ï¿½ï¿½ï¿½
+            __HAL_DMA_DISABLE_IT(&hdma_usart1_rx, DMA_IT_HT);		   // ï¿½Ö¶ï¿½ï¿½Ø±ï¿½DMA_IT_HTï¿½Ð¶ï¿½
         }
     }
 }
@@ -224,8 +224,8 @@ void HAL_UART_ErrorCallback(UART_HandleTypeDef * huart)
     if(huart->Instance == USART1)
     {
 		memset(rx1_buffer, 0, DP_BUF_SIZE);
-		HAL_UARTEx_ReceiveToIdle_DMA(&huart1, rx1_buffer, DP_BUF_SIZE); // ½ÓÊÕ·¢Éú´íÎóºóÖØÆô
-		__HAL_DMA_DISABLE_IT(&hdma_usart1_rx, DMA_IT_HT);		   // ÊÖ¶¯¹Ø±ÕDMA_IT_HTÖÐ¶Ï
+		HAL_UARTEx_ReceiveToIdle_DMA(&huart1, rx1_buffer, DP_BUF_SIZE); // ï¿½ï¿½ï¿½Õ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		__HAL_DMA_DISABLE_IT(&hdma_usart1_rx, DMA_IT_HT);		   // ï¿½Ö¶ï¿½ï¿½Ø±ï¿½DMA_IT_HTï¿½Ð¶ï¿½
     }
 }
 
@@ -281,7 +281,7 @@ void test_task(void const * argument)
 			
 			filtered_left = dp_kalman_left(dp_left - 24.0f);
 			filtered_right = dp_kalman_right(dp_right + 2.0f);
-			filtered_dp = filtered_right + 0.43f * filtered_left;
+			filtered_dp = filtered_right + 0.52f * filtered_left;
 			
 			static fp32 INS_quat[4] = {0.0f, 0.0f, 0.0f, 0.0f};
 			
@@ -303,8 +303,8 @@ void test_task(void const * argument)
   * @retval         none
   */
 /**
-  * @brief          Ê¹µÃ·äÃùÆ÷Ïì
-  * @param[in]      num:ÏìÉù´ÎÊý
+  * @brief          Ê¹ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  * @param[in]      num:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
   * @retval         none
   */
 static void buzzer_warn_error(uint8_t num)
