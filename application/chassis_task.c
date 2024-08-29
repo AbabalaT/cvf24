@@ -1253,8 +1253,8 @@ void chassis_task(void const *pvParameters)
 					// memcpy(&tx6_buff[16], &euler_angle, 12);
 					// HAL_UART_Transmit_DMA(&huart1, tx6_buff, 36);
 					if(ctrl_mode == 2){
-						target_velocity_pitch = pid_angle_pitch(-error_body[0]) + w_yaw_body[0];
-						target_velocity_roll = pid_angle_roll(-error_body[1]) + w_yaw_body[1];
+						target_velocity_pitch = pid_angle_pitch(-error_body[0]) - w_yaw_body[0];
+						target_velocity_roll = pid_angle_roll(-error_body[1]) - w_yaw_body[1];
 						target_velocity_yaw = pid_angle_yaw(error_body[2]) + w_yaw_body[2];
 						if(target_velocity_pitch > 3.0f){
 							target_velocity_pitch = 3.0f;
