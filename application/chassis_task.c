@@ -159,8 +159,6 @@ fp32 throttle_idle = 60.0f;
 int cali_cnt;
 float cali_imu_num;
 
-uint8_t useless_value = 0x00;
-
 extern RC_ctrl_t rc_ctrl;
 extern Sbus_ctrl_t Sbus_ctrl;
 extern uint16_t servo_pwm[6];
