@@ -460,13 +460,13 @@ float pid_pitch(float target, float real){
 	}
 //	error_rate = -1.0f * real - pre_error;
 //	pre_error = -1.0f * real;
+
 	error_rate = error - pre_error;
 	pre_error = error;
+
 	result = mat_pid[1][0]*target + mat_pid[1][1]*error + mat_pid[1][2]*sum + mat_pid[1][3]*error_rate;
 	return result;
 }
-
-
 
 float pid_yaw(float target, float real){
 	static float error;
@@ -498,16 +498,8 @@ float pid_yaw(float target, float real){
 //	pre_error = -1.0f * real;
 	error_rate = error - pre_error;
 	pre_error = error;
+
 	result = mat_pid[2][0]*target + mat_pid[2][1]*error + mat_pid[2][2]*sum + mat_pid[2][3]*error_rate;
-//	if (sum > 1.0){
-//		summing = 1;
-//	}else{
-//		if(sum < -1.0){
-//			summing = 1;
-// 		}else{
-//			summing = 0;
-//		}
-//	}
 	return result;
 }
 
@@ -609,111 +601,6 @@ float pid_angle_yaw(float error){
 	result = angle_pid_mat[2][0]*error + angle_pid_mat[2][1]*sum + angle_pid_mat[2][2]*error_rate;
 	return result;
 }
-
-
-float pid_roll_heli(float target, float real){
-	static float error;
-	static float sum;
-	static float pre_error;
-	static float result;
-	static float error_rate;
-	error = target - real;
-	sum = sum + error;
-	if(sum > 2000.0){
-		sum = 2000.0;
-	}
-	if(sum < -2000.0){
-		sum = -2000.0;
-	}
-	if(error > 3.14f){
-		sum = 0.0f;
-	}
-	if(error < -3.14f){
-		sum = 0.0f;
-	}
-	if(throttle_set < 1100){
-		sum = 0.0f;
-	}
-	if(arm_mode == 0){
-		sum = 0.0f;
-	}
-//	error_rate = -1.0f * real - pre_error;
-//	pre_error = -1.0f * real;//微锟斤拷锟斤拷锟斤拷
-	error_rate = error - pre_error;
-	pre_error = error;
-	result = mat_pid_heli_old[0][0]*target + mat_pid_heli_old[0][1]*error + mat_pid_heli_old[0][2]*sum + mat_pid_heli_old[0][3]*error_rate;
-	return result;
-}
-
-float pid_pitch_heli(float target, float real){
-	static float error;
-	static float sum;
-	static float pre_error;
-	static float result;
-	static float error_rate;
-	error = target - real;
-	sum = sum + error;
-	if(sum > 2000.0){
-		sum = 2000.0;
-	}
-	if(sum < -2000.0){
-		sum = -2000.0;
-	}
-	if(error > 3.14f){
-		sum = 0.0f;
-	}
-	if(error < -3.14f){
-		sum = 0.0f;
-	}
-	if(throttle_set < 1100){
-		sum = 0.0f;
-	}
-	if(arm_mode == 0){
-		sum = 0;
-	}
-//	error_rate = -1.0f * real - pre_error;
-//	pre_error = -1.0f * real;
-	error_rate = error - pre_error;
-	pre_error = error;
-	result = mat_pid_heli_old[1][0]*target + mat_pid_heli_old[1][1]*error + mat_pid_heli_old[1][2]*sum + mat_pid_heli_old[1][3]*error_rate;
-	return result;
-}
-
-float pid_yaw_heli(float target, float real){
-	static float error;
-	static float sum;
-	static float pre_error;
-	static float result;
-	static float error_rate;
-	error = target - real;
-	sum = sum + error;
-	if(sum > 2000.0){
-		sum = 2000.0;
-	}
-	if(sum < -2000.0){
-		sum = -2000.0;
-	}
-	if(error > 3.14f){
-		sum = 0.0f;
-	}
-	if(error < -3.14f){
-		sum = 0.0f;
-	}
-	if(throttle_set < 1100){
-		sum = 0.0f;
-	}
-	if(arm_mode == 0){
-		sum = 0;
-	}
-//	error_rate = -1.0f * real - pre_error;
-//	pre_error = -1.0f * real;
-	error_rate = error - pre_error;
-	pre_error = error;
-	result = mat_pid_heli_old[2][0]*target + mat_pid_heli_old[2][1]*error + mat_pid_heli_old[2][2]*sum + mat_pid_heli_old[2][3]*error_rate;
-	return result;
-}
-
-
 
 float pid_throttle_safe(float measure_dp){
 	static float error;
