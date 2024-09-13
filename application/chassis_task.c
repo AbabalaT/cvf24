@@ -468,14 +468,21 @@ float pid_pitch(float target, float real){
 	return result;
 }
 
+float pid_N = 0.75f;
+
 float pid_yaw(float target, float real){
 	static float error;
 	static float sum;
 	static float pre_error;
 	static float result;
 	static float error_rate;
+	static float d_out_1;
+	static float d_out;
+	static float d_error;
+	
 	error = target - real;
 	sum = sum + error;
+	
 	if(sum > 2000.0f){
 		sum = 2000.0;
 	}
@@ -494,12 +501,18 @@ float pid_yaw(float target, float real){
 	if(arm_mode == 0){
 		sum = 0.0f;
 	}
+	
 //	error_rate = -1.0f * real - pre_error;
 //	pre_error = -1.0f * real;
-	error_rate = error - pre_error;
-	pre_error = error;
+	
+	d_error = 0.0f - real;
+	error_rate = d_error - pre_error;
+	pre_error = d_error;
+	
+	d_out =  pid_N * error_rate + (1.0f - pid_N) * d_out_1;
+	d_out_1 = d_out;
 
-	result = mat_pid[2][0]*target + mat_pid[2][1]*error + mat_pid[2][2]*sum + mat_pid[2][3]*error_rate;
+	result = mat_pid[2][0]*target + mat_pid[2][1]*error + mat_pid[2][2]*sum + mat_pid[2][3]*d_out;
 	return result;
 }
 
