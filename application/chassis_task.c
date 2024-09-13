@@ -168,8 +168,8 @@ uint8_t rc_state_pre = 2;
 
 uint8_t useless = 0x00;
 
-uint8_t ctrl_mode = 0; //锟缴匡拷模式 0锟斤拷锟斤拷锟斤拷 1锟斤拷锟斤拷锟斤拷 2锟斤拷锟斤拷锟斤拷
-extern uint8_t is_load; //投锟脚匡拷锟斤拷 0锟斤拷锟斤拷锟脚达拷 1锟斤拷锟斤拷锟脚关憋拷
+uint8_t ctrl_mode = 0;
+extern uint8_t is_load;
 uint8_t pre_is_load = 0x12;
 extern uint8_t mag_enable;
 extern float fdata[16];
@@ -178,8 +178,8 @@ uint16_t motor_idle_speed = 1050;
 extern UART_HandleTypeDef huart1;
 extern UART_HandleTypeDef huart6;
 
-uint8_t arm_mode = 0; //0锟斤拷锟斤拷锟斤拷 1锟斤拷锟斤拷锟斤拷
-uint8_t system_mode = 0; //SE锟斤拷锟斤拷 锟缴匡拷锟杰匡拷锟斤拷 锟酵ｏ拷锟斤拷锟叫匡拷锟狡诧拷锟斤拷锟斤拷 锟叫ｏ拷锟街讹拷锟斤拷锟侥Ｊ� 锟竭ｏ拷锟缴匡拷模式
+uint8_t arm_mode = 0;
+uint8_t system_mode = 0;
 uint8_t door_open = 0;
 uint8_t stick_mode = 0x00;
 float throttle_set = 0.0f;
@@ -425,7 +425,7 @@ float pid_roll(float target, float real){
 		sum = 0.0f;
 	}
 //	error_rate = -1.0f * real - pre_error;
-//	pre_error = -1.0f * real;//微锟斤拷锟斤拷锟斤拷
+//	pre_error = -1.0f * real;
 	error_rate = error - pre_error;
 	pre_error = error;
 	result = mat_pid[0][0]*target + mat_pid[0][1]*error + mat_pid[0][2]*sum + mat_pid[0][3]*error_rate;
@@ -664,106 +664,6 @@ float target_velocity_roll = 0.0f;
 float target_velocity_pitch = 0.0f;
 float target_velocity_yaw = 0.0f;
 
-Quaternion rotateXLocal(Quaternion q, float angle) {
-    Quaternion result;
-    float halfAngle = angle / 2.0f;
-    float sinHalfAngle = sinf(halfAngle);
-    float cosHalfAngle = cosf(halfAngle);
-
-    result.w = q.w * cosHalfAngle - q.x * sinHalfAngle;
-    result.x = q.w * sinHalfAngle + q.x * cosHalfAngle;
-    result.y = q.y * cosHalfAngle + q.z * sinHalfAngle;
-    result.z = -q.y * sinHalfAngle + q.z * cosHalfAngle;
-
-    return result;
-}
-
-// Function to rotate quaternion around Y-axis
-Quaternion rotateYLocal(Quaternion q, float angle) {
-    Quaternion result;
-    float halfAngle = angle / 2.0f;
-    float sinHalfAngle = sinf(halfAngle);
-    float cosHalfAngle = cosf(halfAngle);
-
-    result.w = q.w * cosHalfAngle - q.y * sinHalfAngle;
-    result.x = q.x * cosHalfAngle - q.z * sinHalfAngle;
-    result.y = q.w * sinHalfAngle + q.y * cosHalfAngle;
-    result.z = q.x * sinHalfAngle + q.z * cosHalfAngle;
-
-    return result;
-}
-
-// Function to rotate quaternion around Z-axis
-Quaternion rotateZLocal(Quaternion q, float angle) {
-    Quaternion result;
-    float halfAngle = angle / 2.0f;
-    float sinHalfAngle = sinf(halfAngle);
-    float cosHalfAngle = cosf(halfAngle);
-
-    result.w = q.w * cosHalfAngle - q.z * sinHalfAngle;
-    result.x = q.x * cosHalfAngle + q.y * sinHalfAngle;
-    result.y = -q.x * sinHalfAngle + q.y * cosHalfAngle;
-    result.z = q.w * sinHalfAngle + q.z * cosHalfAngle;
-
-    return result;
-}
-
-Quaternion rotateXGlobal(Quaternion q, float angle) {
-    Quaternion result;
-    float halfAngle = angle / 2.0f;
-    float sinHalfAngle = sinf(halfAngle);
-    float cosHalfAngle = cosf(halfAngle);
-
-    // Quaternion representing the rotation around global X-axis
-    Quaternion qx = { cosHalfAngle, sinHalfAngle, 0.0f, 0.0f };
-
-    // Resulting quaternion after global rotation
-    result.w = q.w * qx.w - q.x * qx.x - q.y * qx.y - q.z * qx.z;
-    result.x = q.w * qx.x + q.x * qx.w + q.y * qx.z - q.z * qx.y;
-    result.y = q.w * qx.y - q.x * qx.z + q.y * qx.w + q.z * qx.x;
-    result.z = q.w * qx.z + q.x * qx.y - q.y * qx.x + q.z * qx.w;
-
-    return result;
-}
-
-// Function to rotate quaternion around Y-axis in global coordinates
-Quaternion rotateYGlobal(Quaternion q, float angle) {
-    Quaternion result;
-    float halfAngle = angle / 2.0f;
-    float sinHalfAngle = sinf(halfAngle);
-    float cosHalfAngle = cosf(halfAngle);
-
-    // Quaternion representing the rotation around global Y-axis
-    Quaternion qy = { cosHalfAngle, 0.0f, sinHalfAngle, 0.0f };
-
-    // Resulting quaternion after global rotation
-    result.w = q.w * qy.w - q.x * qy.x - q.y * qy.y - q.z * qy.z;
-    result.x = q.w * qy.x + q.x * qy.w + q.y * qy.z - q.z * qy.y;
-    result.y = q.w * qy.y - q.x * qy.z + q.y * qy.w + q.z * qy.x;
-    result.z = q.w * qy.z + q.x * qy.y - q.y * qy.x + q.z * qy.w;
-
-    return result;
-}
-
-// Function to rotate quaternion around Z-axis in global coordinates
-Quaternion rotateZGlobal(Quaternion q, float angle) {
-    Quaternion result;
-    float halfAngle = angle / 2.0f;
-    float sinHalfAngle = sinf(halfAngle);
-    float cosHalfAngle = cosf(halfAngle);
-
-    // Quaternion representing the rotation around global Z-axis
-    Quaternion qz = { cosHalfAngle, 0.0f, 0.0f, sinHalfAngle };
-
-    // Resulting quaternion after global rotation
-    result.w = q.w * qz.w - q.x * qz.x - q.y * qz.y - q.z * qz.z;
-    result.x = q.w * qz.x + q.x * qz.w + q.y * qz.z - q.z * qz.y;
-    result.y = q.w * qz.y - q.x * qz.z + q.y * qz.w + q.z * qz.x;
-    result.z = q.w * qz.z + q.x * qz.y - q.y * qz.x + q.z * qz.w;
-
-    return result;
-}
-
 Quaternion yaw_to_quaternion(double yaw) {
     Quaternion quaternion;
     quaternion.w = cos(yaw / 2);
@@ -914,15 +814,16 @@ void chassis_task(void const *pvParameters)
 		tx6_buff[6] = 0x80;
 		tx6_buff[7] = 0x7F;
 		cali_cnt = 0;
+		system_mode = 2;
     while (1){
-				
-//				cali_cnt = cali_cnt + 1;
 				memcpy(&gyro_data, get_gyro_data_point(), 12);
 				memcpy(&angle_data, get_INS_angle_point(), 12);
+			
 //				if(cali_cnt < 100000){
 //					cali_cnt = cali_cnt + 1;
 //					cali_imu_num = cali_imu_num + 0.00001 * gyro_data[1];
 //				}
+			
 //				if(Sbus_ctrl.ch[4] > 1500){
 //					system_mode = 0;
 //				}else {
@@ -932,13 +833,7 @@ void chassis_task(void const *pvParameters)
 //						system_mode = 2;
 //					}
 //				}
-
-				if(1){
-					system_mode = 2;
-				}else {
-					system_mode = 2;
-				}
-				
+			
 				if(Sbus_ctrl.ch[6] > 1500){
 					arm_mode = 0xff;
 				}else{
@@ -950,7 +845,6 @@ void chassis_task(void const *pvParameters)
 				}else{
 					stick_mode = stick_heli;
 				}
-				
 				
 				if(Sbus_ctrl.ch[7] > 1000){
 					is_load = 0x00;
@@ -997,41 +891,25 @@ void chassis_task(void const *pvParameters)
 					float motor_right;
 					float servo_left;
 					float servo_right;
+					
 					memcpy(&measure_quaternion, &ahrs_quaternion, 16);
 					Quaternion de_yaw_quaternion = yaw_to_quaternion(-angle_data[0]);
 					Quaternion de_yaw_ahrs = multiply_quaternion(&de_yaw_quaternion, &measure_quaternion);
+					
 					target_quaternion.w = 1.0f;
 					target_quaternion.x = 0.0f;
 					target_quaternion.y = 0.0f;
 					target_quaternion.z = 0.0f;
-					//memcpy(&tx6_buff[0], &measure_quaternion, 16);
-					//HAL_UART_Transmit_DMA(&huart6, tx6_buff, 12);
-					// cali_cnt = cali_cnt + 1;
-					// if(cali_cnt > 3){
-					// 	usart6_tx_dma_enable(tx6_buff, 12);
-					// }
+					
 					Quaternion temp_quaternion;
 					temp_quaternion = pitch_to_quaternion(-1.5707963f + d_ch(1) * 0.0020708f);
 					target_quaternion = multiply_quaternion(&temp_quaternion, &target_quaternion);
 					temp_quaternion = roll_to_quaternion(d_ch(0) * -9.85398e-4);
 					target_quaternion = multiply_quaternion(&temp_quaternion, &target_quaternion);
-					// target_yaw = target_yaw - d_ch(3) * 0.0000095664f;
-					// if(target_yaw > 3.14159265359f){
-					// 	target_yaw = target_yaw - 6.2831853f;
-					// }
-					// if(target_yaw < -3.14159265359f){
-					// 	target_yaw = target_yaw + 6.2831853f;
-					// }
-					// if(arm_mode == 0){
-					// 	target_yaw = angle_data[0];
-					// }
-					// if(ctrl_mode == 1){
-					// 	target_yaw = angle_data[0];
-					// }
-					// temp_quaternion = yaw_to_quaternion(target_yaw);
-					// target_quaternion = multiply_quaternion(&temp_quaternion, &target_quaternion);
+					
 					temp_quaternion = quaternion_diff(de_yaw_ahrs, target_quaternion);
 					quaternionToAngles(temp_quaternion, &error_angle[0], &error_angle[1], &error_angle[2]);
+					
 					if(isnan(error_angle[0])){
 						error_angle[0] = 0.0f;
 					}
@@ -1047,18 +925,12 @@ void chassis_task(void const *pvParameters)
 					w_yaw_world[1] = 0.0f;
 					w_yaw_world[2] = d_ch(3) * -0.002341f;
 					World_to_Body(w_yaw_world, w_yaw_body, measure_quaternion);
-					// error_body[0] = error_body[0];
-					// error_body[1] = error_body[1];
-					// error_body[2] = error_body[2];
-					// euler_angle[0] = error_body[0] * 57.3f;
-					// euler_angle[1] = error_body[1] * 57.3f;
-					// euler_angle[2] = error_body[2] * 57.3f;
-					// memcpy(&tx6_buff[16], &euler_angle, 12);
-					// HAL_UART_Transmit_DMA(&huart1, tx6_buff, 36);
+
 					if(ctrl_mode == 2){
 						target_velocity_pitch = pid_angle_pitch(-error_body[0]) - w_yaw_body[0];
 						target_velocity_roll = pid_angle_roll(-error_body[1]) - w_yaw_body[1];
 						target_velocity_yaw = pid_angle_yaw(error_body[2]) + w_yaw_body[2];
+						
 						if(target_velocity_pitch > 3.0f){
 							target_velocity_pitch = 3.0f;
 						}
@@ -1077,7 +949,21 @@ void chassis_task(void const *pvParameters)
 						if(target_velocity_yaw < -3.0f){
 							target_velocity_yaw = -3.0f;
 						}
-
+					}
+					
+					if(ctrl_mode == 1){
+						if(stick_mode == stick_3d){
+							target_velocity_roll = d_ch(0) * 0.002341f;
+							target_velocity_pitch = d_ch(1) * -0.002341f;
+							target_velocity_yaw = d_ch(3) * -0.002341f;
+						}else{
+							target_velocity_roll = d_ch(3) * -0.002341f;
+							target_velocity_pitch = d_ch(1) * -0.002341f;
+							target_velocity_yaw = d_ch(0) * -0.002341f;
+						}
+					}
+					
+					if(1){
 						imu_roll = -gyro_data[1];
 						imu_pitch = -gyro_data[0];
 						imu_yaw = gyro_data[2];
@@ -1089,22 +975,6 @@ void chassis_task(void const *pvParameters)
 						output_yaw = pid_yaw(target_velocity_yaw, yaw_in);
 						memcpy(&tx6_buff[0], &throttle_in, 4);
 						usart6_tx_dma_enable(tx6_buff, 8);
-//						memcpy(&tx6_buff[0], &yaw_in, 4);
-//						memcpy(&tx6_buff[0], &yaw_in, 4);
-//						usart6_tx_dma_enable(tx6_buff, 8);
-//						fdata[0] = imu_pitch;
-//						fdata[1] = gyro_data[2];
-//						fdata[2] = INFINITY;
-//						fdata[3] = gyro_data[0];
-//						fdata[4] = d_ch(3) * -0.002341f;
-//						fdata[5] = gyro_data[2];
-						//HAL_UART_Transmit(&huart6, (uint8_t*)&fdata, 3*4, 1000);
-//						fdata[0] = d_ch(0) * 0.002341f;
-//						fdata[1] = -gyro_data[1];
-//						fdata[2] = d_ch(1) * -0.002341f;
-//						fdata[3] = gyro_data[0];
-//						fdata[4] = d_ch(3) * -0.002341f;
-//						fdata[5] = gyro_data[2];
 
 						float throttle_pull_up = pid_throttle_safe(filtered_dp);
 						//throttle_in = throttle_in + throttle_pull_up;
@@ -1118,10 +988,7 @@ void chassis_task(void const *pvParameters)
 							a1 = a1 * 100.0f / filtered_dp;
 							a2 = a2 * 100.0f / filtered_dp;
 						}
-//						memcpy(&tx6_buff[0], &filtered_dp, 4);
-//						usart6_tx_dma_enable(tx6_buff, 8);
-//						limit_out(&a1);
-//						limit_out(&a2);
+						
 						if(f1 > 1000.0f){
 							f1 = 1000.0f;
 						}
@@ -1141,74 +1008,7 @@ void chassis_task(void const *pvParameters)
 						limit_out(&servo_left);
 						limit_out(&servo_right);
 					}
-					if(ctrl_mode == 1){
-						if(stick_mode == stick_3d){
-							target_velocity_roll = d_ch(0) * 0.002341f;
-							target_velocity_pitch = d_ch(1) * -0.002341f;
-							target_velocity_yaw = d_ch(3) * -0.002341f;
-						}else{
-							target_velocity_roll = d_ch(3) * -0.002341f;
-							target_velocity_pitch = d_ch(1) * -0.002341f;
-							target_velocity_yaw = d_ch(0) * -0.002341f;
-						}
-						imu_roll = -gyro_data[1];
-						imu_pitch = -gyro_data[0];
-						imu_yaw = gyro_data[2];
-						float roll_in = kalman_roll(imu_roll);
-						float pitch_in = kalman_pitch(imu_pitch);
-						float yaw_in = kalman_yaw(imu_yaw); 
-						output_roll = pid_roll(target_velocity_roll, roll_in);
-						output_pitch = pid_pitch(target_velocity_pitch, pitch_in);
-						output_yaw = pid_yaw(target_velocity_yaw, yaw_in);
-						memcpy(&tx6_buff[0], &throttle_in, 4);
-						usart6_tx_dma_enable(tx6_buff, 8);
-						fdata[0] = imu_pitch;
-						fdata[1] = gyro_data[2];
-						fdata[2] = INFINITY;
-						fdata[3] = gyro_data[0];
-						fdata[4] = d_ch(3) * -0.002341f;
-						fdata[5] = gyro_data[2];
-						//HAL_UART_Transmit(&huart6, (uint8_t*)&fdata, 3*4, 1000);
-//						fdata[0] = d_ch(0) * 0.002341f;
-//						fdata[1] = -gyro_data[1];
-//						fdata[2] = d_ch(1) * -0.002341f;
-//						fdata[3] = gyro_data[0];
-//						fdata[4] = d_ch(3) * -0.002341f;
-//						fdata[5] = gyro_data[2];
-
-						float throttle_pull_up = pid_throttle_safe(filtered_dp);
-						//throttle_in = throttle_in + throttle_pull_up;
-						
-						float f1 = throttle_in + output_yaw;
-						float f2 = throttle_in - output_yaw;
-						float a1 = output_pitch - output_roll;
-						float a2 = output_pitch + output_roll;
-						
-						if(filtered_dp > hover_dp){
-							a1 = a1 * hover_dp / filtered_dp;
-							a2 = a2 * hover_dp / filtered_dp;
-						}
-//						limit_out(&a1);
-//						limit_out(&a2);
-						if(f1 > 1000.0f){
-							f1 = 1000.0f;
-						}
-						if(f1 < 0.0f){
-							f1 = 0.0f;
-						}
-						if(f2 > 1000.0f){
-							f2 = 1000.0f;
-						}
-						if(f2 < 0.0f){
-							f2 = 0.0f;
-						}
-						motor_left = f1 + 1000;
-						motor_right = f2 + 1000;
-						servo_left = servo_left_center - a1;
-						servo_right = servo_right_center + a2;
-						limit_out(&servo_left);
-						limit_out(&servo_right);
-					}
+					
 					if(arm_mode == 0){
 						motor_left = 1000;
 						motor_right = 1000;
@@ -1222,15 +1022,15 @@ void chassis_task(void const *pvParameters)
 							motor_right = motor_idle_speed;
 						}
 					}
-					u_real_yaw = motor_left - motor_right;
-					u_real_pitch = servo_left_center - servo_left + servo_right - servo_right_center;
-					u_real_roll = servo_right - servo_right_center - (servo_left_center - servo_left);
+//					u_real_yaw = motor_left - motor_right;
+//					u_real_pitch = servo_left_center - servo_left + servo_right - servo_right_center;
+//					u_real_roll = servo_right - servo_right_center - (servo_left_center - servo_left);
+					
 					if(pwm_debugging){
 						set_pwm(servo_right, servo_left, motor_right, motor_left);
 					}
-					
 				}
-				vTaskDelay(1);//锟节伙拷1000HZ,同imu锟斤拷锟狡碉拷锟�
+				vTaskDelay(1);//PID频率:1000HZ
 		}
 				
 }
