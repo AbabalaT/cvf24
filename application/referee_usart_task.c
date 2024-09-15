@@ -25,7 +25,7 @@
 #include "fifo.h"
 #include "protocol.h"
 #include "referee.h"
-#include "control.h"
+
 #include "INS_task.h"
 
 
@@ -49,7 +49,6 @@ uint8_t usart1_TX_buffer[64];
 fifo_s_t referee_fifo;
 uint8_t referee_fifo_buf[REFEREE_FIFO_BUF_LENGTH];
 unpack_data_t referee_unpack_obj;
-
 extern uint16_t servo_pwm[6];
 extern fp32 throttle_out, roll_out, pitch_out, yaw_out;
 
@@ -71,10 +70,8 @@ void referee_usart_task(void const * argument)
 		fp32 fp_inf = 0.0f;
 		fp_inf = 1 / fp_inf;
     usart6_init(usart6_buf[0], usart6_buf[1], USART_RX_BUF_LENGHT);
-
     while(1)
     {
-			//upload_data();
 			vTaskDelay(20);
     }
 }

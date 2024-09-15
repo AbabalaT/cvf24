@@ -844,31 +844,6 @@
               <FileType>1</FileType>
               <FilePath>..\components\controller\pid.c</FilePath>
             </File>
-            <File>
-              <FileName>control.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\components\controller\control.c</FilePath>
-            </File>
-            <File>
-              <FileName>control.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\components\controller\control.h</FilePath>
-            </File>
-            <File>
-              <FileName>vt_math.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\components\controller\vt_math.c</FilePath>
-            </File>
-            <File>
-              <FileName>vt_math.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\components\controller\vt_math.h</FilePath>
-            </File>
-            <File>
-              <FileName>config.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\components\controller\config.h</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>

@@ -1,22 +1,3 @@
-/**
-  ****************************(C) COPYRIGHT 2019 DJI****************************
-  * @file       chassis.c/h
-  * @brief      chassis control task,
-  *             锟斤拷锟教匡拷锟斤拷锟斤拷锟斤拷
-  * @note       
-  * @history
-  *  Version    Date            Author          Modification
-	*  V2.0.1     Dec-26-2018     KevinTC         1. angular rate
-  *  V1.0.0     Dec-26-2018     RM              1. done
-  *  V1.1.0     Nov-11-2019     RM              1. add chassis power control
-  *
-  @verbatim
-  ==============================================================================
-
-  ==============================================================================
-  @endverbatim
-  ****************************(C) COPYRIGHT 2019 DJI****************************
-  */
 #include "chassis_task.h"
 #include "chassis_behaviour.h"
 #include "cmsis_os.h"
@@ -28,132 +9,17 @@
 #include "INS_task.h"
 #include "servo_task.h"
 #include "chassis_power_control.h"
-#include "control.h"
 
 #define stick_heli 0x00
 #define stick_3d 0xff
 
-#define rc_deadband_limit(input, output, dealine)        \
-    {                                                    \
-        if ((input) > (dealine) || (input) < -(dealine)) \
-        {                                                \
-            (output) = (input);                          \
-        }                                                \
-        else                                             \
-        {                                                \
-            (output) = 0;                                \
-        }                                                \
-    }
-		
-//pid_type_def pid_roll_gyro, pid_pitch_gyro, pid_yaw_gyro;
-//pid_type_def pid_roll_angle, pid_pitch_angle, pid_yaw_angle;		
-		
-/**
-  * @brief          "chassis_move" valiable initialization, include pid initialization, remote control data point initialization, 3508 chassis motors
-  *                 data point initialization, gimbal motor data point initialization, and gyro sensor angle point initialization.
-  * @param[out]     chassis_move_init: "chassis_move" valiable point
-  * @retval         none
-  */
-/**
-  * @brief          锟斤拷始锟斤拷"chassis_move"锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷pid锟斤拷始锟斤拷锟斤拷 遥锟斤拷锟斤拷指锟斤拷锟绞硷拷锟斤拷锟�3508锟斤拷锟教碉拷锟街革拷锟斤拷始锟斤拷锟斤拷锟斤拷台锟斤拷锟斤拷锟绞硷拷锟斤拷锟斤拷锟斤拷锟斤拷墙嵌锟街革拷锟斤拷始锟斤拷
-  * @param[out]     chassis_move_init:"chassis_move"锟斤拷锟斤拷指锟斤拷.
-  * @retval         none
-  */
 static void chassis_init(chassis_move_t *chassis_move_init);
 
 typedef struct {
     float w, x, y, z;
 } Quaternion;
-/**
-  * @brief          set chassis control mode, mainly call 'chassis_behaviour_mode_set' function
-  * @param[out]     chassis_move_mode: "chassis_move" valiable point
-  * @retval         none
-  */
-/**
-  * @brief          锟斤拷锟矫碉拷锟教匡拷锟斤拷模式锟斤拷锟斤拷要锟斤拷'chassis_behaviour_mode_set'锟斤拷锟斤拷锟叫改憋拷
-  * @param[out]     chassis_move_mode:"chassis_move"锟斤拷锟斤拷指锟斤拷.
-  * @retval         none
-  */
-static void chassis_set_mode(chassis_move_t *chassis_move_mode);
-
-/**
-  * @brief          when chassis mode change, some param should be changed, suan as chassis yaw_set should be now chassis yaw
-  * @param[out]     chassis_move_transit: "chassis_move" valiable point
-  * @retval         none
-  */
-/**
-  * @brief          锟斤拷锟斤拷模式锟侥变，锟斤拷些锟斤拷锟斤拷锟斤拷要锟侥变，锟斤拷锟斤拷锟斤拷炭锟斤拷锟統aw锟角讹拷锟借定值应锟矫憋拷傻锟角帮拷锟斤拷锟統aw锟角讹拷
-  * @param[out]     chassis_move_transit:"chassis_move"锟斤拷锟斤拷指锟斤拷.
-  * @retval         none
-  */
-void chassis_mode_change_control_transit(chassis_move_t *chassis_move_transit);
-/**
-  * @brief          chassis some measure data updata, such as motor speed, euler angle锟斤拷 robot speed
-  * @param[out]     chassis_move_update: "chassis_move" valiable point
-  * @retval         none
-  */
-/**
-  * @brief          锟斤拷锟教诧拷锟斤拷锟斤拷锟捷革拷锟铰ｏ拷锟斤拷锟斤拷锟斤拷锟斤拷俣龋锟脚凤拷锟斤拷嵌龋锟斤拷锟斤拷锟斤拷锟斤拷俣锟�
-  * @param[out]     chassis_move_update:"chassis_move"锟斤拷锟斤拷指锟斤拷.
-  * @retval         none
-  */
-static void chassis_feedback_update(chassis_move_t *chassis_move_update);
-/**
-  * @brief          set chassis control set-point, three movement control value is set by "chassis_behaviour_control_set".
-  *                 
-  * @param[out]     chassis_move_update: "chassis_move" valiable point
-  * @retval         none
-  */
-/**
-  * @brief          
-  * @param[out]     chassis_move_update:"chassis_move"锟斤拷锟斤拷指锟斤拷.
-  * @retval         none
-  */
-static void chassis_set_contorl(chassis_move_t *chassis_move_control);
-/**
-  * @brief          control loop, according to control set-point, calculate motor current, 
-  *                 motor current will be sentto motor
-  * @param[out]     chassis_move_control_loop: "chassis_move" valiable point
-  * @retval         none
-  */
-/**
-  * @brief          锟斤拷锟斤拷循锟斤拷锟斤拷锟斤拷锟捷匡拷锟斤拷锟借定值锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷值锟斤拷锟斤拷锟叫匡拷锟斤拷
-  * @param[out]     chassis_move_control_loop:"chassis_move"锟斤拷锟斤拷指锟斤拷.
-  * @retval         none
-  */
-static void chassis_control_loop(chassis_move_t *chassis_move_control_loop);
-
-#if INCLUDE_uxTaskGetStackHighWaterMark
-uint32_t chassis_high_water;
-#endif
-
-
-
-//锟斤拷锟斤拷锟剿讹拷锟斤拷锟斤拷
-chassis_move_t chassis_move;
-
-/**
-  * @brief          chassis task, osDelay CHASSIS_CONTROL_TIME_MS (2ms) 
-  * @param[in]      pvParameters: null
-  * @retval         none
-  */
-/**
-  * @brief          锟斤拷锟斤拷锟斤拷锟今，硷拷锟� CHASSIS_CONTROL_TIME_MS 2ms
-  * @param[in]      pvParameters: 锟斤拷
-  * @retval         none
-  */
-	
-fp32 PID_Data_roll[3] = {0.5, 0.0, 0.0};
-fp32 PID_Data_pitch[3] = {0.5, 0.0, 0.0};
-fp32 PID_Data_yaw[3] = {0.5, 0.0, 0.0};
-
-fp32 PID_Angle_roll[3] = {0.5, 0.0, 0.0};
-fp32 PID_Angle_pitch[3] = {0.5, 0.0, 0.0};
-fp32 PID_Angle_yaw[3] = {0.5, 0.0, 0.0};
 
 fp32 ahrs_quaternion[4] = {1.0, 0.0, 0.0, 0.0};
-
-fp32 throttle_out =0.0f, roll_out = 0.0f, pitch_out = 0.0f, yaw_out = 0.0f;
 fp32 throttle_idle = 60.0f;
 
 int cali_cnt;
@@ -169,10 +35,9 @@ uint8_t rc_state_pre = 2;
 uint8_t useless = 0x00;
 
 uint8_t ctrl_mode = 0;
-extern uint8_t is_load;
+uint8_t is_load;
 uint8_t pre_is_load = 0x12;
-extern uint8_t mag_enable;
-extern float fdata[16];
+float fdata[16];
 
 uint16_t motor_idle_speed = 1050;
 extern UART_HandleTypeDef huart1;
@@ -191,10 +56,6 @@ float d_ch(uint8_t ch_required){
 extern float target_velocity[3];
 extern void usart6_tx_dma_enable(uint8_t *data, uint16_t len);
 
-float mat_allocate[4][4] = {{1.0f,1.0f,0.0f,0.0f}, {1.0f,-1.0f,0.0f,0.0f}, {0.0f,0.0f,1.0f,-1.0f}, {0.0f,0.0f,1.0f,1.0f}};
-
-float k_pwm[4] = {0.0476, 0.0476, 0.0476, 0.0476};
-float d_pwm[4] = {0.0, 0.0, 0.0, 0.0};
 	
 float servo_left_center = 1500.0f;
 float servo_right_center = 1500.0f;
@@ -221,8 +82,6 @@ void limit_out(float* input){
 }
 
 float mat_pid[4][4];	//R-P-Y-throttle
-float mat_pid_heli_old[4][4];
-float mat_pid_heli_new[4][4];
 float angle_pid_mat[3][3];
 
 float safe_dp  = 25.0f;
@@ -397,6 +256,7 @@ void pid_set_heavy(void){
 
 
 uint8_t summing = 0;
+float pid_N = 0.75f;
 
 float pid_roll(float target, float real){
 	static float error;
@@ -406,8 +266,8 @@ float pid_roll(float target, float real){
 	static float error_rate;
 	error = target - real;
 	sum = sum + error;
-	if(sum > 2000.0f){
-		sum = 2000.0f;
+	if(sum > 1000.0f){
+		sum = 1000.0f;
 	}
 	if(sum < -2000.0f){
 		sum = -2000.0f;
@@ -424,8 +284,10 @@ float pid_roll(float target, float real){
 	if(arm_mode == 0){
 		sum = 0.0f;
 	}
+	
 //	error_rate = -1.0f * real - pre_error;
 //	pre_error = -1.0f * real;
+	
 	error_rate = error - pre_error;
 	pre_error = error;
 	result = mat_pid[0][0]*target + mat_pid[0][1]*error + mat_pid[0][2]*sum + mat_pid[0][3]*error_rate;
@@ -440,11 +302,11 @@ float pid_pitch(float target, float real){
 	static float error_rate;
 	error = target - real;
 	sum = sum + error;
-	if(sum > 2000.0f){
-		sum = 2000.0f;
+	if(sum > 1000.0f){
+		sum = 1000.0f;
 	}
-	if(sum < -2000.0f){
-		sum = -2000.0f;
+	if(sum < -1000.0f){
+		sum = -1000.0f;
 	}
 	if(error > 3.14f){
 		sum = 0.0f;
@@ -458,6 +320,7 @@ float pid_pitch(float target, float real){
 	if(arm_mode == 0){
 		sum = 0.0f;
 	}
+	
 //	error_rate = -1.0f * real - pre_error;
 //	pre_error = -1.0f * real;
 
@@ -468,7 +331,7 @@ float pid_pitch(float target, float real){
 	return result;
 }
 
-float pid_N = 0.75f;
+
 
 float pid_yaw(float target, float real){
 	static float error;
@@ -483,11 +346,11 @@ float pid_yaw(float target, float real){
 	error = target - real;
 	sum = sum + error;
 	
-	if(sum > 2000.0f){
-		sum = 2000.0;
+	if(sum > 1000.0f){
+		sum = 1000.0;
 	}
-	if(sum < -2000.0f){
-		sum = -2000.0;
+	if(sum < -1000.0f){
+		sum = -1000.0;
 	}
 	if(error > 3.14f){
 		sum = 0.0f;
@@ -555,10 +418,10 @@ float pid_angle_pitch(float error){
 	static float result;
 	static float error_rate;
 	sum = sum + error;
-	if(sum > 25000.0){
+	if(sum > 25000.0f){
 		sum = 25000.0;
 	}
-	if(sum < -25000.0){
+	if(sum < -25000.0f){
 		sum = -25000.0;
 	}
 	if(error > 45.0f){
@@ -743,9 +606,6 @@ Quaternion quaternion_diff(Quaternion q1, Quaternion q2) {
 }
 
 void quaternionToAngles(Quaternion q, float *roll, float *pitch, float *yaw) {
-//    *roll = atan2f(2*(q.w*q.x + q.y*q.z), 1 - 2*(q.x*q.x + q.y*q.y));
-//    *pitch = asinf(2*(q.w*q.y - q.z*q.x));
-//    *yaw = atan2f(2*(q.w*q.z + q.x*q.y), 1 - 2*(q.y*q.y + q.z*q.z));
 	float we = q.w;
 	if(we > 0.999999f){
 		we = 0.999999f;
@@ -802,11 +662,9 @@ void World_to_Body(float *vector_e, float *vector_v,Quaternion Qin)
 	
 }
 
-
 void chassis_task(void const *pvParameters)
 {
-    vTaskDelay(CHASSIS_TASK_INIT_TIME);
-		ctrl_init();
+    vTaskDelay(1500);
 		pid_init();
 	
 		tx6_buff[4] = 0x00;
@@ -815,6 +673,7 @@ void chassis_task(void const *pvParameters)
 		tx6_buff[7] = 0x7F;
 		cali_cnt = 0;
 		system_mode = 2;
+	
     while (1){
 				memcpy(&gyro_data, get_gyro_data_point(), 12);
 				memcpy(&angle_data, get_INS_angle_point(), 12);
@@ -973,7 +832,7 @@ void chassis_task(void const *pvParameters)
 						output_roll = pid_roll(target_velocity_roll, roll_in);
 						output_pitch = pid_pitch(target_velocity_pitch, pitch_in);
 						output_yaw = pid_yaw(target_velocity_yaw, yaw_in);
-						memcpy(&tx6_buff[0], &throttle_in, 4);
+						//memcpy(&tx6_buff[0], &throttle_in, 4);
 						usart6_tx_dma_enable(tx6_buff, 8);
 
 						float throttle_pull_up = pid_throttle_safe(filtered_dp);
@@ -1008,7 +867,6 @@ void chassis_task(void const *pvParameters)
 						limit_out(&servo_left);
 						limit_out(&servo_right);
 					}
-					
 					if(arm_mode == 0){
 						motor_left = 1000;
 						motor_right = 1000;
@@ -1021,16 +879,11 @@ void chassis_task(void const *pvParameters)
 						if(motor_right < motor_idle_speed){
 							motor_right = motor_idle_speed;
 						}
-					}
-//					u_real_yaw = motor_left - motor_right;
-//					u_real_pitch = servo_left_center - servo_left + servo_right - servo_right_center;
-//					u_real_roll = servo_right - servo_right_center - (servo_left_center - servo_left);
-					
+					}					
 					if(pwm_debugging){
 						set_pwm(servo_right, servo_left, motor_right, motor_left);
 					}
 				}
 				vTaskDelay(1);//PID频率:1000HZ
 		}
-				
 }
