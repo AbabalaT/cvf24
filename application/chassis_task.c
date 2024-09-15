@@ -867,8 +867,8 @@ void chassis_task(void const *pvParameters)
 						if(f2 < 0.0f){
 							f2 = 0.0f;
 						}
-						motor_left = f1 + 1000;
-						motor_right = f2 + 1000;
+						motor_left = f2 + 1000;
+						motor_right = f1 + 1000;
 						servo_left = servo_left_center - a1;
 						servo_right = servo_right_center + a2;
 						limit_out(&servo_left);
