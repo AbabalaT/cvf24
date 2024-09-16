@@ -176,21 +176,21 @@ void pid_set_empty(void){
 	mat_pid[1][3] = 30.0;
 	
 	mat_pid[2][0] = 0.0;
-	mat_pid[2][1] = 67.5f;//139.53f;
-	mat_pid[2][2] = 0.03f;//0.24f;
+	mat_pid[2][1] = 50.0f;//139.53f;
+	mat_pid[2][2] = 0.025f;//0.24f;
 	mat_pid[2][3] = 75.0;
 	
-	angle_pid_mat[0][0] = 2.0;
+	angle_pid_mat[0][0] = 2.4;
 	angle_pid_mat[0][1] = 0.0f;//0.00006;//232.55f;
-	angle_pid_mat[0][2] = 0.05f;
+	angle_pid_mat[0][2] = 0.2f;
 	
-	angle_pid_mat[1][0] = 1.75;
+	angle_pid_mat[1][0] = 2.2;
 	angle_pid_mat[1][1] = 0.0f;//0.00002f;//697.6f;
 	angle_pid_mat[1][2] = 0.3f;
 	
-	angle_pid_mat[2][0] = 1.65;
+	angle_pid_mat[2][0] = 2.0;
 	angle_pid_mat[2][1] = 0.0f;//0.000045f;//139.53f;
-	angle_pid_mat[2][2] = 0.85f;
+	angle_pid_mat[2][2] = 0.8f;
 	
 	hover_dp= 45.0f;
 }
@@ -226,29 +226,29 @@ void pid_set_light(void){
 
 void pid_set_heavy(void){
 	mat_pid[0][0] = 0.0;
-	mat_pid[0][1] = 550.0f;//232.55f;
+	mat_pid[0][1] = 450.0f;//232.55f;
 	mat_pid[0][2] = 0.25;
 	mat_pid[0][3] = 18.0;
 	
 	mat_pid[1][0] = 0.0;
-	mat_pid[1][1] = 650.0f;//697.6f;
-	mat_pid[1][2] = 0.25;
+	mat_pid[1][1] = 550.0f;//697.6f;
+	mat_pid[1][2] = 0.22;
 	mat_pid[1][3] = 45.0;
 	
 	mat_pid[2][0] = 0.0;
-	mat_pid[2][1] = 125.0f;//139.53f;
+	mat_pid[2][1] = 120.0f;//139.53f;
 	mat_pid[2][2] = 0.06f;
 	mat_pid[2][3] = 1400.0;
 	
-	angle_pid_mat[0][0] = 1.7;
+	angle_pid_mat[0][0] = 2.0;
 	angle_pid_mat[0][1] = 0.0f;//0.00006;//232.55f;
 	angle_pid_mat[0][2] = 0.2f;
 	
-	angle_pid_mat[1][0] = 1.7;
+	angle_pid_mat[1][0] = 2.0;
 	angle_pid_mat[1][1] = 0.0f;//0.00002f;//697.6f;
-	angle_pid_mat[1][2] = 0.03f;
+	angle_pid_mat[1][2] = 0.1f;
 	
-	angle_pid_mat[2][0] = 1.6;
+	angle_pid_mat[2][0] = 1.8;
 	angle_pid_mat[2][1] = 0.0f;//0.000045f;//139.53f;
 	angle_pid_mat[2][2] = 0.1f;
 	hover_dp = 100.0f;
