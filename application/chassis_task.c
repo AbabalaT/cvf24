@@ -491,6 +491,9 @@ float pid_throttle_safe(float measure_dp){
 	static float pre_error;
 	static float result;
 	static float error_rate;
+	static float d_error;
+	static float d_out;
+	static float d_out_1;
 	error = safe_dp - measure_dp;
 	sum = sum + error;
 	if(sum > 500.0){
@@ -515,10 +518,17 @@ float pid_throttle_safe(float measure_dp){
 	}
 //	error_rate = -1.0f * real - pre_error;
 //	pre_error = -1.0f * real;
+  d_error = safe_dp - measure_dp;
+	error_rate = d_error - pre_error;
+	pre_error = d_error;
+	
+	d_out =  pid_N * error_rate + (1.0f - pid_N) * d_out_1;
+	d_out_1 = d_out;
 	
 	error_rate = error - pre_error;
 	pre_error = error;
-	result = pid_safe_dp[0]*error + pid_safe_dp[1]*sum + pid_safe_dp[2]*error_rate;
+	
+	result = pid_safe_dp[0]*error + pid_safe_dp[1]*sum + pid_safe_dp[2]*d_out;
 	return result;
 }
 

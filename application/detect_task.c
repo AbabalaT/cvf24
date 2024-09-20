@@ -95,6 +95,7 @@ uint16_t buzzer_factor1 = 178, buzzer_factor2 = 1;
 
 extern uint8_t door_open;
 extern uint8_t arm_mode;
+extern uint8_t ctrl_mode;
 extern fp32 battery_voltage;
 
 const uint16_t music[3][8]={    //低中高音对应频率所需的预分频数
@@ -120,6 +121,14 @@ void play(uint8_t i,uint8_t j,uint16_t time, uint16_t idle){
 	vTaskDelay(idle);
 }
 
+void play_fix(uint8_t i,uint8_t j,uint16_t time, uint16_t idle,int16_t pwm){
+	int16_t current_pwm = 485;
+	buzzer_on(music[i][j], pwm);
+	vTaskDelay(time);
+	buzzer_off();
+	vTaskDelay(idle);
+}
+
 extern Sbus_ctrl_t Sbus_ctrl;
 void detect_task(void const *pvParameters)
 {
@@ -128,87 +137,43 @@ void detect_task(void const *pvParameters)
     //init,初始化
     detect_init(system_time);
     //wait a time.空闲一段时间
-    vTaskDelay(DETECT_TASK_INIT_TIME);
-    play(2, 5, 285, 10);
-    play(2, 3, 163, 10);
-    play(2, 1, 125, 10);
-    play(2, 2, 285, 10);
-    play(1, 5, 293, 10);
-    play(1, 5, 145, 10);
-    play(1, 7, 135, 10);
-    play(2, 2, 175, 10);
-    play(2, 4, 175, 10);
-    play(2, 3, 273, 10);
-    play(2, 1, 563, 10);
-
-//	play(0,2,405,10);
-//	play(0,2,193,10);
-//	play(0,7,400,10);
-//	play(0,6,205,10);
-//	play(0,7,405,10);
-//	
-//	
-//	play(0,6,203,10);
-//	play(0,7,395,10);
-//	play(0,6,188,10);
-//	play(0,7,590,10);
-//	play(1,2,600,10);
-//	
-//	play(0,2,583,10);
-//	play(0,5,413,10);
-//	play(0,4,205,10);
-//	play(0,5,395,10);
-//	play(0,5,200,10);
-//	
-//	play(0,4,400,10);
-//	play(0,2,165,10);
-//	play(0,2,608,10);
-
-//		play(1,4,500,1);
-//		play(1,4,500,1);
-//		play(1,4,500,1);
-//		play(1,4,500,1);
-
-
-	// play(1,1,250, 30);
-	// play(1,1,250, 30);
-	// play(1,5,250, 30);
-	// play(1,5,250, 30);
-	// play(1,6,250, 30);
-	// play(1,6,250, 30);
-	// play(1,5,250, 30);
-	// play(1,5,250, 30);
-//	play(1,5,250, 30);
-//	play(1,5,200, 30);
-//	play(1,5,200, 30);
-//	play(1,5,200, 30);
-//	play(1,5,200, 30);
-//	play(1,5,200, 30);
-//	play(1,5,200, 30);
-//	play(1,5,200, 30);
-//	play(1,5,200, 30);
-//	play(1,5,200, 30);
-//	play(1,5,200, 30);
-//	play(1,5,200, 30);
-//	play(1,5,200, 30);
-//	play(1,5,200, 30);
-//	play(1,5,250, 30);
-//	play(1,5,250, 30);
-//	play(1,5,250, 30);
-//	play(1,5,250, 30);
-//	play(1,5,250, 30);
-//	play(1,4,250, 30);
-//	play(1,4,250, 30);
-//	play(1,3,250, 30);
-//	play(1,3,250, 30);
-//	play(1,2,150, 30);
-//	play(1,3,60, 30);
-//	play(1,2,60, 30);
-//	play(1,3,200, 30);
-//	play(1,1,375, 30);
+    vTaskDelay(2000);
+		for(uint16_t warn_psc=191; warn_psc > 10; warn_psc = warn_psc - 2){
+			buzzer_on(warn_psc, 20);
+			vTaskDelay(12);
+		}
+		buzzer_off();
+		vTaskDelay(300);
+		play_fix(1, 1, 200, 10, 30);
+		play_fix(1, 2, 170, 10, 30);
+		play_fix(1, 5, 200, 10, 30);
+		
+		play_fix(1, 2, 170, 10, 15);
+		play_fix(1, 5, 200, 10, 15);
+		
+		play_fix(1, 2, 170, 10, 7);
+		play_fix(1, 5, 200, 10, 7);
+		vTaskDelay(1000);
+//    play(2, 5, 285, 10);
+//    play(2, 3, 163, 10);
+//    play(2, 1, 125, 10);
+//    play(2, 2, 285, 10);
+//    play(1, 5, 293, 10);
+//    play(1, 5, 145, 10);
+//    play(1, 7, 135, 10);
+//    play(2, 2, 175, 10);
+//    play(2, 4, 175, 10);
+//    play(2, 3, 273, 10);
+//    play(2, 1, 563, 10);
 	
     while (1)
     {
+			if(ctrl_mode != 2){
+				play(1, 7, 200, 10);
+				play(1, 1, 200, 10);
+				play(1, 7, 200, 10);
+				play(1, 1, 200, 200);
+			}
 			if(door_open){
 				if(arm_mode == 0){
 					for(uint16_t warn_psc=191; warn_psc > 101; warn_psc = warn_psc - 5){
