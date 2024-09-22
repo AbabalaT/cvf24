@@ -138,21 +138,21 @@ void detect_task(void const *pvParameters)
     detect_init(system_time);
     //wait a time.¿ÕÏÐÒ»¶ÎÊ±¼ä
     vTaskDelay(2000);
-		for(uint16_t warn_psc=191; warn_psc > 10; warn_psc = warn_psc - 2){
-			buzzer_on(warn_psc, 20);
-			vTaskDelay(12);
+		for(uint16_t warn_psc=230; warn_psc > 10; warn_psc = warn_psc - 2){
+			buzzer_on(warn_psc, 5);
+			vTaskDelay(5);
 		}
 		buzzer_off();
-		vTaskDelay(300);
-		play_fix(1, 1, 200, 10, 30);
-		play_fix(1, 2, 170, 10, 30);
-		play_fix(1, 5, 200, 10, 30);
+		vTaskDelay(200);
+		play_fix(1, 1, 200, 10, 16);
+		play_fix(1, 2, 170, 10, 16);
+		play_fix(1, 5, 200, 10, 16);
 		
-		play_fix(1, 2, 170, 10, 15);
-		play_fix(1, 5, 200, 10, 15);
+		play_fix(1, 2, 170, 10, 4);
+		play_fix(1, 5, 200, 10, 4);
 		
-		play_fix(1, 2, 170, 10, 7);
-		play_fix(1, 5, 200, 10, 7);
+		play_fix(1, 2, 170, 10, 2);
+		play_fix(1, 5, 200, 10, 2);
 		vTaskDelay(1000);
 //    play(2, 5, 285, 10);
 //    play(2, 3, 163, 10);
