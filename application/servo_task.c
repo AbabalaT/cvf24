@@ -69,7 +69,10 @@ void servo_task(void const * argument)
     {
 				for(uint8_t i = 0; i < 6; i=i+1)
         {
-						
+						if(i==4){
+							servo_pwm_set(servo_pwm[i], i);
+							continue;
+						}
             if(servo_pwm[i] < SERVO_MIN_PWM)
             {
                 servo_pwm[i] = SERVO_MIN_PWM;

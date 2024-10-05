@@ -60,8 +60,8 @@ extern void usart6_tx_dma_enable(uint8_t *data, uint16_t len);
 float servo_left_center = 1500.0f;
 float servo_right_center = 1500.0f;
 
-uint16_t door_open_pwm = 2000;
-uint16_t door_close_pwm = 1250;
+uint16_t door_open_pwm = 2150;
+uint16_t door_close_pwm = 990;
 
 extern float motor_L;
 extern float motor_R;
@@ -904,3 +904,6 @@ void chassis_task(void const *pvParameters)
 				vTaskDelay(1);//PID频率:1000HZ
 		}
 }
+
+
+//0xFE ab ad aa 12 76 crc16(fe ... 76) length 00 00 80 7f 
