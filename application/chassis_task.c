@@ -46,6 +46,9 @@ extern UART_HandleTypeDef huart6;
 uint8_t arm_mode = 0;
 uint8_t system_mode = 0;
 uint8_t door_open = 0;
+uint8_t pre_door_open = 0;
+int16_t door_open_idle = 0;
+
 uint8_t stick_mode = 0x00;
 float throttle_set = 0.0f;
 
@@ -60,8 +63,8 @@ extern void usart6_tx_dma_enable(uint8_t *data, uint16_t len);
 float servo_left_center = 1500.0f;
 float servo_right_center = 1500.0f;
 
-uint16_t door_open_pwm = 2000;
-uint16_t door_close_pwm = 1250;
+uint16_t door_open_pwm = 2200;
+uint16_t door_close_pwm = 750;
 
 extern float motor_L;
 extern float motor_R;
@@ -177,7 +180,7 @@ void pid_set_empty(void){
 	
 	mat_pid[2][0] = 0.0;
 	mat_pid[2][1] = 50.0f;//139.53f;
-	mat_pid[2][2] = 0.025f;//0.24f;
+	mat_pid[2][2] = 0.035f;//0.24f;
 	mat_pid[2][3] = 75.0;
 	
 	angle_pid_mat[0][0] = 2.4;
@@ -730,7 +733,17 @@ void chassis_task(void const *pvParameters)
 				throttle_set = throttle_in;
 
 				if(door_open){
+					if(!pre_door_open){
+						door_open_idle = 3000;
+					}
+				}else{
+					door_open_idle = 0;
+				}
+				pre_door_open = door_open;
+				
+				if(door_open_idle > 0){
 					servo_pwm[4] = door_open_pwm;
+					door_open_idle = door_open_idle - 1;
 				}
 				else{
 					servo_pwm[4] = door_close_pwm;
