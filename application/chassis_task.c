@@ -60,12 +60,12 @@ extern float target_velocity[3];
 extern void usart6_tx_dma_enable(uint8_t *data, uint16_t len);
 
 
-float servo_left_center = 1500.0f;
-float servo_right_center = 1500.0f;
+float servo_left_center = 1600.0f;
+float servo_right_center = 1600.0f;
 
 
-uint16_t door_open_pwm = 2000;
-uint16_t door_close_pwm = 800;
+uint16_t door_open_pwm = 2100;
+uint16_t door_close_pwm = 875;
 
 extern float motor_L;
 extern float motor_R;

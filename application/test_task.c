@@ -279,8 +279,8 @@ void test_task(void const * argument)
 				//HAL_UART_Transmit(&huart6, "Hello World!", sizeof("Hello World!"), 1000);
 			
 			
-			filtered_left = dp_kalman_left(dp_left + 1.0f);
-			filtered_right = dp_kalman_right(dp_right - 30.0f);
+			filtered_left = dp_kalman_left(dp_left - 1.0f);
+			filtered_right = dp_kalman_right(dp_right - 8.0f);
 			filtered_dp = filtered_right + 0.52f * filtered_left;
 			
 			static fp32 INS_quat[4] = {0.0f, 0.0f, 0.0f, 0.0f};
