@@ -29,7 +29,7 @@ const error_t *error_list_test_local;
 
 /*
 typedef struct MS45x5DOObject {
-	uint8_t devAddress; //�豸��ַ
+	uint8_t devAddress; //地址
 	union {
 		struct {
 			uint16_t pressure:14;
@@ -38,26 +38,26 @@ typedef struct MS45x5DOObject {
 			uint16_t temperature:11;
 		}pData;
 		uint8_t rData[4];
-	}msData; //��������ֵ
-	MS45x5DOType type; //MS4525DO������
-	float pUpperRange; //ѹ����������
-	float pLowerRange; //ѹ����������
-	float fTemperature; //������¶�ֵ
-	float fPressure; //�����ѹ��ֵ
-	void (*Write)(struct MS45x5DOObject *ms,uint8_t *wData,uint16_t wSize); //��MS45x5DOд����
-	void (*Read)(struct MS45x5DOObject *ms,uint8_t *rData,uint16_t rSize); //��MS45x5DO������
-	void (*Delayms)(volatile uint32_t nTime); //��������ʱ����
+	}msData; //结构体
+	MS45x5DOType type; //MS4525DO结构体定义
+	float pUpperRange; //高值
+	float pLowerRange; //低值
+	float fTemperature; //温度
+	float fPressure; //压强
+	void (*Write)(struct MS45x5DOObject *ms,uint8_t *wData,uint16_t wSize); //写MS45x5DO数据
+	void (*Read)(struct MS45x5DOObject *ms,uint8_t *rData,uint16_t rSize); //读MS45x5DO数据
+	void (*Delayms)(volatile uint32_t nTime); //延时
 }MS45x5DOObjectType;
 
 void MS45x5DOInitialization(
-	MS45x5DOObjectType *ms, //MS5837����
-	uint8_t devAddress, //�豸��ַ
-	MS45x5DOType type, //MS4515DO������
-	float pMax, //ѹ����������
-	float pMin, //ѹ����������
-	MS45x5DOWrite write, //��MS45x5DOд���ݺ���ָ��
-	MS45x5DORead read, //��MS45x5DO�����ݺ���ָ��
-	MS45x5DODelayms delayms //������ʱ����ָ��
+	MS45x5DOObjectType *ms, //MS5837初始化
+	uint8_t devAddress, //地址
+	MS45x5DOType type, //MS4515DO类型
+	float pMax, //最大值
+	float pMin, //最小值
+	MS45x5DOWrite write, //写数据
+	MS45x5DORead read, //读数据
+	MS45x5DODelayms delayms //延时
 ){
 	if((ms==NULL)||(write==NULL)||(read==NULL)||(delayms==NULL)){
 		return;
@@ -101,6 +101,9 @@ void MS45x5DOInitialization(
   * @retval         none
   */
 	
+struct bmp280* bmp280_obejct = NULL;
+uint8_t bmp280_id = 0;
+
 float dp_avr = 0.0f;
 float height_rate = 0.0f;
 float dp2 = 0.0f;
@@ -128,12 +131,11 @@ unsigned int temperature_right = 0;
 
 extern fp32 ahrs_quaternion[4];
 
-struct bmp280* bmp280_obejct = NULL;
-uint8_t bmp280_id = 0;
+
 
 #define DP_BUF_SIZE 24
-
 uint8_t rx1_buffer[DP_BUF_SIZE];
+
 extern DMA_HandleTypeDef hdma_usart1_rx;
 extern UART_HandleTypeDef huart1;
 extern UART_HandleTypeDef huart6;
@@ -205,16 +207,16 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef * huart, uint16_t Size)
 								dp_right = *(float*)&rx1_buffer[4];
 							}
 						}
-						//HAL_UART_Transmit(&huart1, rx2_buffer, Size, 0xffff);         // �����յ��������ٷ���
-            memset(rx1_buffer, 0, DP_BUF_SIZE);							   // ������ջ���
-            HAL_UARTEx_ReceiveToIdle_DMA(&huart1, rx1_buffer, DP_BUF_SIZE); // ������Ϻ�����
-            __HAL_DMA_DISABLE_IT(&hdma_usart1_rx, DMA_IT_HT);		   // �ֶ��ر�DMA_IT_HT�ж�
+						//HAL_UART_Transmit(&huart1, rx2_buffer, Size, 0xffff);         //发送
+            memset(rx1_buffer, 0, DP_BUF_SIZE);							   //清空
+            HAL_UARTEx_ReceiveToIdle_DMA(&huart1, rx1_buffer, DP_BUF_SIZE); //接收DMA
+            __HAL_DMA_DISABLE_IT(&hdma_usart1_rx, DMA_IT_HT);		   //关闭DMA
         }
-        else  // �������ݳ��ȴ���BUFF_SIZE
+        else  //接收数据不正确
         {
-            memset(rx1_buffer, 0, DP_BUF_SIZE);							   // ������ջ���
-            HAL_UARTEx_ReceiveToIdle_DMA(&huart1, rx1_buffer, DP_BUF_SIZE); // ������Ϻ�����
-            __HAL_DMA_DISABLE_IT(&hdma_usart1_rx, DMA_IT_HT);		   // �ֶ��ر�DMA_IT_HT�ж�
+            memset(rx1_buffer, 0, DP_BUF_SIZE);							   //清空
+            HAL_UARTEx_ReceiveToIdle_DMA(&huart1, rx1_buffer, DP_BUF_SIZE); //启动DMA
+            __HAL_DMA_DISABLE_IT(&hdma_usart1_rx, DMA_IT_HT);		   //关闭DMA
         }
     }
 }
@@ -224,8 +226,8 @@ void HAL_UART_ErrorCallback(UART_HandleTypeDef * huart)
     if(huart->Instance == USART1)
     {
 		memset(rx1_buffer, 0, DP_BUF_SIZE);
-		HAL_UARTEx_ReceiveToIdle_DMA(&huart1, rx1_buffer, DP_BUF_SIZE); // ���շ������������
-		__HAL_DMA_DISABLE_IT(&hdma_usart1_rx, DMA_IT_HT);		   // �ֶ��ر�DMA_IT_HT�ж�
+		HAL_UARTEx_ReceiveToIdle_DMA(&huart1, rx1_buffer, DP_BUF_SIZE); //使能DMA
+		__HAL_DMA_DISABLE_IT(&hdma_usart1_rx, DMA_IT_HT);		   //关闭DMA
     }
 }
 
@@ -252,6 +254,7 @@ void test_task(void const * argument)
 //				temp_buff[0] = 0x14;
 //				HAL_I2C_Mem_Write(&hi2c2, BMP280_ADDRESS, 0xF5, I2C_MEMADD_SIZE_8BIT, temp_buff, 1, 50);
 //		}
+		
 		HAL_UARTEx_ReceiveToIdle_DMA(&huart1, rx1_buffer, DP_BUF_SIZE);
 		__HAL_DMA_DISABLE_IT(&hdma_usart1_rx, DMA_IT_HT);
 		

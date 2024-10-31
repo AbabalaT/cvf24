@@ -88,7 +88,7 @@ uint32_t detect_task_stack;
   * @param[in]      pvParameters: NULL
   * @retval         none
   */
-	
+
 uint16_t running_psc = 2000, running_pwm = 0;
 uint16_t running_psc_factor = 1, running_pwm_factor = 1;
 uint16_t buzzer_factor1 = 178, buzzer_factor2 = 1;
@@ -103,8 +103,6 @@ const uint16_t music[3][8]={    //低中高音对应频率所需的预分频数
     {0,191,170,151,143,127,113,101},
     {0,95,85,75,71,63,56,50}
 };
-
-
 
 void play(uint8_t i,uint8_t j,uint16_t time, uint16_t idle){
 	int16_t current_pwm = 485;
@@ -129,6 +127,13 @@ void play_fix(uint8_t i,uint8_t j,uint16_t time, uint16_t idle,int16_t pwm){
 	vTaskDelay(idle);
 }
 
+void play_bar(uint16_t pulse, uint16_t time, uint16_t pwm){
+	buzzer_on(pulse, pwm);
+	vTaskDelay(time);
+	buzzer_off();
+	vTaskDelay(20);
+}
+
 extern Sbus_ctrl_t Sbus_ctrl;
 void detect_task(void const *pvParameters)
 {
@@ -146,15 +151,17 @@ void detect_task(void const *pvParameters)
     }
     buzzer_off();
     vTaskDelay(200);
-    play_fix(1, 1, 200, 10, 16);
-    play_fix(1, 2, 170, 10, 16);
-    play_fix(1, 5, 200, 10, 16);
-    
-    play_fix(1, 2, 170, 10, 8);
-    play_fix(1, 5, 200, 10, 8);
-    
-    play_fix(1, 2, 170, 10, 4);
-    play_fix(1, 5, 200, 10, 4);
+    play_bar(151, 118, 60);
+		play_bar(134, 98, 60);
+		play_bar(100, 138, 60);
+		play_bar(134, 78, 60);
+		play_bar(151, 118, 20);
+		play_bar(134, 98, 20);
+		play_bar(100, 138, 20);
+		play_bar(134, 78, 20);
+		play_bar(151, 118, 10);
+		play_bar(134, 98, 10);
+		play_bar(100, 138, 10);
     vTaskDelay(1000);
 	
     while (1)
@@ -208,79 +215,6 @@ void detect_task(void const *pvParameters)
             play(0, 1, 600, 200);
             play(0, 1, 600, 200);
         }
-        static uint8_t error_num_display = 0;
-        system_time = xTaskGetTickCount();
-				
-        error_num_display = ERROR_LIST_LENGHT;
-        error_list[ERROR_LIST_LENGHT].is_lost = 0;
-        error_list[ERROR_LIST_LENGHT].error_exist = 0;
-
-        for (int i = 0; i < ERROR_LIST_LENGHT; i++)
-        {
-            //disable, continue
-            //未使能，跳过
-            if (error_list[i].enable == 0)
-            {
-                continue;
-            }
-
-            //judge offline.判断掉线
-            if (system_time - error_list[i].new_time > error_list[i].set_offline_time)
-            {
-                if (error_list[i].error_exist == 0)
-                {
-                    //record error and time
-                    //记录错误以及掉线时间
-                    error_list[i].is_lost = 1;
-                    error_list[i].error_exist = 1;
-                    error_list[i].lost_time = system_time;
-                }
-                //judge the priority,save the highest priority ,
-                //判断错误优先级， 保存优先级最高的错误码
-                if (error_list[i].priority > error_list[error_num_display].priority)
-                {
-                    error_num_display = i;
-                }
-                
-
-                error_list[ERROR_LIST_LENGHT].is_lost = 1;
-                error_list[ERROR_LIST_LENGHT].error_exist = 1;
-                //if solve_lost_fun != NULL, run it
-                //如果提供解决函数，运行解决函数
-                if (error_list[i].solve_lost_fun != NULL)
-                {
-                    error_list[i].solve_lost_fun();
-                }
-            }
-            else if (system_time - error_list[i].work_time < error_list[i].set_online_time)
-            {
-                //just online, maybe unstable, only record
-                //刚刚上线，可能存在数据不稳定，只记录不丢失，
-                error_list[i].is_lost = 0;
-                error_list[i].error_exist = 1;
-            }
-            else
-            {
-                error_list[i].is_lost = 0;
-                //判断是否存在数据错误
-                //judge if exist data error
-                if (error_list[i].data_is_error != NULL)
-                {
-                    error_list[i].error_exist = 1;
-                }
-                else
-                {
-                    error_list[i].error_exist = 0;
-                }
-                //calc frequency
-                //计算频率
-                if (error_list[i].new_time > error_list[i].last_time)
-                {
-                    error_list[i].frequency = configTICK_RATE_HZ / (fp32)(error_list[i].new_time - error_list[i].last_time);
-                }
-            }
-        }
-
         vTaskDelay(DETECT_CONTROL_TIME);
 #if INCLUDE_uxTaskGetStackHighWaterMark
         detect_task_stack = uxTaskGetStackHighWaterMark(NULL);
