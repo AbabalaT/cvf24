@@ -280,7 +280,7 @@ void test_task(void const * argument)
 			
 			
 			filtered_left = dp_kalman_left(dp_left + 25.0f);
-			filtered_right = dp_kalman_right(dp_right - 21.0f);
+			filtered_right = dp_kalman_right(dp_right + 31.0f);
 			filtered_dp = filtered_right + 0.52f * filtered_left;
 			
 			static fp32 INS_quat[4] = {0.0f, 0.0f, 0.0f, 0.0f};

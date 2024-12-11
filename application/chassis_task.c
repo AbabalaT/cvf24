@@ -170,12 +170,12 @@ void pid_init(void){
 
 void pid_set_empty(void){
 	mat_pid[0][0] = 0.0;
-	mat_pid[0][1] = 750.0f;//232.55f;
+	mat_pid[0][1] = 550.0f;//232.55f;
 	mat_pid[0][2] = 0.25;
 	mat_pid[0][3] = 30.0;
 	
 	mat_pid[1][0] = 0.0;
-	mat_pid[1][1] = 500.0f;//697.6f;
+	mat_pid[1][1] = 250.0f;//697.6f;
 	mat_pid[1][2] = 0.2;
 	mat_pid[1][3] = 30.0;
 	
@@ -857,9 +857,9 @@ void chassis_task(void const *pvParameters)
 						float a1 = output_pitch - output_roll;
 						float a2 = output_pitch + output_roll;
 						
-						if(filtered_dp > 100.0f){
-							a1 = a1 * 100.0f / filtered_dp;
-							a2 = a2 * 100.0f / filtered_dp;
+						if(filtered_dp > 45.0f){
+							a1 = a1 * 45.0f / filtered_dp;
+							a2 = a2 * 45.0f / filtered_dp;
 						}
 						
 						if(f1 > 1000.0f){
