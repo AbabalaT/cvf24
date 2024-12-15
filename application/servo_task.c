@@ -35,7 +35,14 @@
 
 const RC_ctrl_t *servo_rc;
 
+
+extern Sbus_ctrl_t Sbus_ctrl;
+extern uint8_t system_mode;
+extern float d_ch(uint8_t ch_required);
+
 const static uint16_t servo_key[4] = {SERVO1_ADD_PWM_KEY, SERVO2_ADD_PWM_KEY, SERVO3_ADD_PWM_KEY, SERVO4_ADD_PWM_KEY};
+
+float scale_factor = 1.0f;
 
 uint16_t servo_pwm[6] = {SERVO_MIN_PWM, SERVO_MIN_PWM, SERVO_MIN_PWM, SERVO_MIN_PWM, SERVO_MIN_PWM, SERVO_MIN_PWM};
 /**
@@ -67,12 +74,36 @@ void servo_task(void const * argument)
 	  servo_pwm[4] = 2000;
     while(1)
     {
+				if(system_mode == 2){
+					if(Sbus_ctrl.ch[4]>500){
+						scale_factor = 0.66f;
+					}else{
+						scale_factor = 0.33f;
+					}
+					if(Sbus_ctrl.ch[4]>1500){
+						scale_factor = 1.0f;
+					}
+					float flap_factor = (d_ch(7) + 1000.0f)/3.0f;
+					servo_pwm[0] = 1500 + d_ch(0)*scale_factor + flap_factor;//×ó¸±Òí
+					servo_pwm[1] = 1340 + d_ch(0)*scale_factor - flap_factor;//ÓÒ¸±Òí
+					servo_pwm[2] = 1500 - d_ch(1)*scale_factor;//Éý½µ
+					servo_pwm[3] = 1500 - d_ch(3)*scale_factor;//Æ«º½
+					servo_pwm[4] = 1500 + d_ch(3)/4.0f;//Ç°ÂÖ
+					servo_pwm[5] = 1525+ (d_ch(2)/2);//throttle
+					if(servo_pwm[5] > 2000){
+						servo_pwm[5] = 2000;
+					}
+					if(Sbus_ctrl.ch[6]<1200){//lock
+						servo_pwm[5]=1000;
+					}
+					if(Sbus_ctrl.ch[6]<500){//brake
+						servo_pwm[0]=500;
+						servo_pwm[1]=2500;
+						servo_pwm[2]=500;
+					}
+				}
 				for(uint8_t i = 0; i < 6; i=i+1)
         {
-						if(i==4){
-							servo_pwm_set(servo_pwm[i], i);
-							continue;
-						}
             if(servo_pwm[i] < SERVO_MIN_PWM)
             {
                 servo_pwm[i] = SERVO_MIN_PWM;
@@ -81,7 +112,7 @@ void servo_task(void const * argument)
             {
                 servo_pwm[i] = SERVO_MAX_PWM;
             }
-						servo_pwm_set(servo_pwm[i], i);
+							servo_pwm_set(servo_pwm[i], i);
         }
         osDelay(5);
     }

@@ -743,11 +743,11 @@ void chassis_task(void const *pvParameters)
 				pre_door_open = door_open;
 				
 				if(door_open_idle > 0){
-					servo_pwm[4] = door_open_pwm;
+					//servo_pwm[4] = door_open_pwm;
 					door_open_idle = door_open_idle - 1;
 				}
 				else{
-					servo_pwm[4] = door_close_pwm;
+					//servo_pwm[4] = door_close_pwm;
 				}
 				
 				if(is_load != pre_is_load){
@@ -895,7 +895,7 @@ void chassis_task(void const *pvParameters)
 						}
 					}					
 					if(pwm_debugging){
-						set_pwm(servo_right, servo_left, motor_right, motor_left);
+						//set_pwm(servo_right, servo_left, motor_right, motor_left);
 					}
 				}
 				vTaskDelay(1);//PID频率:1000HZ

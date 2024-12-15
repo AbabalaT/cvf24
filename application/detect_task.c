@@ -141,73 +141,26 @@ void detect_task(void const *pvParameters)
     
     vTaskDelay(2000);
     for(uint16_t warn_psc=230; warn_psc > 10; warn_psc = warn_psc - 2){
-        buzzer_on(warn_psc, 5);
+        //buzzer_on(warn_psc, 5);
         vTaskDelay(5);
     }
     buzzer_off();
     vTaskDelay(200);
-    play_fix(1, 1, 200, 10, 16);
-    play_fix(1, 2, 170, 10, 16);
-    play_fix(1, 5, 200, 10, 16);
-    
-    play_fix(1, 2, 170, 10, 8);
-    play_fix(1, 5, 200, 10, 8);
-    
-    play_fix(1, 2, 170, 10, 4);
-    play_fix(1, 5, 200, 10, 4);
+		
+//    play_fix(1, 1, 200, 10, 16);
+//    play_fix(1, 2, 170, 10, 16);
+//    play_fix(1, 5, 200, 10, 16);
+//    
+//    play_fix(1, 2, 170, 10, 8);
+//    play_fix(1, 5, 200, 10, 8);
+//    
+//    play_fix(1, 2, 170, 10, 4);
+//    play_fix(1, 5, 200, 10, 4);
+		
     vTaskDelay(1000);
 	
     while (1)
     {
-        if(ctrl_mode != 2){
-				play(1, 7, 200, 10);
-				play(1, 1, 200, 10);
-				play(1, 7, 200, 10);
-				play(1, 1, 200, 200);
-        }
-        if(door_open){
-            if(arm_mode == 0){
-                for(uint16_t warn_psc=191; warn_psc > 101; warn_psc = warn_psc - 5){
-                    buzzer_on(warn_psc, 480);
-                    vTaskDelay(20);
-                    if(door_open == 0){
-                        break;
-                    }
-                    if(arm_mode){
-                        break;
-                    }
-                }
-                buzzer_off();
-                vTaskDelay(50);
-                for(uint16_t warn_psc=191; warn_psc > 101; warn_psc = warn_psc - 5){
-                    buzzer_on(warn_psc, 480);
-                    vTaskDelay(20);
-                    if(door_open == 0){
-                        break;
-                    }
-                    if(arm_mode){
-                        break;
-                    }
-                }
-                buzzer_off();
-                for(uint8_t i =0; i< 10; i=i+1){
-                    if(door_open == 0){
-                        break;
-                    }
-                    if(arm_mode){
-                        break;
-                    }
-                    vTaskDelay(100);
-                }
-            }
-        }else{
-            buzzer_off();
-        }
-        if(battery_voltage < 11.5f){
-            play(0, 1, 600, 200);
-            play(0, 1, 600, 200);
-            play(0, 1, 600, 200);
-        }
         static uint8_t error_num_display = 0;
         system_time = xTaskGetTickCount();
 				

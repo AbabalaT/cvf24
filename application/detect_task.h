@@ -56,7 +56,7 @@
 
 
 #define DETECT_TASK_INIT_TIME 57
-#define DETECT_CONTROL_TIME 10
+#define DETECT_CONTROL_TIME 500
 
 //错误码以及对应设备顺序
 enum errorList
