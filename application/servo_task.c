@@ -76,26 +76,31 @@ void servo_task(void const * argument)
     {
 				if(system_mode == 2){
 					if(Sbus_ctrl.ch[4]>500){
-						scale_factor = 0.66f;
+						scale_factor = 0.85f;
 					}else{
-						scale_factor = 0.33f;
+						scale_factor = 0.7f;
 					}
 					if(Sbus_ctrl.ch[4]>1500){
 						scale_factor = 1.0f;
 					}
+					
 					float flap_factor = (d_ch(7) + 1000.0f)/3.0f;
+					
 					servo_pwm[0] = 1500 + d_ch(0)*scale_factor + flap_factor;//×ó¸±Òí
 					servo_pwm[1] = 1340 + d_ch(0)*scale_factor - flap_factor;//ÓÒ¸±Òí
 					servo_pwm[2] = 1500 - d_ch(1)*scale_factor;//Éý½µ
 					servo_pwm[3] = 1500 - d_ch(3)*scale_factor;//Æ«º½
 					servo_pwm[4] = 1500 + d_ch(3)/4.0f;//Ç°ÂÖ
-					servo_pwm[5] = 1525+ (d_ch(2)/2);//throttle
+					servo_pwm[5] = 1525 + (d_ch(2)/2);//throttle
+					
 					if(servo_pwm[5] > 2000){
 						servo_pwm[5] = 2000;
 					}
+					
 					if(Sbus_ctrl.ch[6]<1200){//lock
 						servo_pwm[5]=1000;
 					}
+					
 					if(Sbus_ctrl.ch[6]<500){//brake
 						servo_pwm[0]=500;
 						servo_pwm[1]=2500;
