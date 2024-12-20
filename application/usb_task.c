@@ -15,7 +15,7 @@
   ****************************(C) COPYRIGHT 2019 DJI****************************
   */
 #include "usb_task.h"
-
+#include <math.h>
 #include "cmsis_os.h"
 
 #include "usb_device.h"
@@ -33,8 +33,7 @@ static void usb_printf(const char *fmt,...);
 static uint8_t usb_buf[256];
 static const char status[2][7] = {"OK", "ERROR!"};
 const error_t *error_list_usb_local;
-
-
+extern float d_ch(uint8_t ch_required);
 
 void usb_task(void const * argument)
 {
@@ -44,7 +43,16 @@ void usb_task(void const * argument)
 
     while(1)
     {
-        osDelay(1000);
+			float channel[10];
+			channel[0] = NAN;
+			channel[9] = INFINITY;
+			while (1){			
+				for(int i = 1; i<9; i=i+1){
+					channel[i] = d_ch(i-1);
+				}
+				CDC_Transmit_FS((uint8_t*)&channel, 40);
+				vTaskDelay(50);
+			}
 		}
 }
 
